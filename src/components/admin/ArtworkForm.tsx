@@ -1,0 +1,193 @@
+'use client';
+
+import { useState } from 'react';
+import { Artwork, ArtworkFormData } from '@/types/artwork';
+import Button from '@/components/common/Button';
+import ImageUploader from './ImageUploader';
+
+interface ArtworkFormProps {
+  artwork?: Artwork;
+  onSubmit: (data: ArtworkFormData & { image_url: string; thumbnail_url: string }) => Promise<void>;
+  onCancel: () => void;
+}
+
+export default function ArtworkForm({ artwork, onSubmit, onCancel }: ArtworkFormProps) {
+  const [title, setTitle] = useState(artwork?.title || '');
+  const [year, setYear] = useState(artwork?.year?.toString() || new Date().getFullYear().toString());
+  const [width, setWidth] = useState(artwork?.width?.toString() || '');
+  const [height, setHeight] = useState(artwork?.height?.toString() || '');
+  const [medium, setMedium] = useState(artwork?.medium || '');
+  const [description, setDescription] = useState(artwork?.description || '');
+  const [isFeatured, setIsFeatured] = useState(artwork?.is_featured || false);
+  const [imageUrl, setImageUrl] = useState(artwork?.image_url || '');
+  const [thumbnailUrl, setThumbnailUrl] = useState(artwork?.thumbnail_url || '');
+  const [loading, setLoading] = useState(false);
+  const [errors, setErrors] = useState<Record<string, string>>({});
+
+  const validate = () => {
+    const newErrors: Record<string, string> = {};
+
+    if (!title.trim()) {
+      newErrors.title = '제목을 입력해주세요';
+    }
+
+    if (!year || isNaN(parseInt(year)) || parseInt(year) < 1900 || parseInt(year) > new Date().getFullYear() + 1) {
+      newErrors.year = '올바른 연도를 입력해주세요';
+    }
+
+    if (!imageUrl) {
+      newErrors.image = '이미지를 업로드해주세요';
+    }
+
+    setErrors(newErrors);
+    return Object.keys(newErrors).length === 0;
+  };
+
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+
+    if (!validate()) return;
+
+    setLoading(true);
+
+    try {
+      await onSubmit({
+        title: title.trim(),
+        year: parseInt(year),
+        width: width ? parseInt(width) : undefined,
+        height: height ? parseInt(height) : undefined,
+        medium: medium.trim() || undefined,
+        description: description.trim() || undefined,
+        is_featured: isFeatured,
+        image_url: imageUrl,
+        thumbnail_url: thumbnailUrl,
+      });
+    } catch (err) {
+      console.error('Submit error:', err);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const handleImageUpload = (newImageUrl: string, newThumbnailUrl: string) => {
+    setImageUrl(newImageUrl);
+    setThumbnailUrl(newThumbnailUrl);
+    setErrors((prev) => ({ ...prev, image: '' }));
+  };
+
+  return (
+    <form onSubmit={handleSubmit} className="space-y-6">
+      <div>
+        <ImageUploader
+          onUpload={handleImageUpload}
+          currentImage={imageUrl}
+        />
+        {errors.image && (
+          <p className="text-red-500 text-sm mt-1">{errors.image}</p>
+        )}
+      </div>
+
+      <div>
+        <label className="block text-sm font-medium mb-1">
+          제목 <span className="text-red-500">*</span>
+        </label>
+        <input
+          type="text"
+          value={title}
+          onChange={(e) => setTitle(e.target.value)}
+          className="w-full h-10 px-3 border border-[var(--border)] bg-[var(--surface)] focus:outline-none focus:border-[var(--accent)]"
+          placeholder="작품 제목"
+        />
+        {errors.title && (
+          <p className="text-red-500 text-sm mt-1">{errors.title}</p>
+        )}
+      </div>
+
+      <div className="grid grid-cols-3 gap-4">
+        <div>
+          <label className="block text-sm font-medium mb-1">
+            연도 <span className="text-red-500">*</span>
+          </label>
+          <input
+            type="number"
+            value={year}
+            onChange={(e) => setYear(e.target.value)}
+            className="w-full h-10 px-3 border border-[var(--border)] bg-[var(--surface)] focus:outline-none focus:border-[var(--accent)]"
+            placeholder="2024"
+            min="1900"
+            max={new Date().getFullYear() + 1}
+          />
+          {errors.year && (
+            <p className="text-red-500 text-sm mt-1">{errors.year}</p>
+          )}
+        </div>
+
+        <div>
+          <label className="block text-sm font-medium mb-1">가로 (cm)</label>
+          <input
+            type="number"
+            value={width}
+            onChange={(e) => setWidth(e.target.value)}
+            className="w-full h-10 px-3 border border-[var(--border)] bg-[var(--surface)] focus:outline-none focus:border-[var(--accent)]"
+            placeholder="100"
+            min="1"
+          />
+        </div>
+
+        <div>
+          <label className="block text-sm font-medium mb-1">세로 (cm)</label>
+          <input
+            type="number"
+            value={height}
+            onChange={(e) => setHeight(e.target.value)}
+            className="w-full h-10 px-3 border border-[var(--border)] bg-[var(--surface)] focus:outline-none focus:border-[var(--accent)]"
+            placeholder="80"
+            min="1"
+          />
+        </div>
+      </div>
+
+      <div>
+        <label className="block text-sm font-medium mb-1">재료/기법</label>
+        <input
+          type="text"
+          value={medium}
+          onChange={(e) => setMedium(e.target.value)}
+          className="w-full h-10 px-3 border border-[var(--border)] bg-[var(--surface)] focus:outline-none focus:border-[var(--accent)]"
+          placeholder="Oil on canvas"
+        />
+      </div>
+
+      <div>
+        <label className="block text-sm font-medium mb-1">작품 설명</label>
+        <textarea
+          value={description}
+          onChange={(e) => setDescription(e.target.value)}
+          className="w-full h-32 px-3 py-2 border border-[var(--border)] bg-[var(--surface)] focus:outline-none focus:border-[var(--accent)] resize-none"
+          placeholder="작품에 대한 설명을 입력하세요..."
+        />
+      </div>
+
+      <div>
+        <label className="flex items-center gap-2 cursor-pointer">
+          <input
+            type="checkbox"
+            checked={isFeatured}
+            onChange={(e) => setIsFeatured(e.target.checked)}
+            className="w-4 h-4"
+          />
+          <span className="text-sm">대표작으로 설정</span>
+        </label>
+      </div>
+
+      <div className="flex justify-end gap-3 pt-4 border-t border-[var(--border)]">
+        <Button type="button" variant="secondary" onClick={onCancel}>
+          취소
+        </Button>
+        <Button type="submit" loading={loading}>
+          저장
+        </Button>
+      </div>
+    </form>
+  );
+}
