@@ -1,23 +1,25 @@
 'use client';
 
 import { useState } from 'react';
-import { Artwork, ArtworkFormData } from '@/types/artwork';
+import { Artwork, ArtworkFormData, Category } from '@/types/artwork';
 import Button from '@/components/common/Button';
 import ImageUploader from './ImageUploader';
 
 interface ArtworkFormProps {
   artwork?: Artwork;
+  categories: Category[];
   onSubmit: (data: ArtworkFormData & { image_url: string; thumbnail_url: string }) => Promise<void>;
   onCancel: () => void;
 }
 
-export default function ArtworkForm({ artwork, onSubmit, onCancel }: ArtworkFormProps) {
+export default function ArtworkForm({ artwork, categories, onSubmit, onCancel }: ArtworkFormProps) {
   const [title, setTitle] = useState(artwork?.title || '');
   const [year, setYear] = useState(artwork?.year?.toString() || new Date().getFullYear().toString());
   const [width, setWidth] = useState(artwork?.width?.toString() || '');
   const [height, setHeight] = useState(artwork?.height?.toString() || '');
   const [medium, setMedium] = useState(artwork?.medium || '');
   const [description, setDescription] = useState(artwork?.description || '');
+  const [categoryId, setCategoryId] = useState(artwork?.category_id || '');
   const [isFeatured, setIsFeatured] = useState(artwork?.is_featured || false);
   const [imageUrl, setImageUrl] = useState(artwork?.image_url || '');
   const [thumbnailUrl, setThumbnailUrl] = useState(artwork?.thumbnail_url || '');
@@ -58,6 +60,7 @@ export default function ArtworkForm({ artwork, onSubmit, onCancel }: ArtworkForm
         height: height ? parseInt(height) : undefined,
         medium: medium.trim() || undefined,
         description: description.trim() || undefined,
+        category_id: categoryId || undefined,
         is_featured: isFeatured,
         image_url: imageUrl,
         thumbnail_url: thumbnailUrl,
@@ -95,12 +98,28 @@ export default function ArtworkForm({ artwork, onSubmit, onCancel }: ArtworkForm
           type="text"
           value={title}
           onChange={(e) => setTitle(e.target.value)}
-          className="w-full h-10 px-3 border border-[var(--border)] bg-[var(--surface)] focus:outline-none focus:border-[var(--accent)]"
+          className="w-full h-10 px-3 border border-gray-300 rounded focus:outline-none focus:ring-1 focus:ring-black"
           placeholder="작품 제목"
         />
         {errors.title && (
           <p className="text-red-500 text-sm mt-1">{errors.title}</p>
         )}
+      </div>
+
+      <div>
+        <label className="block text-sm font-medium mb-1">카테고리</label>
+        <select
+          value={categoryId}
+          onChange={(e) => setCategoryId(e.target.value)}
+          className="w-full h-10 px-3 border border-gray-300 rounded focus:outline-none focus:ring-1 focus:ring-black bg-white"
+        >
+          <option value="">선택 안함</option>
+          {categories.map((category) => (
+            <option key={category.id} value={category.id}>
+              {category.name}
+            </option>
+          ))}
+        </select>
       </div>
 
       <div className="grid grid-cols-3 gap-4">
@@ -112,7 +131,7 @@ export default function ArtworkForm({ artwork, onSubmit, onCancel }: ArtworkForm
             type="number"
             value={year}
             onChange={(e) => setYear(e.target.value)}
-            className="w-full h-10 px-3 border border-[var(--border)] bg-[var(--surface)] focus:outline-none focus:border-[var(--accent)]"
+            className="w-full h-10 px-3 border border-gray-300 rounded focus:outline-none focus:ring-1 focus:ring-black"
             placeholder="2024"
             min="1900"
             max={new Date().getFullYear() + 1}
@@ -128,7 +147,7 @@ export default function ArtworkForm({ artwork, onSubmit, onCancel }: ArtworkForm
             type="number"
             value={width}
             onChange={(e) => setWidth(e.target.value)}
-            className="w-full h-10 px-3 border border-[var(--border)] bg-[var(--surface)] focus:outline-none focus:border-[var(--accent)]"
+            className="w-full h-10 px-3 border border-gray-300 rounded focus:outline-none focus:ring-1 focus:ring-black"
             placeholder="100"
             min="1"
           />
@@ -140,7 +159,7 @@ export default function ArtworkForm({ artwork, onSubmit, onCancel }: ArtworkForm
             type="number"
             value={height}
             onChange={(e) => setHeight(e.target.value)}
-            className="w-full h-10 px-3 border border-[var(--border)] bg-[var(--surface)] focus:outline-none focus:border-[var(--accent)]"
+            className="w-full h-10 px-3 border border-gray-300 rounded focus:outline-none focus:ring-1 focus:ring-black"
             placeholder="80"
             min="1"
           />
@@ -153,7 +172,7 @@ export default function ArtworkForm({ artwork, onSubmit, onCancel }: ArtworkForm
           type="text"
           value={medium}
           onChange={(e) => setMedium(e.target.value)}
-          className="w-full h-10 px-3 border border-[var(--border)] bg-[var(--surface)] focus:outline-none focus:border-[var(--accent)]"
+          className="w-full h-10 px-3 border border-gray-300 rounded focus:outline-none focus:ring-1 focus:ring-black"
           placeholder="Oil on canvas"
         />
       </div>
@@ -163,7 +182,7 @@ export default function ArtworkForm({ artwork, onSubmit, onCancel }: ArtworkForm
         <textarea
           value={description}
           onChange={(e) => setDescription(e.target.value)}
-          className="w-full h-32 px-3 py-2 border border-[var(--border)] bg-[var(--surface)] focus:outline-none focus:border-[var(--accent)] resize-none"
+          className="w-full h-32 px-3 py-2 border border-gray-300 rounded focus:outline-none focus:ring-1 focus:ring-black resize-none"
           placeholder="작품에 대한 설명을 입력하세요..."
         />
       </div>
@@ -176,11 +195,11 @@ export default function ArtworkForm({ artwork, onSubmit, onCancel }: ArtworkForm
             onChange={(e) => setIsFeatured(e.target.checked)}
             className="w-4 h-4"
           />
-          <span className="text-sm">대표작으로 설정</span>
+          <span className="text-sm">대표작으로 설정 (메인 슬라이드쇼에 표시)</span>
         </label>
       </div>
 
-      <div className="flex justify-end gap-3 pt-4 border-t border-[var(--border)]">
+      <div className="flex justify-end gap-3 pt-4 border-t border-gray-200">
         <Button type="button" variant="secondary" onClick={onCancel}>
           취소
         </Button>

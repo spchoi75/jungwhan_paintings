@@ -49,6 +49,7 @@ export async function POST(request: NextRequest) {
         height: body.height || null,
         medium: body.medium || null,
         description: body.description || null,
+        category_id: body.category_id || null,
         image_url: body.image_url,
         thumbnail_url: body.thumbnail_url,
         is_featured: body.is_featured || false,

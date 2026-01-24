@@ -1,37 +1,17 @@
-import Link from 'next/link';
-import Image from 'next/image';
+import Header from '@/components/common/Header';
 
 export default function AboutPage() {
   return (
-    <main className="min-h-screen">
-      {/* Header */}
-      <header className="sticky top-0 z-40 bg-[var(--background)]/80 backdrop-blur-sm border-b border-[var(--border)]">
-        <div className="max-w-7xl mx-auto px-6 py-4 flex items-center justify-between">
-          <Link
-            href="/"
-            className="font-[family-name:var(--font-cormorant)] text-xl"
-          >
-            Jungwhan
-          </Link>
-          <div className="flex items-center gap-6">
-            <Link
-              href="/gallery"
-              className="text-sm text-[var(--text-secondary)] hover:text-[var(--foreground)] transition-colors"
-            >
-              Gallery
-            </Link>
-            <span className="text-sm text-[var(--foreground)]">About</span>
-          </div>
-        </div>
-      </header>
+    <main className="min-h-screen bg-white">
+      <Header />
 
       {/* Content */}
-      <div className="max-w-4xl mx-auto px-6 py-16">
+      <div className="max-w-4xl mx-auto px-6 pt-24 pb-16">
         <div className="grid md:grid-cols-2 gap-12 items-start">
           {/* Profile Image */}
-          <div className="aspect-[3/4] relative bg-[var(--border)]">
+          <div className="aspect-[3/4] relative bg-gray-100">
             {/* 프로필 이미지가 없을 때 플레이스홀더 */}
-            <div className="absolute inset-0 flex items-center justify-center text-[var(--text-secondary)]">
+            <div className="absolute inset-0 flex items-center justify-center text-gray-300">
               <svg
                 xmlns="http://www.w3.org/2000/svg"
                 width="64"
@@ -57,11 +37,11 @@ export default function AboutPage() {
 
           {/* Bio */}
           <div>
-            <h2 className="font-[family-name:var(--font-cormorant)] text-4xl mb-6">
+            <h1 className="text-4xl font-light tracking-wide mb-6">
               Jungwhan
-            </h2>
+            </h1>
 
-            <div className="space-y-4 text-[var(--text-secondary)] leading-relaxed">
+            <div className="space-y-4 text-gray-600 leading-relaxed">
               <p>
                 작가 소개 텍스트를 여기에 입력하세요.
               </p>
@@ -73,7 +53,7 @@ export default function AboutPage() {
             {/* Education / Career */}
             <div className="mt-10">
               <h3 className="text-lg font-medium mb-4">Education</h3>
-              <ul className="space-y-2 text-[var(--text-secondary)]">
+              <ul className="space-y-2 text-gray-600">
                 <li>2020 — 학력 정보</li>
                 <li>2018 — 학력 정보</li>
               </ul>
@@ -81,7 +61,7 @@ export default function AboutPage() {
 
             <div className="mt-8">
               <h3 className="text-lg font-medium mb-4">Exhibitions</h3>
-              <ul className="space-y-2 text-[var(--text-secondary)]">
+              <ul className="space-y-2 text-gray-600">
                 <li>2024 — 전시 정보</li>
                 <li>2023 — 전시 정보</li>
                 <li>2022 — 전시 정보</li>
@@ -89,9 +69,9 @@ export default function AboutPage() {
             </div>
 
             {/* Contact */}
-            <div className="mt-10 pt-8 border-t border-[var(--border)]">
+            <div className="mt-10 pt-8 border-t border-gray-200">
               <h3 className="text-lg font-medium mb-4">Contact</h3>
-              <p className="text-[var(--text-secondary)]">
+              <p className="text-gray-600">
                 email@example.com
               </p>
             </div>

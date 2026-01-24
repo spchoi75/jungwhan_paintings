@@ -1,0 +1,146 @@
+'use client';
+
+import { useState, useEffect } from 'react';
+import { Category, CategoryFormData } from '@/types/artwork';
+import Button from '@/components/common/Button';
+import ImageUploader from '@/components/admin/ImageUploader';
+
+interface CategoryFormProps {
+  category?: Category;
+  onSubmit: (data: CategoryFormData & { cover_image_url?: string }) => Promise<void>;
+  onCancel: () => void;
+}
+
+function generateSlug(name: string): string {
+  return name
+    .toLowerCase()
+    .replace(/[^a-z0-9가-힣\s-]/g, '')
+    .replace(/\s+/g, '-')
+    .replace(/-+/g, '-')
+    .trim();
+}
+
+export default function CategoryForm({
+  category,
+  onSubmit,
+  onCancel,
+}: CategoryFormProps) {
+  const [formData, setFormData] = useState<CategoryFormData>({
+    name: '',
+    slug: '',
+    description: '',
+  });
+  const [coverImageUrl, setCoverImageUrl] = useState<string>('');
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState<string | null>(null);
+
+  useEffect(() => {
+    if (category) {
+      setFormData({
+        name: category.name,
+        slug: category.slug,
+        description: category.description || '',
+      });
+      setCoverImageUrl(category.cover_image_url || '');
+    }
+  }, [category]);
+
+  const handleNameChange = (name: string) => {
+    setFormData((prev) => ({
+      ...prev,
+      name,
+      slug: category ? prev.slug : generateSlug(name),
+    }));
+  };
+
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setLoading(true);
+    setError(null);
+
+    try {
+      await onSubmit({
+        ...formData,
+        cover_image_url: coverImageUrl || undefined,
+      });
+    } catch (err) {
+      setError(err instanceof Error ? err.message : '저장 실패');
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  return (
+    <form onSubmit={handleSubmit} className="space-y-4">
+      {error && (
+        <div className="p-3 bg-red-50 text-red-600 text-sm rounded">
+          {error}
+        </div>
+      )}
+
+      <div>
+        <label className="block text-sm font-medium mb-1">
+          카테고리 이름 <span className="text-red-500">*</span>
+        </label>
+        <input
+          type="text"
+          value={formData.name}
+          onChange={(e) => handleNameChange(e.target.value)}
+          className="w-full px-3 py-2 border border-gray-300 rounded focus:outline-none focus:ring-1 focus:ring-black"
+          required
+          placeholder="예: 풍경화, 인물화, 추상화"
+        />
+      </div>
+
+      <div>
+        <label className="block text-sm font-medium mb-1">
+          슬러그 (URL) <span className="text-red-500">*</span>
+        </label>
+        <input
+          type="text"
+          value={formData.slug}
+          onChange={(e) => setFormData({ ...formData, slug: e.target.value })}
+          className="w-full px-3 py-2 border border-gray-300 rounded focus:outline-none focus:ring-1 focus:ring-black"
+          required
+          placeholder="예: landscape, portrait, abstract"
+        />
+        <p className="text-xs text-gray-500 mt-1">
+          URL에 사용됩니다: /portfolio/{formData.slug || 'slug'}
+        </p>
+      </div>
+
+      <div>
+        <label className="block text-sm font-medium mb-1">설명</label>
+        <textarea
+          value={formData.description}
+          onChange={(e) =>
+            setFormData({ ...formData, description: e.target.value })
+          }
+          className="w-full px-3 py-2 border border-gray-300 rounded focus:outline-none focus:ring-1 focus:ring-black resize-none"
+          rows={3}
+          placeholder="이 카테고리에 대한 간단한 설명"
+        />
+      </div>
+
+      <div>
+        <label className="block text-sm font-medium mb-1">커버 이미지</label>
+        <ImageUploader
+          onUpload={(imageUrl) => setCoverImageUrl(imageUrl)}
+          currentImage={coverImageUrl}
+        />
+        <p className="text-xs text-gray-500 mt-1">
+          포트폴리오 페이지에서 카테고리 썸네일로 표시됩니다
+        </p>
+      </div>
+
+      <div className="flex justify-end gap-3 pt-4">
+        <Button type="button" variant="secondary" onClick={onCancel}>
+          취소
+        </Button>
+        <Button type="submit" loading={loading}>
+          {category ? '수정' : '저장'}
+        </Button>
+      </div>
+    </form>
+  );
+}

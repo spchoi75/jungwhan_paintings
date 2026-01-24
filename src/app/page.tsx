@@ -1,7 +1,7 @@
 import { supabase } from '@/lib/supabase/client';
 import { Artwork } from '@/types/artwork';
-import Hero from '@/components/landing/Hero';
-import FeaturedWorks from '@/components/landing/FeaturedWorks';
+import Slideshow from '@/components/landing/Slideshow';
+import Header from '@/components/common/Header';
 
 export const revalidate = 3600;
 
@@ -11,7 +11,7 @@ async function getFeaturedArtworks(): Promise<Artwork[]> {
     .select('*')
     .eq('is_featured', true)
     .order('order', { ascending: true })
-    .limit(6);
+    .limit(10);
 
   if (error) {
     console.error('Error fetching featured artworks:', error);
@@ -23,12 +23,11 @@ async function getFeaturedArtworks(): Promise<Artwork[]> {
 
 export default async function Home() {
   const featuredArtworks = await getFeaturedArtworks();
-  const heroArtwork = featuredArtworks[0];
 
   return (
-    <main>
-      <Hero featuredArtwork={heroArtwork} />
-      <FeaturedWorks artworks={featuredArtworks} />
+    <main className="min-h-screen bg-white">
+      <Header />
+      <Slideshow artworks={featuredArtworks} />
     </main>
   );
 }
