@@ -86,32 +86,32 @@ export default function ArtworkForm({ artwork, categories, onSubmit, onCancel }:
           currentImage={imageUrl}
         />
         {errors.image && (
-          <p className="text-red-500 text-sm mt-1">{errors.image}</p>
+          <p className="text-red-400 text-sm mt-1">{errors.image}</p>
         )}
       </div>
 
       <div>
-        <label className="block text-sm font-medium mb-1">
-          제목 <span className="text-red-500">*</span>
+        <label className="block text-sm font-medium mb-1 text-gray-300">
+          제목 <span className="text-red-400">*</span>
         </label>
         <input
           type="text"
           value={title}
           onChange={(e) => setTitle(e.target.value)}
-          className="w-full h-10 px-3 border border-gray-300 rounded focus:outline-none focus:ring-1 focus:ring-black"
+          className="w-full h-10 px-3 border border-gray-600 rounded focus:outline-none focus:ring-1 focus:ring-white bg-[#1a1a1a] text-white placeholder-gray-500"
           placeholder="작품 제목"
         />
         {errors.title && (
-          <p className="text-red-500 text-sm mt-1">{errors.title}</p>
+          <p className="text-red-400 text-sm mt-1">{errors.title}</p>
         )}
       </div>
 
       <div>
-        <label className="block text-sm font-medium mb-1">카테고리</label>
+        <label className="block text-sm font-medium mb-1 text-gray-300">카테고리</label>
         <select
           value={categoryId}
           onChange={(e) => setCategoryId(e.target.value)}
-          className="w-full h-10 px-3 border border-gray-300 rounded focus:outline-none focus:ring-1 focus:ring-black bg-white"
+          className="w-full h-10 px-3 border border-gray-600 rounded focus:outline-none focus:ring-1 focus:ring-white bg-[#1a1a1a] text-white"
         >
           <option value="">선택 안함</option>
           {categories.map((category) => (
@@ -124,42 +124,42 @@ export default function ArtworkForm({ artwork, categories, onSubmit, onCancel }:
 
       <div className="grid grid-cols-3 gap-4">
         <div>
-          <label className="block text-sm font-medium mb-1">
-            연도 <span className="text-red-500">*</span>
+          <label className="block text-sm font-medium mb-1 text-gray-300">
+            연도 <span className="text-red-400">*</span>
           </label>
           <input
             type="number"
             value={year}
             onChange={(e) => setYear(e.target.value)}
-            className="w-full h-10 px-3 border border-gray-300 rounded focus:outline-none focus:ring-1 focus:ring-black"
+            className="w-full h-10 px-3 border border-gray-600 rounded focus:outline-none focus:ring-1 focus:ring-white bg-[#1a1a1a] text-white placeholder-gray-500"
             placeholder="2024"
             min="1900"
             max={new Date().getFullYear() + 1}
           />
           {errors.year && (
-            <p className="text-red-500 text-sm mt-1">{errors.year}</p>
+            <p className="text-red-400 text-sm mt-1">{errors.year}</p>
           )}
         </div>
 
         <div>
-          <label className="block text-sm font-medium mb-1">가로 (cm)</label>
+          <label className="block text-sm font-medium mb-1 text-gray-300">가로 (cm)</label>
           <input
             type="number"
             value={width}
             onChange={(e) => setWidth(e.target.value)}
-            className="w-full h-10 px-3 border border-gray-300 rounded focus:outline-none focus:ring-1 focus:ring-black"
+            className="w-full h-10 px-3 border border-gray-600 rounded focus:outline-none focus:ring-1 focus:ring-white bg-[#1a1a1a] text-white placeholder-gray-500"
             placeholder="100"
             min="1"
           />
         </div>
 
         <div>
-          <label className="block text-sm font-medium mb-1">세로 (cm)</label>
+          <label className="block text-sm font-medium mb-1 text-gray-300">세로 (cm)</label>
           <input
             type="number"
             value={height}
             onChange={(e) => setHeight(e.target.value)}
-            className="w-full h-10 px-3 border border-gray-300 rounded focus:outline-none focus:ring-1 focus:ring-black"
+            className="w-full h-10 px-3 border border-gray-600 rounded focus:outline-none focus:ring-1 focus:ring-white bg-[#1a1a1a] text-white placeholder-gray-500"
             placeholder="80"
             min="1"
           />
@@ -167,22 +167,22 @@ export default function ArtworkForm({ artwork, categories, onSubmit, onCancel }:
       </div>
 
       <div>
-        <label className="block text-sm font-medium mb-1">재료/기법</label>
+        <label className="block text-sm font-medium mb-1 text-gray-300">재료/기법</label>
         <input
           type="text"
           value={medium}
           onChange={(e) => setMedium(e.target.value)}
-          className="w-full h-10 px-3 border border-gray-300 rounded focus:outline-none focus:ring-1 focus:ring-black"
+          className="w-full h-10 px-3 border border-gray-600 rounded focus:outline-none focus:ring-1 focus:ring-white bg-[#1a1a1a] text-white placeholder-gray-500"
           placeholder="Oil on canvas"
         />
       </div>
 
       <div>
-        <label className="block text-sm font-medium mb-1">작품 설명</label>
+        <label className="block text-sm font-medium mb-1 text-gray-300">작품 설명</label>
         <textarea
           value={description}
           onChange={(e) => setDescription(e.target.value)}
-          className="w-full h-32 px-3 py-2 border border-gray-300 rounded focus:outline-none focus:ring-1 focus:ring-black resize-none"
+          className="w-full h-32 px-3 py-2 border border-gray-600 rounded focus:outline-none focus:ring-1 focus:ring-white resize-none bg-[#1a1a1a] text-white placeholder-gray-500"
           placeholder="작품에 대한 설명을 입력하세요..."
         />
       </div>
@@ -195,11 +195,11 @@ export default function ArtworkForm({ artwork, categories, onSubmit, onCancel }:
             onChange={(e) => setIsFeatured(e.target.checked)}
             className="w-4 h-4"
           />
-          <span className="text-sm">대표작으로 설정 (메인 슬라이드쇼에 표시)</span>
+          <span className="text-sm text-gray-300">대표작으로 설정 (메인 슬라이드쇼에 표시)</span>
         </label>
       </div>
 
-      <div className="flex justify-end gap-3 pt-4 border-t border-gray-200">
+      <div className="flex justify-end gap-3 pt-4 border-t border-gray-700">
         <Button type="button" variant="secondary" onClick={onCancel}>
           취소
         </Button>

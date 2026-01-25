@@ -99,11 +99,11 @@ export default function AboutForm({ aboutInfo, onSubmit }: AboutFormProps) {
   return (
     <form onSubmit={handleSubmit} className="space-y-6 max-w-2xl">
       {error && (
-        <div className="p-3 bg-red-50 text-red-600 text-sm rounded">{error}</div>
+        <div className="p-3 bg-red-900/30 text-red-400 text-sm rounded">{error}</div>
       )}
 
       <div>
-        <label className="block text-sm font-medium mb-2">프로필 이미지</label>
+        <label className="block text-sm font-medium mb-2 text-gray-300">프로필 이미지</label>
         <ImageUploader
           onUpload={(url) => setProfileImageUrl(url)}
           currentImage={profileImageUrl}
@@ -111,26 +111,26 @@ export default function AboutForm({ aboutInfo, onSubmit }: AboutFormProps) {
       </div>
 
       <div>
-        <label className="block text-sm font-medium mb-1">
-          작가명 <span className="text-red-500">*</span>
+        <label className="block text-sm font-medium mb-1 text-gray-300">
+          작가명 <span className="text-red-400">*</span>
         </label>
         <input
           type="text"
           value={artistName}
           onChange={(e) => setArtistName(e.target.value)}
-          className="w-full px-3 py-2 border border-gray-300 rounded focus:outline-none focus:ring-1 focus:ring-black"
+          className="w-full px-3 py-2 border border-gray-600 rounded focus:outline-none focus:ring-1 focus:ring-white bg-[#1a1a1a] text-white placeholder-gray-500"
           required
         />
       </div>
 
       <div>
-        <label className="block text-sm font-medium mb-2">소개글</label>
+        <label className="block text-sm font-medium mb-2 text-gray-300">소개글</label>
         {bioParagraphs.map((para, index) => (
           <div key={index} className="flex gap-2 mb-2">
             <textarea
               value={para}
               onChange={(e) => updateBioParagraph(index, e.target.value)}
-              className="flex-1 px-3 py-2 border border-gray-300 rounded focus:outline-none focus:ring-1 focus:ring-black resize-none"
+              className="flex-1 px-3 py-2 border border-gray-600 rounded focus:outline-none focus:ring-1 focus:ring-white resize-none bg-[#1a1a1a] text-white placeholder-gray-500"
               rows={3}
               placeholder="소개글 문단을 입력하세요"
             />
@@ -138,7 +138,7 @@ export default function AboutForm({ aboutInfo, onSubmit }: AboutFormProps) {
               <button
                 type="button"
                 onClick={() => removeBioParagraph(index)}
-                className="text-red-500 hover:text-red-700 px-2"
+                className="text-red-400 hover:text-red-300 px-2"
               >
                 삭제
               </button>
@@ -148,14 +148,14 @@ export default function AboutForm({ aboutInfo, onSubmit }: AboutFormProps) {
         <button
           type="button"
           onClick={addBioParagraph}
-          className="text-sm text-blue-600 hover:text-blue-800"
+          className="text-sm text-blue-400 hover:text-blue-300"
         >
           + 문단 추가
         </button>
       </div>
 
       <div>
-        <label className="block text-sm font-medium mb-2">Education</label>
+        <label className="block text-sm font-medium mb-2 text-gray-300">Education</label>
         {education.map((item, index) => (
           <div key={index} className="flex gap-2 mb-2">
             <input
@@ -163,7 +163,7 @@ export default function AboutForm({ aboutInfo, onSubmit }: AboutFormProps) {
               value={item.year}
               onChange={(e) => updateEducation(index, 'year', e.target.value)}
               placeholder="연도"
-              className="w-24 px-2 py-1 border border-gray-300 rounded focus:outline-none focus:ring-1 focus:ring-black"
+              className="w-24 px-2 py-1 border border-gray-600 rounded focus:outline-none focus:ring-1 focus:ring-white bg-[#1a1a1a] text-white placeholder-gray-500"
             />
             <input
               type="text"
@@ -172,12 +172,12 @@ export default function AboutForm({ aboutInfo, onSubmit }: AboutFormProps) {
                 updateEducation(index, 'description', e.target.value)
               }
               placeholder="학력 내용"
-              className="flex-1 px-2 py-1 border border-gray-300 rounded focus:outline-none focus:ring-1 focus:ring-black"
+              className="flex-1 px-2 py-1 border border-gray-600 rounded focus:outline-none focus:ring-1 focus:ring-white bg-[#1a1a1a] text-white placeholder-gray-500"
             />
             <button
               type="button"
               onClick={() => removeEducation(index)}
-              className="text-red-500 hover:text-red-700 px-2"
+              className="text-red-400 hover:text-red-300 px-2"
             >
               삭제
             </button>
@@ -186,14 +186,14 @@ export default function AboutForm({ aboutInfo, onSubmit }: AboutFormProps) {
         <button
           type="button"
           onClick={addEducation}
-          className="text-sm text-blue-600 hover:text-blue-800"
+          className="text-sm text-blue-400 hover:text-blue-300"
         >
           + 학력 추가
         </button>
       </div>
 
       <div>
-        <label className="block text-sm font-medium mb-2">Exhibitions</label>
+        <label className="block text-sm font-medium mb-2 text-gray-300">Exhibitions</label>
         {exhibitions.map((item, index) => (
           <div key={index} className="flex gap-2 mb-2">
             <input
@@ -201,7 +201,7 @@ export default function AboutForm({ aboutInfo, onSubmit }: AboutFormProps) {
               value={item.year}
               onChange={(e) => updateExhibition(index, 'year', e.target.value)}
               placeholder="연도"
-              className="w-24 px-2 py-1 border border-gray-300 rounded focus:outline-none focus:ring-1 focus:ring-black"
+              className="w-24 px-2 py-1 border border-gray-600 rounded focus:outline-none focus:ring-1 focus:ring-white bg-[#1a1a1a] text-white placeholder-gray-500"
             />
             <input
               type="text"
@@ -210,12 +210,12 @@ export default function AboutForm({ aboutInfo, onSubmit }: AboutFormProps) {
                 updateExhibition(index, 'description', e.target.value)
               }
               placeholder="전시 정보"
-              className="flex-1 px-2 py-1 border border-gray-300 rounded focus:outline-none focus:ring-1 focus:ring-black"
+              className="flex-1 px-2 py-1 border border-gray-600 rounded focus:outline-none focus:ring-1 focus:ring-white bg-[#1a1a1a] text-white placeholder-gray-500"
             />
             <button
               type="button"
               onClick={() => removeExhibition(index)}
-              className="text-red-500 hover:text-red-700 px-2"
+              className="text-red-400 hover:text-red-300 px-2"
             >
               삭제
             </button>
@@ -224,24 +224,24 @@ export default function AboutForm({ aboutInfo, onSubmit }: AboutFormProps) {
         <button
           type="button"
           onClick={addExhibition}
-          className="text-sm text-blue-600 hover:text-blue-800"
+          className="text-sm text-blue-400 hover:text-blue-300"
         >
           + 전시 추가
         </button>
       </div>
 
       <div>
-        <label className="block text-sm font-medium mb-1">연락처 이메일</label>
+        <label className="block text-sm font-medium mb-1 text-gray-300">연락처 이메일</label>
         <input
           type="email"
           value={contactEmail}
           onChange={(e) => setContactEmail(e.target.value)}
-          className="w-full px-3 py-2 border border-gray-300 rounded focus:outline-none focus:ring-1 focus:ring-black"
+          className="w-full px-3 py-2 border border-gray-600 rounded focus:outline-none focus:ring-1 focus:ring-white bg-[#1a1a1a] text-white placeholder-gray-500"
           placeholder="email@example.com"
         />
       </div>
 
-      <div className="pt-4 border-t">
+      <div className="pt-4 border-t border-gray-700">
         <Button type="submit" loading={loading}>
           저장
         </Button>

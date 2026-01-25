@@ -328,14 +328,14 @@ export default function AdminPage() {
 
   return (
     <>
-      <main className="min-h-screen bg-gray-50">
+      <main className="min-h-screen bg-[#0a0a0a]">
         {/* Header */}
-        <header className="sticky top-0 z-40 bg-white border-b border-gray-200">
+        <header className="sticky top-0 z-40 bg-[#141414] border-b border-gray-700">
           <div className="max-w-6xl mx-auto px-6 py-4 flex items-center justify-between">
-            <h1 className="text-xl font-light tracking-wide">관리자</h1>
+            <h1 className="text-xl font-light tracking-wide text-white">관리자</h1>
             <button
               onClick={handleLogout}
-              className="text-gray-500 hover:text-black text-sm"
+              className="text-gray-400 hover:text-white text-sm"
             >
               로그아웃
             </button>
@@ -344,13 +344,13 @@ export default function AdminPage() {
 
         {/* Tabs */}
         <div className="max-w-6xl mx-auto px-6">
-          <div className="flex border-b border-gray-200">
+          <div className="flex border-b border-gray-700">
             <button
               onClick={() => setActiveTab('artworks')}
               className={`px-6 py-4 text-sm font-medium border-b-2 transition-colors ${
                 activeTab === 'artworks'
-                  ? 'border-black text-black'
-                  : 'border-transparent text-gray-500 hover:text-black'
+                  ? 'border-white text-white'
+                  : 'border-transparent text-gray-400 hover:text-white'
               }`}
             >
               작품 관리
@@ -359,8 +359,8 @@ export default function AdminPage() {
               onClick={() => setActiveTab('categories')}
               className={`px-6 py-4 text-sm font-medium border-b-2 transition-colors ${
                 activeTab === 'categories'
-                  ? 'border-black text-black'
-                  : 'border-transparent text-gray-500 hover:text-black'
+                  ? 'border-white text-white'
+                  : 'border-transparent text-gray-400 hover:text-white'
               }`}
             >
               카테고리 관리
@@ -369,8 +369,8 @@ export default function AdminPage() {
               onClick={() => setActiveTab('exhibitions')}
               className={`px-6 py-4 text-sm font-medium border-b-2 transition-colors ${
                 activeTab === 'exhibitions'
-                  ? 'border-black text-black'
-                  : 'border-transparent text-gray-500 hover:text-black'
+                  ? 'border-white text-white'
+                  : 'border-transparent text-gray-400 hover:text-white'
               }`}
             >
               전시 관리
@@ -379,8 +379,8 @@ export default function AdminPage() {
               onClick={() => setActiveTab('about')}
               className={`px-6 py-4 text-sm font-medium border-b-2 transition-colors ${
                 activeTab === 'about'
-                  ? 'border-black text-black'
-                  : 'border-transparent text-gray-500 hover:text-black'
+                  ? 'border-white text-white'
+                  : 'border-transparent text-gray-400 hover:text-white'
               }`}
             >
               작가소개
@@ -389,8 +389,8 @@ export default function AdminPage() {
               onClick={() => setActiveTab('settings')}
               className={`px-6 py-4 text-sm font-medium border-b-2 transition-colors ${
                 activeTab === 'settings'
-                  ? 'border-black text-black'
-                  : 'border-transparent text-gray-500 hover:text-black'
+                  ? 'border-white text-white'
+                  : 'border-transparent text-gray-400 hover:text-white'
               }`}
             >
               설정
@@ -403,7 +403,7 @@ export default function AdminPage() {
           {activeTab === 'artworks' && (
             <>
               <div className="flex justify-between items-center mb-6">
-                <h2 className="text-lg font-medium">작품 목록</h2>
+                <h2 className="text-lg font-medium text-white">작품 목록</h2>
                 <Button onClick={() => { setEditingArtwork(null); setIsArtworkFormOpen(true); }}>
                   + 새 작품
                 </Button>
@@ -411,12 +411,12 @@ export default function AdminPage() {
               {artworksLoading ? (
                 <div className="space-y-4">
                   {[...Array(3)].map((_, i) => (
-                    <div key={i} className="h-16 bg-gray-200 animate-pulse rounded" />
+                    <div key={i} className="h-16 bg-gray-700 animate-pulse rounded" />
                   ))}
                 </div>
               ) : error ? (
                 <div className="text-center py-12">
-                  <p className="text-gray-500 mb-4">{error}</p>
+                  <p className="text-gray-400 mb-4">{error}</p>
                   <Button onClick={fetchArtworks}>다시 시도</Button>
                 </div>
               ) : (
@@ -433,7 +433,7 @@ export default function AdminPage() {
           {activeTab === 'categories' && (
             <>
               <div className="flex justify-between items-center mb-6">
-                <h2 className="text-lg font-medium">카테고리 목록</h2>
+                <h2 className="text-lg font-medium text-white">카테고리 목록</h2>
                 <Button onClick={() => { setEditingCategory(null); setIsCategoryFormOpen(true); }}>
                   + 새 카테고리
                 </Button>
@@ -441,7 +441,7 @@ export default function AdminPage() {
               {categoriesLoading ? (
                 <div className="space-y-4">
                   {[...Array(3)].map((_, i) => (
-                    <div key={i} className="h-16 bg-gray-200 animate-pulse rounded" />
+                    <div key={i} className="h-16 bg-gray-700 animate-pulse rounded" />
                   ))}
                 </div>
               ) : (
@@ -457,7 +457,7 @@ export default function AdminPage() {
           {activeTab === 'exhibitions' && (
             <>
               <div className="flex justify-between items-center mb-6">
-                <h2 className="text-lg font-medium">전시 목록</h2>
+                <h2 className="text-lg font-medium text-white">전시 목록</h2>
                 <Button onClick={() => { setEditingExhibition(null); setIsExhibitionFormOpen(true); }}>
                   + 새 전시
                 </Button>
@@ -465,7 +465,7 @@ export default function AdminPage() {
               {exhibitionsLoading ? (
                 <div className="space-y-4">
                   {[...Array(3)].map((_, i) => (
-                    <div key={i} className="h-16 bg-gray-200 animate-pulse rounded" />
+                    <div key={i} className="h-16 bg-gray-700 animate-pulse rounded" />
                   ))}
                 </div>
               ) : (
@@ -480,11 +480,11 @@ export default function AdminPage() {
 
           {activeTab === 'about' && (
             <>
-              <h2 className="text-lg font-medium mb-6">작가소개 관리</h2>
+              <h2 className="text-lg font-medium mb-6 text-white">작가소개 관리</h2>
               {aboutLoading ? (
                 <div className="space-y-4">
                   {[...Array(3)].map((_, i) => (
-                    <div key={i} className="h-16 bg-gray-200 animate-pulse rounded" />
+                    <div key={i} className="h-16 bg-gray-700 animate-pulse rounded" />
                   ))}
                 </div>
               ) : (
@@ -498,7 +498,7 @@ export default function AdminPage() {
 
           {activeTab === 'settings' && (
             <>
-              <h2 className="text-lg font-medium mb-6">관리자 설정</h2>
+              <h2 className="text-lg font-medium mb-6 text-white">관리자 설정</h2>
               <SettingsForm
                 currentHint={currentHint}
                 onSubmit={handleSettingsSubmit}
@@ -515,7 +515,7 @@ export default function AdminPage() {
         className="w-full max-w-lg max-h-[90vh] overflow-y-auto"
       >
         <div className="p-6">
-          <h2 className="text-xl font-medium mb-6">
+          <h2 className="text-xl font-medium mb-6 text-white">
             {editingArtwork ? '작품 수정' : '새 작품 추가'}
           </h2>
           <ArtworkForm
@@ -534,7 +534,7 @@ export default function AdminPage() {
         className="w-full max-w-lg max-h-[90vh] overflow-y-auto"
       >
         <div className="p-6">
-          <h2 className="text-xl font-medium mb-6">
+          <h2 className="text-xl font-medium mb-6 text-white">
             {editingCategory ? '카테고리 수정' : '새 카테고리 추가'}
           </h2>
           <CategoryForm
@@ -552,7 +552,7 @@ export default function AdminPage() {
         className="w-full max-w-lg max-h-[90vh] overflow-y-auto"
       >
         <div className="p-6">
-          <h2 className="text-xl font-medium mb-6">
+          <h2 className="text-xl font-medium mb-6 text-white">
             {editingExhibition ? '전시 수정' : '새 전시 추가'}
           </h2>
           <ExhibitionForm
@@ -570,11 +570,11 @@ export default function AdminPage() {
         className="w-full max-w-sm"
       >
         <div className="p-6 text-center">
-          <h2 className="text-lg font-medium mb-2">정말 삭제하시겠습니까?</h2>
-          <p className="text-gray-500 mb-1">
+          <h2 className="text-lg font-medium mb-2 text-white">정말 삭제하시겠습니까?</h2>
+          <p className="text-gray-400 mb-1">
             &quot;{deletingArtwork?.title}&quot;을(를) 삭제합니다.
           </p>
-          <p className="text-gray-400 text-sm mb-6">
+          <p className="text-gray-500 text-sm mb-6">
             이 작업은 되돌릴 수 없습니다.
           </p>
           <div className="flex justify-center gap-3">
@@ -599,11 +599,11 @@ export default function AdminPage() {
         className="w-full max-w-sm"
       >
         <div className="p-6 text-center">
-          <h2 className="text-lg font-medium mb-2">정말 삭제하시겠습니까?</h2>
-          <p className="text-gray-500 mb-1">
+          <h2 className="text-lg font-medium mb-2 text-white">정말 삭제하시겠습니까?</h2>
+          <p className="text-gray-400 mb-1">
             &quot;{deletingCategory?.name}&quot; 카테고리를 삭제합니다.
           </p>
-          <p className="text-gray-400 text-sm mb-6">
+          <p className="text-gray-500 text-sm mb-6">
             이 카테고리에 속한 작품들은 카테고리 없음으로 변경됩니다.
           </p>
           <div className="flex justify-center gap-3">
@@ -628,11 +628,11 @@ export default function AdminPage() {
         className="w-full max-w-sm"
       >
         <div className="p-6 text-center">
-          <h2 className="text-lg font-medium mb-2">정말 삭제하시겠습니까?</h2>
-          <p className="text-gray-500 mb-1">
+          <h2 className="text-lg font-medium mb-2 text-white">정말 삭제하시겠습니까?</h2>
+          <p className="text-gray-400 mb-1">
             &quot;{deletingExhibition?.title}&quot; 전시를 삭제합니다.
           </p>
-          <p className="text-gray-400 text-sm mb-6">
+          <p className="text-gray-500 text-sm mb-6">
             이 작업은 되돌릴 수 없습니다.
           </p>
           <div className="flex justify-center gap-3">

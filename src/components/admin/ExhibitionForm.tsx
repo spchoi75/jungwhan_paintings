@@ -45,39 +45,39 @@ export default function ExhibitionForm({
   return (
     <form onSubmit={handleSubmit} className="space-y-4">
       {error && (
-        <div className="p-3 bg-red-50 text-red-600 text-sm rounded">
+        <div className="p-3 bg-red-900/30 text-red-400 text-sm rounded">
           {error}
         </div>
       )}
 
       <div>
-        <label className="block text-sm font-medium text-gray-700 mb-1">
+        <label className="block text-sm font-medium text-gray-300 mb-1">
           전시명 *
         </label>
         <input
           type="text"
           value={formData.title}
           onChange={(e) => setFormData({ ...formData, title: e.target.value })}
-          className="w-full px-3 py-2 border border-gray-300 rounded focus:outline-none focus:ring-1 focus:ring-black"
+          className="w-full px-3 py-2 border border-gray-600 rounded focus:outline-none focus:ring-1 focus:ring-white bg-[#1a1a1a] text-white placeholder-gray-500"
           required
         />
       </div>
 
       <div>
-        <label className="block text-sm font-medium text-gray-700 mb-1">
+        <label className="block text-sm font-medium text-gray-300 mb-1">
           장소 (갤러리/기관명) *
         </label>
         <input
           type="text"
           value={formData.venue}
           onChange={(e) => setFormData({ ...formData, venue: e.target.value })}
-          className="w-full px-3 py-2 border border-gray-300 rounded focus:outline-none focus:ring-1 focus:ring-black"
+          className="w-full px-3 py-2 border border-gray-600 rounded focus:outline-none focus:ring-1 focus:ring-white bg-[#1a1a1a] text-white placeholder-gray-500"
           required
         />
       </div>
 
       <div>
-        <label className="block text-sm font-medium text-gray-700 mb-1">
+        <label className="block text-sm font-medium text-gray-300 mb-1">
           지역
         </label>
         <input
@@ -85,13 +85,13 @@ export default function ExhibitionForm({
           value={formData.location || ''}
           onChange={(e) => setFormData({ ...formData, location: e.target.value })}
           placeholder="예: 서울, 한국"
-          className="w-full px-3 py-2 border border-gray-300 rounded focus:outline-none focus:ring-1 focus:ring-black"
+          className="w-full px-3 py-2 border border-gray-600 rounded focus:outline-none focus:ring-1 focus:ring-white bg-[#1a1a1a] text-white placeholder-gray-500"
         />
       </div>
 
       <div className="grid grid-cols-2 gap-4">
         <div>
-          <label className="block text-sm font-medium text-gray-700 mb-1">
+          <label className="block text-sm font-medium text-gray-300 mb-1">
             연도 *
           </label>
           <input
@@ -100,19 +100,19 @@ export default function ExhibitionForm({
             onChange={(e) => setFormData({ ...formData, year: parseInt(e.target.value) })}
             min="1900"
             max="2100"
-            className="w-full px-3 py-2 border border-gray-300 rounded focus:outline-none focus:ring-1 focus:ring-black"
+            className="w-full px-3 py-2 border border-gray-600 rounded focus:outline-none focus:ring-1 focus:ring-white bg-[#1a1a1a] text-white placeholder-gray-500"
             required
           />
         </div>
 
         <div>
-          <label className="block text-sm font-medium text-gray-700 mb-1">
+          <label className="block text-sm font-medium text-gray-300 mb-1">
             유형 *
           </label>
           <select
             value={formData.type}
             onChange={(e) => setFormData({ ...formData, type: e.target.value as 'solo' | 'group' })}
-            className="w-full px-3 py-2 border border-gray-300 rounded focus:outline-none focus:ring-1 focus:ring-black"
+            className="w-full px-3 py-2 border border-gray-600 rounded focus:outline-none focus:ring-1 focus:ring-white bg-[#1a1a1a] text-white"
           >
             <option value="solo">개인전</option>
             <option value="group">그룹전</option>
@@ -121,7 +121,7 @@ export default function ExhibitionForm({
       </div>
 
       <div>
-        <label className="block text-sm font-medium text-gray-700 mb-1">
+        <label className="block text-sm font-medium text-gray-300 mb-1">
           외부 링크
         </label>
         <input
@@ -129,7 +129,7 @@ export default function ExhibitionForm({
           value={formData.external_url || ''}
           onChange={(e) => setFormData({ ...formData, external_url: e.target.value })}
           placeholder="https://..."
-          className="w-full px-3 py-2 border border-gray-300 rounded focus:outline-none focus:ring-1 focus:ring-black"
+          className="w-full px-3 py-2 border border-gray-600 rounded focus:outline-none focus:ring-1 focus:ring-white bg-[#1a1a1a] text-white placeholder-gray-500"
         />
       </div>
 

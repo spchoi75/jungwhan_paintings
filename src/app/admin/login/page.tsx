@@ -53,9 +53,9 @@ export default function AdminLoginPage() {
   };
 
   return (
-    <main className="min-h-screen flex items-center justify-center px-6">
+    <main className="min-h-screen flex items-center justify-center px-6 bg-[#0a0a0a]">
       <div className="w-full max-w-sm">
-        <h1 className="font-[family-name:var(--font-cormorant)] text-3xl text-center mb-8">
+        <h1 className="font-[family-name:var(--font-cormorant)] text-3xl text-center mb-8 text-white">
           Admin Access
         </h1>
 
@@ -66,13 +66,13 @@ export default function AdminLoginPage() {
               value={password}
               onChange={(e) => setPassword(e.target.value)}
               placeholder="비밀번호 입력"
-              className="w-full h-12 px-4 border border-[var(--border)] bg-[var(--surface)] focus:outline-none focus:border-[var(--accent)]"
+              className="w-full h-12 px-4 border border-gray-600 bg-[#141414] text-white placeholder-gray-500 focus:outline-none focus:border-gray-400"
               autoFocus
             />
           </div>
 
           {error && (
-            <p className="text-red-500 text-sm">{error}</p>
+            <p className="text-red-400 text-sm">{error}</p>
           )}
 
           <Button
@@ -89,12 +89,12 @@ export default function AdminLoginPage() {
               <button
                 type="button"
                 onClick={() => setShowHint(!showHint)}
-                className="text-sm text-gray-500 hover:text-gray-700 transition-colors"
+                className="text-sm text-gray-400 hover:text-white transition-colors"
               >
                 {showHint ? '힌트 숨기기' : '비밀번호 힌트'}
               </button>
               {showHint && (
-                <p className="mt-2 text-sm text-gray-600 bg-gray-100 px-3 py-2 rounded">
+                <p className="mt-2 text-sm text-gray-300 bg-gray-800 px-3 py-2 rounded">
                   {hint}
                 </p>
               )}

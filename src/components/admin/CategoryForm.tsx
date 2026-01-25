@@ -73,62 +73,62 @@ export default function CategoryForm({
   return (
     <form onSubmit={handleSubmit} className="space-y-4">
       {error && (
-        <div className="p-3 bg-red-50 text-red-600 text-sm rounded">
+        <div className="p-3 bg-red-900/30 text-red-400 text-sm rounded">
           {error}
         </div>
       )}
 
       <div>
-        <label className="block text-sm font-medium mb-1">
-          카테고리 이름 <span className="text-red-500">*</span>
+        <label className="block text-sm font-medium mb-1 text-gray-300">
+          카테고리 이름 <span className="text-red-400">*</span>
         </label>
         <input
           type="text"
           value={formData.name}
           onChange={(e) => handleNameChange(e.target.value)}
-          className="w-full px-3 py-2 border border-gray-300 rounded focus:outline-none focus:ring-1 focus:ring-black"
+          className="w-full px-3 py-2 border border-gray-600 rounded focus:outline-none focus:ring-1 focus:ring-white bg-[#1a1a1a] text-white placeholder-gray-500"
           required
           placeholder="예: 풍경화, 인물화, 추상화"
         />
       </div>
 
       <div>
-        <label className="block text-sm font-medium mb-1">
-          슬러그 (URL) <span className="text-red-500">*</span>
+        <label className="block text-sm font-medium mb-1 text-gray-300">
+          슬러그 (URL) <span className="text-red-400">*</span>
         </label>
         <input
           type="text"
           value={formData.slug}
           onChange={(e) => setFormData({ ...formData, slug: e.target.value })}
-          className="w-full px-3 py-2 border border-gray-300 rounded focus:outline-none focus:ring-1 focus:ring-black"
+          className="w-full px-3 py-2 border border-gray-600 rounded focus:outline-none focus:ring-1 focus:ring-white bg-[#1a1a1a] text-white placeholder-gray-500"
           required
           placeholder="예: landscape, portrait, abstract"
         />
-        <p className="text-xs text-gray-500 mt-1">
+        <p className="text-xs text-gray-400 mt-1">
           URL에 사용됩니다: /portfolio/{formData.slug || 'slug'}
         </p>
       </div>
 
       <div>
-        <label className="block text-sm font-medium mb-1">설명</label>
+        <label className="block text-sm font-medium mb-1 text-gray-300">설명</label>
         <textarea
           value={formData.description}
           onChange={(e) =>
             setFormData({ ...formData, description: e.target.value })
           }
-          className="w-full px-3 py-2 border border-gray-300 rounded focus:outline-none focus:ring-1 focus:ring-black resize-none"
+          className="w-full px-3 py-2 border border-gray-600 rounded focus:outline-none focus:ring-1 focus:ring-white resize-none bg-[#1a1a1a] text-white placeholder-gray-500"
           rows={3}
           placeholder="이 카테고리에 대한 간단한 설명"
         />
       </div>
 
       <div>
-        <label className="block text-sm font-medium mb-1">커버 이미지</label>
+        <label className="block text-sm font-medium mb-1 text-gray-300">커버 이미지</label>
         <ImageUploader
           onUpload={(imageUrl) => setCoverImageUrl(imageUrl)}
           currentImage={coverImageUrl}
         />
-        <p className="text-xs text-gray-500 mt-1">
+        <p className="text-xs text-gray-400 mt-1">
           포트폴리오 페이지에서 카테고리 썸네일로 표시됩니다
         </p>
       </div>
