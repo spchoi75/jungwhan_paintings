@@ -51,13 +51,13 @@ export default async function CategoryPage({ params }: PageProps) {
   const artworks = await getArtworksByCategory(category.id);
 
   return (
-    <main className="min-h-screen bg-white">
+    <main className="min-h-screen bg-[#0a0a0a]">
       <Header />
       <div className="pt-24 pb-16 px-6">
         <div className="max-w-6xl mx-auto">
           <Link
             href="/artworks"
-            className="inline-flex items-center text-sm text-gray-500 hover:text-black transition-colors mb-8"
+            className="inline-flex items-center text-sm text-gray-400 hover:text-white transition-colors mb-8"
           >
             <svg
               xmlns="http://www.w3.org/2000/svg"
@@ -76,11 +76,11 @@ export default async function CategoryPage({ params }: PageProps) {
             Back to Portfolio
           </Link>
 
-          <h1 className="text-3xl font-light tracking-wide mb-2">
+          <h1 className="text-3xl font-light tracking-wide mb-2 text-white">
             {category.name}
           </h1>
           {category.description && (
-            <p className="text-gray-500 mb-12">{category.description}</p>
+            <p className="text-gray-400 mb-12">{category.description}</p>
           )}
 
           <ArtworkList artworks={artworks} />

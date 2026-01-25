@@ -25,7 +25,7 @@ export default async function Home() {
   const featuredArtworks = await getFeaturedArtworks();
 
   return (
-    <main className="min-h-screen bg-white">
+    <main className="min-h-screen bg-[#0a0a0a]">
       <Header />
       <Slideshow artworks={featuredArtworks} />
     </main>

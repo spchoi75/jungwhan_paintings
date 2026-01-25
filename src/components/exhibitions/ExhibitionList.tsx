@@ -33,23 +33,23 @@ export default function ExhibitionList({ exhibitions }: ExhibitionListProps) {
     <div className="space-y-8">
       {years.map((year) => (
         <div key={year}>
-          <h3 className="text-lg font-medium mb-4">{year}</h3>
+          <h3 className="text-lg font-medium mb-4 text-white">{year}</h3>
           <ul className="space-y-3">
             {grouped[year].map((exhibition) => (
-              <li key={exhibition.id} className="text-gray-600">
+              <li key={exhibition.id} className="text-gray-300">
                 {exhibition.external_url ? (
                   <a
                     href={exhibition.external_url}
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="hover:text-black hover:underline transition-colors"
+                    className="hover:text-white hover:underline transition-colors"
                   >
                     {exhibition.title}
                   </a>
                 ) : (
                   <span>{exhibition.title}</span>
                 )}
-                <span className="text-gray-400">
+                <span className="text-gray-500">
                   {' '}— {exhibition.venue}
                   {exhibition.location && `, ${exhibition.location}`}
                 </span>

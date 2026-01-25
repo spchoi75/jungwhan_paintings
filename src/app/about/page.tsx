@@ -33,13 +33,13 @@ export default async function AboutPage() {
   const cvFileUrl = aboutInfo?.cv_file_url;
 
   return (
-    <main className="min-h-screen bg-white">
+    <main className="min-h-screen bg-[#0a0a0a]">
       <Header />
 
       <div className="max-w-4xl mx-auto px-6 pt-24 pb-16">
         <div className="grid md:grid-cols-2 gap-12 items-start">
           {/* Profile Image */}
-          <div className="aspect-[3/4] relative bg-gray-100">
+          <div className="aspect-[3/4] relative bg-gray-800">
             {profileImageUrl ? (
               <Image
                 src={profileImageUrl}
@@ -49,7 +49,7 @@ export default async function AboutPage() {
                 priority
               />
             ) : (
-              <div className="absolute inset-0 flex items-center justify-center text-gray-300">
+              <div className="absolute inset-0 flex items-center justify-center text-gray-600">
                 <svg
                   xmlns="http://www.w3.org/2000/svg"
                   width="64"
@@ -68,11 +68,11 @@ export default async function AboutPage() {
 
           {/* Bio */}
           <div>
-            <h1 className="text-4xl font-light tracking-wide mb-6">
+            <h1 className="text-4xl font-light tracking-wide mb-6 text-white">
               {artistName}
             </h1>
 
-            <div className="space-y-4 text-gray-600 leading-relaxed">
+            <div className="space-y-4 text-gray-300 leading-relaxed">
               {bioParagraphs.map((para, index) => (
                 <p key={index}>{para}</p>
               ))}
@@ -81,8 +81,8 @@ export default async function AboutPage() {
             {/* Education */}
             {education.length > 0 && (
               <div className="mt-10">
-                <h3 className="text-lg font-medium mb-4">Education</h3>
-                <ul className="space-y-2 text-gray-600">
+                <h3 className="text-lg font-medium mb-4 text-white">Education</h3>
+                <ul className="space-y-2 text-gray-400">
                   {education.map((item, index) => (
                     <li key={index}>{item.year} — {item.description}</li>
                   ))}
@@ -93,8 +93,8 @@ export default async function AboutPage() {
             {/* Exhibitions */}
             {exhibitions.length > 0 && (
               <div className="mt-8">
-                <h3 className="text-lg font-medium mb-4">Exhibitions</h3>
-                <ul className="space-y-2 text-gray-600">
+                <h3 className="text-lg font-medium mb-4 text-white">Exhibitions</h3>
+                <ul className="space-y-2 text-gray-400">
                   {exhibitions.map((item, index) => (
                     <li key={index}>{item.year} — {item.description}</li>
                   ))}
@@ -104,9 +104,9 @@ export default async function AboutPage() {
 
             {/* Contact */}
             {contactEmail && (
-              <div className="mt-10 pt-8 border-t border-gray-200">
-                <h3 className="text-lg font-medium mb-4">Contact</h3>
-                <p className="text-gray-600">{contactEmail}</p>
+              <div className="mt-10 pt-8 border-t border-gray-700">
+                <h3 className="text-lg font-medium mb-4 text-white">Contact</h3>
+                <p className="text-gray-400">{contactEmail}</p>
               </div>
             )}
 
@@ -118,7 +118,7 @@ export default async function AboutPage() {
                   download
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="inline-block px-6 py-3 border border-black text-sm tracking-wider hover:bg-black hover:text-white transition-colors"
+                  className="inline-block px-6 py-3 border border-white text-white text-sm tracking-wider hover:bg-white hover:text-black transition-colors"
                 >
                   DOWNLOAD CV
                 </a>

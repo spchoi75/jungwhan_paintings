@@ -28,7 +28,7 @@ export default function ArtworkList({ artworks }: ArtworkListProps) {
           <button
             key={artwork.id}
             onClick={() => setSelectedArtwork(artwork)}
-            className="group block aspect-square relative overflow-hidden bg-gray-100 text-left"
+            className="group block aspect-square relative overflow-hidden bg-gray-800 text-left"
           >
             {/* Image */}
             <Image

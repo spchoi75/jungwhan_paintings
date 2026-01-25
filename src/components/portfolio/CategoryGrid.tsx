@@ -25,7 +25,7 @@ export default function CategoryGrid({ categories }: CategoryGridProps) {
           <Link
             key={category.id}
             href={`/artworks/${category.slug}`}
-            className="group block aspect-square relative overflow-hidden bg-gray-100"
+            className="group block aspect-square relative overflow-hidden bg-gray-800"
           >
             {/* Image */}
             {category.cover_image_url ? (
@@ -38,8 +38,8 @@ export default function CategoryGrid({ categories }: CategoryGridProps) {
                 sizes="(max-width: 640px) 50vw, (max-width: 768px) 33vw, (max-width: 1024px) 25vw, 20vw"
               />
             ) : (
-              <div className="absolute inset-0 flex items-center justify-center bg-gray-100">
-                <span className="text-gray-300 text-4xl font-light">
+              <div className="absolute inset-0 flex items-center justify-center bg-gray-800">
+                <span className="text-gray-500 text-4xl font-light">
                   {category.name.charAt(0)}
                 </span>
               </div>

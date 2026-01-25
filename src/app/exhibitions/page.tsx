@@ -28,17 +28,17 @@ export default async function ExhibitionsPage() {
   const { solo, group } = await getExhibitions();
 
   return (
-    <main className="min-h-screen bg-white">
+    <main className="min-h-screen bg-[#0a0a0a]">
       <Header />
       <div className="pt-24 pb-16 px-6">
         <div className="max-w-4xl mx-auto">
-          <h1 className="text-3xl font-light tracking-wide mb-12">
+          <h1 className="text-3xl font-light tracking-wide mb-12 text-white">
             Exhibitions
           </h1>
 
           {/* Solo Exhibitions */}
           <section className="mb-16">
-            <h2 className="text-xl font-medium mb-6 pb-2 border-b border-gray-200">
+            <h2 className="text-xl font-medium mb-6 pb-2 border-b border-gray-700 text-white">
               Selected Solo Exhibitions
             </h2>
             <ExhibitionList exhibitions={solo} />
@@ -46,7 +46,7 @@ export default async function ExhibitionsPage() {
 
           {/* Group Exhibitions */}
           <section>
-            <h2 className="text-xl font-medium mb-6 pb-2 border-b border-gray-200">
+            <h2 className="text-xl font-medium mb-6 pb-2 border-b border-gray-700 text-white">
               Selected Group Exhibitions
             </h2>
             <ExhibitionList exhibitions={group} />

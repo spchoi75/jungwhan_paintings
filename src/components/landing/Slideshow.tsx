@@ -72,7 +72,7 @@ export default function Slideshow({ artworks }: SlideshowProps) {
           <>
             <button
               onClick={goToPrev}
-              className="absolute left-4 top-1/2 -translate-y-1/2 p-3 text-gray-400 hover:text-black transition-colors"
+              className="absolute left-4 top-1/2 -translate-y-1/2 p-3 text-gray-500 hover:text-white transition-colors"
               aria-label="Previous artwork"
             >
               <svg
@@ -92,7 +92,7 @@ export default function Slideshow({ artworks }: SlideshowProps) {
             </button>
             <button
               onClick={goToNext}
-              className="absolute right-4 top-1/2 -translate-y-1/2 p-3 text-gray-400 hover:text-black transition-colors"
+              className="absolute right-4 top-1/2 -translate-y-1/2 p-3 text-gray-500 hover:text-white transition-colors"
               aria-label="Next artwork"
             >
               <svg
@@ -116,10 +116,10 @@ export default function Slideshow({ artworks }: SlideshowProps) {
 
       {/* Artwork Info */}
       <div className="py-6 px-8 text-center">
-        <h2 className="text-lg font-light tracking-wide">
+        <h2 className="text-lg font-light tracking-wide text-white">
           {currentArtwork.title}
         </h2>
-        <p className="text-sm text-gray-500 mt-1">
+        <p className="text-sm text-gray-400 mt-1">
           {currentArtwork.year}
         </p>
       </div>
@@ -138,7 +138,7 @@ export default function Slideshow({ artworks }: SlideshowProps) {
                 }, 500);
               }}
               className={`w-2 h-2 rounded-full transition-colors ${
-                index === currentIndex ? 'bg-black' : 'bg-gray-300'
+                index === currentIndex ? 'bg-white' : 'bg-gray-600'
               }`}
               aria-label={`Go to slide ${index + 1}`}
             />
