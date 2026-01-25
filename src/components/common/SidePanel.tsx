@@ -4,12 +4,7 @@ import { Fragment } from 'react';
 import { Dialog, DialogPanel, Transition, TransitionChild } from '@headlessui/react';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
-
-interface SidePanelProps {
-  isOpen: boolean;
-  onClose: () => void;
-  onOpen: () => void;
-}
+import { useSidePanel } from '@/contexts/SidePanelContext';
 
 const navItems = [
   { href: '/', label: 'Home' },
@@ -19,15 +14,16 @@ const navItems = [
   { href: '/contact', label: 'Contact' },
 ];
 
-export default function SidePanel({ isOpen, onClose, onOpen }: SidePanelProps) {
+export default function SidePanel() {
   const pathname = usePathname();
+  const { isOpen, open, close } = useSidePanel();
 
   return (
     <>
       {/* Always visible handle - vertical grip bar when closed */}
       {!isOpen && (
         <button
-          onClick={onOpen}
+          onClick={open}
           className="fixed left-0 top-1/2 -translate-y-1/2 z-50 rounded-r-md px-1.5 py-6 hover:brightness-110 transition-all shadow-md group"
           style={{
             background: 'linear-gradient(to right, #1f1f1f, #2a2a2a)',
@@ -43,7 +39,7 @@ export default function SidePanel({ isOpen, onClose, onOpen }: SidePanelProps) {
       )}
 
       <Transition show={isOpen} as={Fragment}>
-        <Dialog onClose={onClose} className="relative z-50">
+        <Dialog onClose={() => {}} className="relative z-50">
           {/* Overlay - clicking this closes the panel */}
           <TransitionChild
             as={Fragment}
@@ -54,7 +50,11 @@ export default function SidePanel({ isOpen, onClose, onOpen }: SidePanelProps) {
             leaveFrom="opacity-100"
             leaveTo="opacity-0"
           >
-            <div className="fixed inset-0 bg-black/50" aria-hidden="true" />
+            <div
+              className="fixed inset-0 bg-black/50 cursor-pointer"
+              aria-hidden="true"
+              onClick={close}
+            />
           </TransitionChild>
 
           {/* Panel */}
@@ -76,7 +76,7 @@ export default function SidePanel({ isOpen, onClose, onOpen }: SidePanelProps) {
               {/* Close button */}
               <div className="flex justify-end p-6">
                 <button
-                  onClick={onClose}
+                  onClick={close}
                   className="p-2 text-gray-400 hover:text-white transition-colors"
                   aria-label="메뉴 닫기"
                 >
@@ -96,7 +96,7 @@ export default function SidePanel({ isOpen, onClose, onOpen }: SidePanelProps) {
                 </button>
               </div>
 
-              {/* Navigation links - no onClose, panel stays open */}
+              {/* Navigation links - clicking these does NOT close the panel */}
               <nav className="px-6">
                 <ul className="space-y-1">
                   {navItems.map((item) => (
@@ -126,7 +126,7 @@ export default function SidePanel({ isOpen, onClose, onOpen }: SidePanelProps) {
 
               {/* Handle on right edge - vertical grip bar when open */}
               <button
-                onClick={onClose}
+                onClick={close}
                 className="absolute right-0 top-1/2 -translate-y-1/2 translate-x-full rounded-r-md px-1.5 py-6 hover:brightness-110 transition-all shadow-md group"
                 style={{
                   background: 'linear-gradient(to right, #1f1f1f, #2a2a2a)',

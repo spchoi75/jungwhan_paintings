@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { Cormorant_Garamond, Noto_Sans_KR, Noto_Serif_KR } from "next/font/google";
 import "./globals.css";
+import { SidePanelProvider } from "@/contexts/SidePanelContext";
 
 const cormorant = Cormorant_Garamond({
   variable: "--font-cormorant",
@@ -38,7 +39,9 @@ export default function RootLayout({
       <body
         className={`${cormorant.variable} ${notoSansKr.variable} ${notoSerifKr.variable} antialiased`}
       >
-        {children}
+        <SidePanelProvider>
+          {children}
+        </SidePanelProvider>
       </body>
     </html>
   );

@@ -1,11 +1,11 @@
 'use client';
 
-import { useState } from 'react';
 import Link from 'next/link';
 import SidePanel from './SidePanel';
+import { useSidePanel } from '@/contexts/SidePanelContext';
 
 export default function Header() {
-  const [isSidePanelOpen, setIsSidePanelOpen] = useState(false);
+  const { open } = useSidePanel();
 
   return (
     <>
@@ -13,7 +13,7 @@ export default function Header() {
         <div className="max-w-7xl mx-auto px-6 py-4 flex items-center justify-between">
           {/* Hamburger Menu Button - Left */}
           <button
-            onClick={() => setIsSidePanelOpen(true)}
+            onClick={open}
             className="p-2 text-gray-400 hover:text-white transition-colors"
             aria-label="메뉴 열기"
           >
@@ -44,11 +44,7 @@ export default function Header() {
       </header>
 
       {/* Side Panel */}
-      <SidePanel
-        isOpen={isSidePanelOpen}
-        onClose={() => setIsSidePanelOpen(false)}
-        onOpen={() => setIsSidePanelOpen(true)}
-      />
+      <SidePanel />
     </>
   );
 }
