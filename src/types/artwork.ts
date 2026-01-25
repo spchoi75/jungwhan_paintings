@@ -43,3 +43,58 @@ export interface CategoryFormData {
   slug: string;
   description?: string;
 }
+
+export interface EducationItem {
+  year: string;
+  description: string;
+}
+
+export interface ExhibitionItem {
+  year: string;
+  description: string;
+}
+
+export interface AboutInfo {
+  id: string;
+  artist_name: string;
+  bio_paragraphs: string[];
+  education: EducationItem[];
+  exhibitions: ExhibitionItem[];
+  contact_email: string | null;
+  profile_image_url: string | null;
+  cv_file_url: string | null;
+  updated_at: string;
+}
+
+export interface AboutFormData {
+  artist_name: string;
+  bio_paragraphs: string[];
+  education: EducationItem[];
+  exhibitions: ExhibitionItem[];
+  contact_email?: string;
+  profile_image_url?: string;
+  cv_file_url?: string;
+}
+
+// Exhibition page types
+export interface Exhibition {
+  id: string;
+  title: string;
+  venue: string;
+  location: string | null;
+  year: number;
+  type: 'solo' | 'group';
+  external_url: string | null;
+  display_order: number;
+  created_at: string;
+}
+
+export interface ExhibitionFormData {
+  title: string;
+  venue: string;
+  location?: string;
+  year: number;
+  type: 'solo' | 'group';
+  external_url?: string;
+  display_order?: number;
+}

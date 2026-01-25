@@ -52,7 +52,7 @@ export default function FeaturedWorks({ artworks }: FeaturedWorksProps) {
 
           <div className="mt-12 text-center">
             <Link
-              href="/gallery"
+              href="/portfolio"
               className="inline-flex items-center gap-2 text-[var(--text-secondary)] hover:text-[var(--foreground)] transition-colors"
             >
               <span>View All Works</span>

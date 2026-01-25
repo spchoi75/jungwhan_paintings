@@ -37,10 +37,10 @@ export default function Hero({ featuredArtwork }: HeroProps) {
       <nav className="absolute top-0 left-0 right-0 z-20 px-6 py-6">
         <div className="max-w-7xl mx-auto flex items-center justify-end gap-6">
           <Link
-            href="/gallery"
+            href="/portfolio"
             className="text-white/70 hover:text-white text-sm transition-colors"
           >
-            Gallery
+            Portfolio
           </Link>
           <Link
             href="/about"

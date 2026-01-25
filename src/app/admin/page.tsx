@@ -2,15 +2,19 @@
 
 import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
-import { Artwork, ArtworkFormData, Category, CategoryFormData } from '@/types/artwork';
+import { Artwork, ArtworkFormData, Category, CategoryFormData, AboutInfo, AboutFormData, Exhibition, ExhibitionFormData } from '@/types/artwork';
 import Button from '@/components/common/Button';
 import Modal from '@/components/common/Modal';
 import ArtworkTable from '@/components/admin/ArtworkTable';
 import ArtworkForm from '@/components/admin/ArtworkForm';
 import CategoryTable from '@/components/admin/CategoryTable';
 import CategoryForm from '@/components/admin/CategoryForm';
+import AboutForm from '@/components/admin/AboutForm';
+import SettingsForm from '@/components/admin/SettingsForm';
+import ExhibitionTable from '@/components/admin/ExhibitionTable';
+import ExhibitionForm from '@/components/admin/ExhibitionForm';
 
-type Tab = 'artworks' | 'categories';
+type Tab = 'artworks' | 'categories' | 'exhibitions' | 'about' | 'settings';
 
 export default function AdminPage() {
   const router = useRouter();
@@ -30,6 +34,20 @@ export default function AdminPage() {
   const [editingCategory, setEditingCategory] = useState<Category | null>(null);
   const [deletingCategory, setDeletingCategory] = useState<Category | null>(null);
 
+  // Exhibitions state
+  const [exhibitions, setExhibitions] = useState<Exhibition[]>([]);
+  const [exhibitionsLoading, setExhibitionsLoading] = useState(true);
+  const [isExhibitionFormOpen, setIsExhibitionFormOpen] = useState(false);
+  const [editingExhibition, setEditingExhibition] = useState<Exhibition | null>(null);
+  const [deletingExhibition, setDeletingExhibition] = useState<Exhibition | null>(null);
+
+  // About state
+  const [aboutInfo, setAboutInfo] = useState<AboutInfo | null>(null);
+  const [aboutLoading, setAboutLoading] = useState(true);
+
+  // Settings state
+  const [currentHint, setCurrentHint] = useState<string>('');
+
   // Common state
   const [deleteLoading, setDeleteLoading] = useState(false);
   const [toast, setToast] = useState<string | null>(null);
@@ -39,6 +57,9 @@ export default function AdminPage() {
     checkAuth();
     fetchArtworks();
     fetchCategories();
+    fetchExhibitions();
+    fetchAbout();
+    fetchSettings();
   }, []);
 
   useEffect(() => {
@@ -84,6 +105,46 @@ export default function AdminPage() {
       setError('카테고리 목록을 불러올 수 없습니다');
     } finally {
       setCategoriesLoading(false);
+    }
+  };
+
+  const fetchExhibitions = async () => {
+    try {
+      const response = await fetch('/api/exhibitions');
+      if (response.ok) {
+        const data = await response.json();
+        setExhibitions(data);
+      }
+    } catch {
+      setError('전시 목록을 불러올 수 없습니다');
+    } finally {
+      setExhibitionsLoading(false);
+    }
+  };
+
+  const fetchAbout = async () => {
+    try {
+      const response = await fetch('/api/about');
+      if (response.ok) {
+        const data = await response.json();
+        setAboutInfo(data);
+      }
+    } catch {
+      setError('작가소개 정보를 불러올 수 없습니다');
+    } finally {
+      setAboutLoading(false);
+    }
+  };
+
+  const fetchSettings = async () => {
+    try {
+      const response = await fetch('/api/admin-settings');
+      if (response.ok) {
+        const data = await response.json();
+        setCurrentHint(data.password_hint || '');
+      }
+    } catch {
+      // 설정 조회 실패는 무시
     }
   };
 
@@ -184,6 +245,87 @@ export default function AdminPage() {
     }
   };
 
+  // Exhibition handlers
+  const handleExhibitionFormSubmit = async (data: ExhibitionFormData) => {
+    const url = editingExhibition
+      ? `/api/exhibitions/${editingExhibition.id}`
+      : '/api/exhibitions';
+    const method = editingExhibition ? 'PUT' : 'POST';
+
+    const response = await fetch(url, {
+      method,
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(data),
+    });
+
+    if (response.ok) {
+      setIsExhibitionFormOpen(false);
+      setEditingExhibition(null);
+      fetchExhibitions();
+      setToast(editingExhibition ? '수정되었습니다' : '저장되었습니다');
+    } else {
+      const { error } = await response.json();
+      throw new Error(error || '저장 실패');
+    }
+  };
+
+  const handleExhibitionDelete = async () => {
+    if (!deletingExhibition) return;
+    setDeleteLoading(true);
+
+    try {
+      const response = await fetch(`/api/exhibitions/${deletingExhibition.id}`, {
+        method: 'DELETE',
+      });
+
+      if (response.ok) {
+        setDeletingExhibition(null);
+        fetchExhibitions();
+        setToast('삭제되었습니다');
+      }
+    } catch (err) {
+      console.error('Delete error:', err);
+    } finally {
+      setDeleteLoading(false);
+    }
+  };
+
+  const handleAboutSubmit = async (data: AboutFormData) => {
+    const response = await fetch('/api/about', {
+      method: 'PUT',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(data),
+    });
+
+    if (response.ok) {
+      fetchAbout();
+      setToast('저장되었습니다');
+    } else {
+      const { error } = await response.json();
+      throw new Error(error || '저장 실패');
+    }
+  };
+
+  const handleSettingsSubmit = async (data: {
+    current_password: string;
+    new_password?: string;
+    password_hint?: string;
+  }) => {
+    const response = await fetch('/api/admin-settings', {
+      method: 'PUT',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(data),
+    });
+
+    if (response.ok) {
+      fetchSettings();
+      setToast('설정이 저장되었습니다');
+    } else {
+      const { error } = await response.json();
+      throw new Error(error || '저장 실패');
+    }
+  };
+
   return (
     <>
       <main className="min-h-screen bg-gray-50">
@@ -223,12 +365,42 @@ export default function AdminPage() {
             >
               카테고리 관리
             </button>
+            <button
+              onClick={() => setActiveTab('exhibitions')}
+              className={`px-6 py-4 text-sm font-medium border-b-2 transition-colors ${
+                activeTab === 'exhibitions'
+                  ? 'border-black text-black'
+                  : 'border-transparent text-gray-500 hover:text-black'
+              }`}
+            >
+              전시 관리
+            </button>
+            <button
+              onClick={() => setActiveTab('about')}
+              className={`px-6 py-4 text-sm font-medium border-b-2 transition-colors ${
+                activeTab === 'about'
+                  ? 'border-black text-black'
+                  : 'border-transparent text-gray-500 hover:text-black'
+              }`}
+            >
+              작가소개
+            </button>
+            <button
+              onClick={() => setActiveTab('settings')}
+              className={`px-6 py-4 text-sm font-medium border-b-2 transition-colors ${
+                activeTab === 'settings'
+                  ? 'border-black text-black'
+                  : 'border-transparent text-gray-500 hover:text-black'
+              }`}
+            >
+              설정
+            </button>
           </div>
         </div>
 
         {/* Content */}
         <div className="max-w-6xl mx-auto px-6 py-8">
-          {activeTab === 'artworks' ? (
+          {activeTab === 'artworks' && (
             <>
               <div className="flex justify-between items-center mb-6">
                 <h2 className="text-lg font-medium">작품 목록</h2>
@@ -256,7 +428,9 @@ export default function AdminPage() {
                 />
               )}
             </>
-          ) : (
+          )}
+
+          {activeTab === 'categories' && (
             <>
               <div className="flex justify-between items-center mb-6">
                 <h2 className="text-lg font-medium">카테고리 목록</h2>
@@ -277,6 +451,58 @@ export default function AdminPage() {
                   onDelete={setDeletingCategory}
                 />
               )}
+            </>
+          )}
+
+          {activeTab === 'exhibitions' && (
+            <>
+              <div className="flex justify-between items-center mb-6">
+                <h2 className="text-lg font-medium">전시 목록</h2>
+                <Button onClick={() => { setEditingExhibition(null); setIsExhibitionFormOpen(true); }}>
+                  + 새 전시
+                </Button>
+              </div>
+              {exhibitionsLoading ? (
+                <div className="space-y-4">
+                  {[...Array(3)].map((_, i) => (
+                    <div key={i} className="h-16 bg-gray-200 animate-pulse rounded" />
+                  ))}
+                </div>
+              ) : (
+                <ExhibitionTable
+                  exhibitions={exhibitions}
+                  onEdit={(exhibition) => { setEditingExhibition(exhibition); setIsExhibitionFormOpen(true); }}
+                  onDelete={setDeletingExhibition}
+                />
+              )}
+            </>
+          )}
+
+          {activeTab === 'about' && (
+            <>
+              <h2 className="text-lg font-medium mb-6">작가소개 관리</h2>
+              {aboutLoading ? (
+                <div className="space-y-4">
+                  {[...Array(3)].map((_, i) => (
+                    <div key={i} className="h-16 bg-gray-200 animate-pulse rounded" />
+                  ))}
+                </div>
+              ) : (
+                <AboutForm
+                  aboutInfo={aboutInfo || undefined}
+                  onSubmit={handleAboutSubmit}
+                />
+              )}
+            </>
+          )}
+
+          {activeTab === 'settings' && (
+            <>
+              <h2 className="text-lg font-medium mb-6">관리자 설정</h2>
+              <SettingsForm
+                currentHint={currentHint}
+                onSubmit={handleSettingsSubmit}
+              />
             </>
           )}
         </div>
@@ -315,6 +541,24 @@ export default function AdminPage() {
             category={editingCategory || undefined}
             onSubmit={handleCategoryFormSubmit}
             onCancel={() => { setIsCategoryFormOpen(false); setEditingCategory(null); }}
+          />
+        </div>
+      </Modal>
+
+      {/* Exhibition Form Modal */}
+      <Modal
+        isOpen={isExhibitionFormOpen}
+        onClose={() => { setIsExhibitionFormOpen(false); setEditingExhibition(null); }}
+        className="w-full max-w-lg max-h-[90vh] overflow-y-auto"
+      >
+        <div className="p-6">
+          <h2 className="text-xl font-medium mb-6">
+            {editingExhibition ? '전시 수정' : '새 전시 추가'}
+          </h2>
+          <ExhibitionForm
+            exhibition={editingExhibition || undefined}
+            onSubmit={handleExhibitionFormSubmit}
+            onCancel={() => { setIsExhibitionFormOpen(false); setEditingExhibition(null); }}
           />
         </div>
       </Modal>
@@ -368,6 +612,35 @@ export default function AdminPage() {
             </Button>
             <Button
               onClick={handleCategoryDelete}
+              loading={deleteLoading}
+              className="bg-red-500 hover:bg-red-600"
+            >
+              삭제
+            </Button>
+          </div>
+        </div>
+      </Modal>
+
+      {/* Delete Exhibition Confirm Modal */}
+      <Modal
+        isOpen={!!deletingExhibition}
+        onClose={() => setDeletingExhibition(null)}
+        className="w-full max-w-sm"
+      >
+        <div className="p-6 text-center">
+          <h2 className="text-lg font-medium mb-2">정말 삭제하시겠습니까?</h2>
+          <p className="text-gray-500 mb-1">
+            &quot;{deletingExhibition?.title}&quot; 전시를 삭제합니다.
+          </p>
+          <p className="text-gray-400 text-sm mb-6">
+            이 작업은 되돌릴 수 없습니다.
+          </p>
+          <div className="flex justify-center gap-3">
+            <Button variant="secondary" onClick={() => setDeletingExhibition(null)}>
+              취소
+            </Button>
+            <Button
+              onClick={handleExhibitionDelete}
               loading={deleteLoading}
               className="bg-red-500 hover:bg-red-600"
             >

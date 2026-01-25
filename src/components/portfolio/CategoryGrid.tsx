@@ -18,42 +18,45 @@ export default function CategoryGrid({ categories }: CategoryGridProps) {
   }
 
   return (
-    <div className="max-w-6xl mx-auto grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-      {categories.map((category) => (
-        <Link
-          key={category.id}
-          href={`/portfolio/${category.slug}`}
-          className="group block"
-        >
-          <div className="aspect-[4/3] relative overflow-hidden bg-gray-100">
+    <div className="max-w-7xl mx-auto">
+      {/* Responsive grid: 2 cols (mobile) → 3 cols (tablet) → 4 cols (desktop) → 5 cols (large) */}
+      <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-4">
+        {categories.map((category) => (
+          <Link
+            key={category.id}
+            href={`/artworks/${category.slug}`}
+            className="group block aspect-square relative overflow-hidden bg-gray-100"
+          >
+            {/* Image */}
             {category.cover_image_url ? (
               <Image
                 src={category.cover_image_url}
                 alt={category.name}
                 fill
-                className="object-cover transition-transform duration-700 group-hover:scale-105"
-                sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
+                loading="lazy"
+                className="object-cover transition-transform duration-500 group-hover:scale-110"
+                sizes="(max-width: 640px) 50vw, (max-width: 768px) 33vw, (max-width: 1024px) 25vw, 20vw"
               />
             ) : (
-              <div className="absolute inset-0 flex items-center justify-center">
-                <span className="text-gray-300 text-6xl font-light">
+              <div className="absolute inset-0 flex items-center justify-center bg-gray-100">
+                <span className="text-gray-300 text-4xl font-light">
                   {category.name.charAt(0)}
                 </span>
               </div>
             )}
-          </div>
-          <div className="mt-4 text-center">
-            <h2 className="text-lg tracking-wide font-light group-hover:text-gray-600 transition-colors">
-              {category.name}
-            </h2>
-            {category.description && (
-              <p className="text-sm text-gray-500 mt-1">
-                {category.description}
-              </p>
-            )}
-          </div>
-        </Link>
-      ))}
+
+            {/* Hover overlay */}
+            <div className="absolute inset-0 bg-black/0 group-hover:bg-black/40 transition-colors duration-300" />
+
+            {/* Category name (visible on hover) */}
+            <div className="absolute inset-0 flex items-center justify-center p-4">
+              <span className="text-white text-center text-sm md:text-base font-light tracking-wider opacity-0 group-hover:opacity-100 transition-opacity duration-300">
+                {category.name}
+              </span>
+            </div>
+          </Link>
+        ))}
+      </div>
     </div>
   );
 }

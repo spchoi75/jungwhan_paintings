@@ -1,5 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { cookies } from 'next/headers';
+import bcrypt from 'bcryptjs';
+import { supabaseAdmin } from '@/lib/supabase/server';
 
 const ADMIN_PASSWORD = process.env.ADMIN_PASSWORD;
 const SESSION_COOKIE_NAME = 'admin_session';
@@ -8,14 +10,28 @@ export async function POST(request: NextRequest) {
   try {
     const { password } = await request.json();
 
-    if (!ADMIN_PASSWORD) {
+    // DB에서 설정 조회
+    const { data: settings } = await supabaseAdmin
+      .from('admin_settings')
+      .select('password_hash')
+      .single();
+
+    let isValid = false;
+
+    if (settings?.password_hash) {
+      // DB에 비밀번호가 있으면 해시 비교
+      isValid = await bcrypt.compare(password, settings.password_hash);
+    } else if (ADMIN_PASSWORD) {
+      // DB에 없으면 환경변수로 폴백
+      isValid = password === ADMIN_PASSWORD;
+    } else {
       return NextResponse.json(
         { error: 'Server configuration error' },
         { status: 500 }
       );
     }
 
-    if (password !== ADMIN_PASSWORD) {
+    if (!isValid) {
       return NextResponse.json(
         { error: 'Invalid password' },
         { status: 401 }

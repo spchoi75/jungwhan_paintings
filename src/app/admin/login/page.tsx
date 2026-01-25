@@ -1,6 +1,6 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import Button from '@/components/common/Button';
 
@@ -9,6 +9,24 @@ export default function AdminLoginPage() {
   const [password, setPassword] = useState('');
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(false);
+  const [showHint, setShowHint] = useState(false);
+  const [hint, setHint] = useState<string | null>(null);
+
+  useEffect(() => {
+    // DB에서 힌트 조회, 없으면 환경변수 폴백
+    const fetchHint = async () => {
+      try {
+        const response = await fetch('/api/admin-settings');
+        if (response.ok) {
+          const data = await response.json();
+          setHint(data.password_hint || process.env.NEXT_PUBLIC_ADMIN_HINT || null);
+        }
+      } catch {
+        setHint(process.env.NEXT_PUBLIC_ADMIN_HINT || null);
+      }
+    };
+    fetchHint();
+  }, []);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -65,6 +83,23 @@ export default function AdminLoginPage() {
           >
             로그인
           </Button>
+
+          {hint && (
+            <div className="text-center">
+              <button
+                type="button"
+                onClick={() => setShowHint(!showHint)}
+                className="text-sm text-gray-500 hover:text-gray-700 transition-colors"
+              >
+                {showHint ? '힌트 숨기기' : '비밀번호 힌트'}
+              </button>
+              {showHint && (
+                <p className="mt-2 text-sm text-gray-600 bg-gray-100 px-3 py-2 rounded">
+                  {hint}
+                </p>
+              )}
+            </div>
+          )}
         </form>
       </div>
     </main>

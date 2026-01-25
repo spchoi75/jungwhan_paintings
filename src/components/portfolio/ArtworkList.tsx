@@ -22,27 +22,35 @@ export default function ArtworkList({ artworks }: ArtworkListProps) {
 
   return (
     <>
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+      {/* Responsive grid: 2 cols (mobile) → 3 cols (tablet) → 4 cols (desktop) */}
+      <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
         {artworks.map((artwork) => (
           <button
             key={artwork.id}
             onClick={() => setSelectedArtwork(artwork)}
-            className="group text-left"
+            className="group block aspect-square relative overflow-hidden bg-gray-100 text-left"
           >
-            <div className="aspect-[4/3] relative overflow-hidden bg-gray-100">
-              <Image
-                src={artwork.thumbnail_url || artwork.image_url}
-                alt={artwork.title}
-                fill
-                className="object-cover transition-transform duration-700 group-hover:scale-105"
-                sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
-              />
-            </div>
-            <div className="mt-3">
-              <h3 className="text-base tracking-wide font-light">
+            {/* Image */}
+            <Image
+              src={artwork.thumbnail_url || artwork.image_url}
+              alt={artwork.title}
+              fill
+              loading="lazy"
+              className="object-cover transition-transform duration-500 group-hover:scale-110"
+              sizes="(max-width: 640px) 50vw, (max-width: 768px) 33vw, (max-width: 1024px) 25vw, 25vw"
+            />
+
+            {/* Hover overlay */}
+            <div className="absolute inset-0 bg-black/0 group-hover:bg-black/40 transition-colors duration-300" />
+
+            {/* Artwork info (visible on hover) */}
+            <div className="absolute inset-0 flex flex-col items-center justify-center p-4 opacity-0 group-hover:opacity-100 transition-opacity duration-300">
+              <span className="text-white text-center text-sm font-light tracking-wider">
                 {artwork.title}
-              </h3>
-              <p className="text-sm text-gray-500 mt-0.5">{artwork.year}</p>
+              </span>
+              <span className="text-white/70 text-xs mt-1">
+                {artwork.year}
+              </span>
             </div>
           </button>
         ))}
