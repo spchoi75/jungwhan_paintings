@@ -24,6 +24,7 @@ export interface Artwork {
   image_url: string;
   thumbnail_url: string;
   is_featured: boolean;
+  show_watermark: boolean;
   order: number;
   category_id: string | null;
   category?: Category;
@@ -41,6 +42,7 @@ export interface ArtworkFormData {
   description?: string;
   description_en?: string;
   is_featured: boolean;
+  show_watermark: boolean;
   category_id?: string;
 }
 
@@ -53,12 +55,6 @@ export interface CategoryFormData {
 }
 
 export interface EducationItem {
-  year: string;
-  description: string;
-  description_en?: string;
-}
-
-export interface ExhibitionItem {
   year: string;
   description: string;
   description_en?: string;
@@ -79,10 +75,11 @@ export interface AboutInfo {
   footer_bio: string | null;
   footer_bio_en: string | null;
   education: EducationItem[];
-  exhibitions: ExhibitionItem[];
   contact_email: string | null;
   contact_phone: string | null;
   phone_visible: boolean;
+  studio_address: string | null;
+  studio_address_en: string | null;
   social_links: SocialLink[];
   profile_image_url: string | null;
   cv_file_url: string | null;
@@ -97,10 +94,11 @@ export interface AboutFormData {
   footer_bio?: string;
   footer_bio_en?: string;
   education: EducationItem[];
-  exhibitions: ExhibitionItem[];
   contact_email?: string;
   contact_phone?: string;
   phone_visible?: boolean;
+  studio_address?: string;
+  studio_address_en?: string;
   social_links?: SocialLink[];
   profile_image_url?: string;
   cv_file_url?: string;

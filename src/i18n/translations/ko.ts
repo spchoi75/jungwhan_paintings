@@ -51,18 +51,22 @@ export const ko = {
   // Exhibitions 페이지
   exhibitions: {
     title: 'Exhibitions',
-    soloExhibitions: 'Selected Solo Exhibitions',
-    groupExhibitions: 'Selected Group Exhibitions',
+    soloExhibitions: '개인전',
+    groupExhibitions: '단체전',
     noExhibitions: 'No exhibitions to display',
   },
 
   // Contact 페이지
   contact: {
     title: 'Contact',
+    artist: 'Artist',
+    introduction: 'About',
     email: 'Email',
+    socialLinks: 'Social',
+    studioAddress: 'Studio',
     noContact: 'Contact information not available',
     inquiryNotice:
-      'For inquiries about artworks, exhibitions, or collaborations, please feel free to reach out via email.',
+      '작품, 전시, 협업에 관한 문의는 이메일로 연락 바랍니다.',
   },
 
   // Portfolio 페이지
@@ -82,8 +86,8 @@ export const ko = {
 
   // 언어 선택
   language: {
-    korean: '한국어',
-    english: 'English',
+    korean: 'KR',
+    english: 'EN',
   },
 };
 

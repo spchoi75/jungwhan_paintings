@@ -35,9 +35,8 @@ export default function Header() {
             </svg>
           </button>
 
-          {/* Right side: Language Switch + Logo */}
+          {/* Right side: Logo + Language Switch */}
           <div className="flex items-center gap-6">
-            <LanguageSwitch />
             <Link
               href="/"
               className="text-2xl tracking-wider font-medium text-white"
@@ -45,6 +44,7 @@ export default function Header() {
             >
               {t.common.logo}
             </Link>
+            <LanguageSwitch />
           </div>
         </div>
       </header>

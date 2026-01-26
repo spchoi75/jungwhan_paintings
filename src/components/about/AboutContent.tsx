@@ -1,15 +1,16 @@
 'use client';
 
 import Image from 'next/image';
-import { AboutInfo } from '@/types/artwork';
+import { AboutInfo, Exhibition } from '@/types/artwork';
 import { useLocale } from '@/i18n';
 import { getLocalizedValue } from '@/lib/i18n-utils';
 
 interface AboutContentProps {
   aboutInfo: AboutInfo | null;
+  exhibitions: Exhibition[];
 }
 
-export default function AboutContent({ aboutInfo }: AboutContentProps) {
+export default function AboutContent({ aboutInfo, exhibitions }: AboutContentProps) {
   const { locale, t } = useLocale();
 
   const artistName = aboutInfo
@@ -29,10 +30,12 @@ export default function AboutContent({ aboutInfo }: AboutContentProps) {
     : t.about.defaultBio;
 
   const education = aboutInfo?.education || [];
-  const exhibitions = aboutInfo?.exhibitions || [];
-  const contactEmail = aboutInfo?.contact_email || '';
   const profileImageUrl = aboutInfo?.profile_image_url;
   const cvFileUrl = aboutInfo?.cv_file_url;
+
+  // Group exhibitions by type
+  const soloExhibitions = exhibitions.filter(e => e.type === 'solo');
+  const groupExhibitions = exhibitions.filter(e => e.type === 'group');
 
   return (
     <div className="grid md:grid-cols-2 gap-12 items-start">
@@ -90,25 +93,55 @@ export default function AboutContent({ aboutInfo }: AboutContentProps) {
           </div>
         )}
 
-        {/* Exhibitions */}
-        {exhibitions.length > 0 && (
+        {/* Solo Exhibitions */}
+        {soloExhibitions.length > 0 && (
           <div className="mt-8">
-            <h3 className="text-lg font-medium mb-4 text-white">{t.about.exhibitions}</h3>
+            <h3 className="text-lg font-medium mb-4 text-white">
+              {locale === 'en' ? 'Solo Exhibitions' : '개인전'}
+            </h3>
             <ul className="space-y-2 text-gray-400">
-              {exhibitions.map((item, index) => (
-                <li key={index}>
-                  {item.year} — {getLocalizedValue(locale, item.description, item.description_en)}
+              {soloExhibitions.map((exhibition) => (
+                <li key={exhibition.id}>
+                  {exhibition.year} — {getLocalizedValue(locale, exhibition.title, exhibition.title_en)}
+                  {(exhibition.venue || exhibition.venue_en) && (
+                    <span className="text-gray-500">
+                      , {getLocalizedValue(locale, exhibition.venue, exhibition.venue_en)}
+                    </span>
+                  )}
+                  {(exhibition.location || exhibition.location_en) && (
+                    <span className="text-gray-500">
+                      , {getLocalizedValue(locale, exhibition.location, exhibition.location_en)}
+                    </span>
+                  )}
                 </li>
               ))}
             </ul>
           </div>
         )}
 
-        {/* Contact */}
-        {contactEmail && (
-          <div className="mt-10 pt-8 border-t border-gray-700">
-            <h3 className="text-lg font-medium mb-4 text-white">{t.about.contact}</h3>
-            <p className="text-gray-400">{contactEmail}</p>
+        {/* Group Exhibitions */}
+        {groupExhibitions.length > 0 && (
+          <div className="mt-8">
+            <h3 className="text-lg font-medium mb-4 text-white">
+              {locale === 'en' ? 'Group Exhibitions' : '단체전'}
+            </h3>
+            <ul className="space-y-2 text-gray-400">
+              {groupExhibitions.map((exhibition) => (
+                <li key={exhibition.id}>
+                  {exhibition.year} — {getLocalizedValue(locale, exhibition.title, exhibition.title_en)}
+                  {(exhibition.venue || exhibition.venue_en) && (
+                    <span className="text-gray-500">
+                      , {getLocalizedValue(locale, exhibition.venue, exhibition.venue_en)}
+                    </span>
+                  )}
+                  {(exhibition.location || exhibition.location_en) && (
+                    <span className="text-gray-500">
+                      , {getLocalizedValue(locale, exhibition.location, exhibition.location_en)}
+                    </span>
+                  )}
+                </li>
+              ))}
+            </ul>
           </div>
         )}
 

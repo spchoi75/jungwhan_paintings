@@ -23,6 +23,7 @@ export default function ArtworkForm({ artwork, categories, onSubmit, onCancel }:
   const [descriptionEn, setDescriptionEn] = useState(artwork?.description_en || '');
   const [categoryId, setCategoryId] = useState(artwork?.category_id || '');
   const [isFeatured, setIsFeatured] = useState(artwork?.is_featured || false);
+  const [showWatermark, setShowWatermark] = useState(artwork?.show_watermark ?? true);
   const [imageUrl, setImageUrl] = useState(artwork?.image_url || '');
   const [thumbnailUrl, setThumbnailUrl] = useState(artwork?.thumbnail_url || '');
   const [loading, setLoading] = useState(false);
@@ -40,6 +41,7 @@ export default function ArtworkForm({ artwork, categories, onSubmit, onCancel }:
     setDescriptionEn(artwork?.description_en || '');
     setCategoryId(artwork?.category_id || '');
     setIsFeatured(artwork?.is_featured || false);
+    setShowWatermark(artwork?.show_watermark ?? true);
     setImageUrl(artwork?.image_url || '');
     setThumbnailUrl(artwork?.thumbnail_url || '');
     setErrors({});
@@ -85,6 +87,7 @@ export default function ArtworkForm({ artwork, categories, onSubmit, onCancel }:
         description_en: descriptionEn.trim() || undefined,
         category_id: categoryId || undefined,
         is_featured: isFeatured,
+        show_watermark: showWatermark,
         image_url: imageUrl,
         thumbnail_url: thumbnailUrl,
       });
@@ -241,7 +244,7 @@ export default function ArtworkForm({ artwork, categories, onSubmit, onCancel }:
         </div>
       </div>
 
-      <div>
+      <div className="space-y-3">
         <label className="flex items-center gap-2 cursor-pointer">
           <input
             type="checkbox"
@@ -250,6 +253,15 @@ export default function ArtworkForm({ artwork, categories, onSubmit, onCancel }:
             className="w-4 h-4"
           />
           <span className="text-sm text-gray-300">대표작으로 설정 (메인 슬라이드쇼에 표시)</span>
+        </label>
+        <label className="flex items-center gap-2 cursor-pointer">
+          <input
+            type="checkbox"
+            checked={showWatermark}
+            onChange={(e) => setShowWatermark(e.target.checked)}
+            className="w-4 h-4"
+          />
+          <span className="text-sm text-gray-300">저작권 워터마크 표시 (© 마크 오버레이)</span>
         </label>
       </div>
 

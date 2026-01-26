@@ -81,11 +81,12 @@ export default function ArtworkTable({ artworks, categories, onEdit, onDelete }:
                   {artwork.year}
                 </td>
                 <td className="py-3 px-4">
-                  <div className="flex justify-end gap-2">
+                  <div className="flex justify-end gap-2 flex-nowrap">
                     <Button
                       variant="ghost"
                       size="sm"
                       onClick={() => onEdit(artwork)}
+                      className="whitespace-nowrap"
                     >
                       수정
                     </Button>
@@ -93,7 +94,7 @@ export default function ArtworkTable({ artworks, categories, onEdit, onDelete }:
                       variant="ghost"
                       size="sm"
                       onClick={() => onDelete(artwork)}
-                      className="text-red-400 hover:bg-red-900/30"
+                      className="text-red-400 hover:bg-red-900/30 whitespace-nowrap"
                     >
                       삭제
                     </Button>

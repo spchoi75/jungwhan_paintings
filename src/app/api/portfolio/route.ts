@@ -55,6 +55,7 @@ export async function POST(request: NextRequest) {
         image_url: body.image_url,
         thumbnail_url: body.thumbnail_url,
         is_featured: body.is_featured || false,
+        show_watermark: body.show_watermark ?? true,
         order: newOrder,
       })
       .select()

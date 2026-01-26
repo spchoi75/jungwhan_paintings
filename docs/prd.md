@@ -1,8 +1,9 @@
 # PRD: Jungwhan 미술작품 포트폴리오
 
-> **버전**: 1.0
+> **버전**: 2.0
 > **작성일**: 2026-01-24
-> **상태**: Draft
+> **최종 수정**: 2026-01-26
+> **상태**: Implemented
 
 ---
 
@@ -19,6 +20,7 @@
 | 확대 감상 | 작품 디테일을 확인할 수 있는 줌 기능 제공 |
 | 쉬운 관리 | 관리자가 코딩 없이 작품 추가/수정/삭제 가능 |
 | 세련된 UX | AI가 만든 티가 나지 않는 고급스러운 인터페이스 |
+| 다국어 지원 | 한국어/영어 전환으로 국제적 접근성 확보 |
 
 ### 1.3 핵심 원칙
 - **작품 중심**: UI는 작품을 방해하지 않음
@@ -102,7 +104,90 @@
 
 ---
 
-### 3.4 F4: 관리자 페이지
+### 3.4 F4: About 페이지 ✅ (v2.0 추가)
+
+**설명**: 작가 소개 및 이력 페이지.
+
+| 항목 | 내용 |
+|------|------|
+| Input | About 페이지 접속 |
+| Process | 작가 정보 조회 |
+| Output | 작가 소개, 학력, 전시 이력 렌더링 |
+
+**UI 요소**:
+- 작가명 및 소개글 (다국어)
+- 학력 정보 (연도, 내용)
+- 전시 이력 (exhibitions 테이블 연동)
+- 스튜디오 주소 (다국어)
+
+---
+
+### 3.5 F5: Exhibitions 페이지 ✅ (v2.0 추가)
+
+**설명**: 전시 이력 상세 페이지.
+
+| 항목 | 내용 |
+|------|------|
+| Input | Exhibitions 페이지 접속 |
+| Process | 전시 목록 조회 (연도별 정렬) |
+| Output | 전시 목록 렌더링 (개인전/단체전 구분) |
+
+**UI 요소**:
+- 전시 유형 구분 (Solo / Group)
+- 전시명, 장소, 지역 (다국어)
+- 외부 링크 연결
+- 연도별 그룹핑
+
+---
+
+### 3.6 F6: Contact 페이지 ✅ (v2.0 추가)
+
+**설명**: 연락처 및 소셜 링크 페이지.
+
+| 항목 | 내용 |
+|------|------|
+| Input | Contact 페이지 접속 |
+| Process | 연락처 정보 표시 |
+| Output | 이메일, 소셜 링크 렌더링 |
+
+---
+
+### 3.7 F7: 카테고리 기능 ✅ (v2.0 추가)
+
+**설명**: 작품을 카테고리별로 분류하여 표시.
+
+| 항목 | 내용 |
+|------|------|
+| Input | Portfolio 페이지 접속 |
+| Process | 카테고리별 작품 조회 |
+| Output | 카테고리 그리드 → 카테고리별 작품 목록 |
+
+**UI 요소**:
+- 카테고리 커버 이미지 카드
+- 카테고리명 (다국어)
+- `/portfolio/[slug]` 형태의 카테고리별 페이지
+
+---
+
+### 3.8 F8: 다국어 지원 (i18n) ✅ (v2.0 추가)
+
+**설명**: 한국어/영어 전환 기능.
+
+| 항목 | 내용 |
+|------|------|
+| Input | 언어 선택 버튼 클릭 |
+| Process | LocalStorage에 언어 설정 저장, UI 갱신 |
+| Output | 전체 UI 텍스트 및 DB 데이터 언어 전환 |
+
+**상세**:
+- 지원 언어: 한국어 (KO), 영어 (EN)
+- 기본 언어: 한국어
+- 데이터: 모든 테이블에 `*_en` 필드로 영문 데이터 저장
+- UI: React Context 기반 `useLocale()` 훅 사용
+
+---
+
+### 3.9 F9: 관리자 페이지
 
 **설명**: 작품 추가/수정/삭제를 위한 관리 화면.
 
@@ -126,7 +211,7 @@
 
 ---
 
-### 3.5 F5: 관리자 인증
+### 3.10 F10: 관리자 인증
 
 **설명**: 관리자 페이지 접근을 위한 간단한 인증.
 
@@ -145,22 +230,74 @@
 
 ## 4. 데이터 모델
 
-### 4.1 Artwork (작품)
+### 4.1 Portfolio (작품)
 
 | 필드 | 타입 | 필수 | 설명 |
 |------|------|------|------|
-| id | string | Y | 고유 식별자 (UUID) |
-| title | string | Y | 작품 제목 |
+| id | UUID | Y | 고유 식별자 |
+| title | string | Y | 작품 제목 (한글) |
+| title_en | string | N | 작품 제목 (영문) |
 | year | number | Y | 제작 연도 |
 | width | number | N | 가로 크기 (cm) |
 | height | number | N | 세로 크기 (cm) |
-| medium | string | N | 재료/기법 (예: "Oil on canvas") |
-| imageUrl | string | Y | 원본 이미지 URL |
-| thumbnailUrl | string | Y | 썸네일 이미지 URL |
-| isFeatured | boolean | Y | 대표작 여부 (기본값: false) |
+| medium | string | N | 재료/기법 |
+| description | text | N | 작품 설명 (한글) |
+| description_en | text | N | 작품 설명 (영문) |
+| image_url | string | Y | 원본 이미지 URL |
+| thumbnail_url | string | Y | 썸네일 이미지 URL (800px) |
+| is_featured | boolean | Y | 대표작 여부 (기본값: false) |
+| show_watermark | boolean | Y | 워터마크 표시 여부 (기본값: true) |
+| category_id | UUID | N | 카테고리 FK |
 | order | number | Y | 정렬 순서 |
-| createdAt | datetime | Y | 등록일시 |
-| updatedAt | datetime | Y | 수정일시 |
+| created_at | datetime | Y | 등록일시 |
+| updated_at | datetime | Y | 수정일시 |
+
+### 4.2 Categories (카테고리) ✅ v2.0
+
+| 필드 | 타입 | 필수 | 설명 |
+|------|------|------|------|
+| id | UUID | Y | 고유 식별자 |
+| name | string | Y | 카테고리명 (한글) |
+| name_en | string | N | 카테고리명 (영문) |
+| slug | string | Y | URL 슬러그 (unique) |
+| description | text | N | 카테고리 설명 (한글) |
+| description_en | text | N | 카테고리 설명 (영문) |
+| cover_image_url | string | N | 커버 이미지 URL |
+| order | number | Y | 정렬 순서 |
+| created_at | datetime | Y | 등록일시 |
+| updated_at | datetime | Y | 수정일시 |
+
+### 4.3 About (작가 정보) ✅ v2.0
+
+| 필드 | 타입 | 필수 | 설명 |
+|------|------|------|------|
+| id | UUID | Y | 고유 식별자 |
+| artist_name | string | Y | 작가명 (한글) |
+| artist_name_en | string | N | 작가명 (영문) |
+| bio_paragraphs | JSONB | Y | 소개글 문단 배열 (한글) |
+| bio_paragraphs_en | JSONB | N | 소개글 문단 배열 (영문) |
+| footer_bio | text | N | Footer 소개문 (한글) |
+| footer_bio_en | text | N | Footer 소개문 (영문) |
+| studio_address | text | N | 작업실 주소 (한글) |
+| studio_address_en | text | N | 작업실 주소 (영문) |
+| education | JSONB | N | 학력 배열 [{year, description, description_en}] |
+| social_links | JSONB | N | 소셜 링크 배열 |
+
+### 4.4 Exhibitions (전시 이력) ✅ v2.0
+
+| 필드 | 타입 | 필수 | 설명 |
+|------|------|------|------|
+| id | UUID | Y | 고유 식별자 |
+| title | string | Y | 전시명 (한글) |
+| title_en | string | N | 전시명 (영문) |
+| venue | string | Y | 전시 장소 (한글) |
+| venue_en | string | N | 전시 장소 (영문) |
+| location | string | N | 지역 (한글) |
+| location_en | string | N | 지역 (영문) |
+| year | number | Y | 전시 연도 |
+| type | enum | Y | 전시 유형 ('solo' \| 'group') |
+| external_url | string | N | 외부 링크 |
+| display_order | number | Y | 표시 순서 |
 
 ---
 
@@ -188,28 +325,29 @@
 
 ## 6. 제외 범위 (Out of Scope)
 
-다음 기능은 이번 버전에서 **구현하지 않음**:
+다음 기능은 현재 버전에서 **구현하지 않음**:
 
-- 다국어 지원
 - 작품 검색/필터
 - 방명록/댓글
 - 작품 판매/문의 기능
-- 작가 소개 페이지
-- SEO 최적화 (기본 메타태그 외)
 - 애널리틱스 연동
 - 소셜 공유 버튼
 
+> **v2.0에서 구현 완료**: 다국어 지원 ✅, 작가 소개 페이지 ✅, SEO 최적화 (sitemap.ts) ✅
+
 ---
 
-## 7. 기술 스택 (권장)
+## 7. 기술 스택
 
 | 영역 | 기술 | 이유 |
 |------|------|------|
-| 프론트엔드 | Next.js 14 (App Router) | SSG/SSR, 이미지 최적화 내장 |
-| 스타일링 | Tailwind CSS | 빠른 개발, 반응형 용이 |
+| 프론트엔드 | Next.js 16 (App Router) | SSG/SSR/ISR, 이미지 최적화 내장 |
+| 스타일링 | Tailwind CSS 4 | 다크 테마, 반응형 용이 |
+| UI 컴포넌트 | Headless UI | 접근성 있는 모달/드롭다운 |
 | 이미지 확대 | react-zoom-pan-pinch | 핀치줌/패닝 지원 |
-| 백엔드/DB | Supabase | 간편한 설정, 이미지 스토리지 포함 |
-| 배포 | Vercel | Next.js 최적화, 무료 티어 |
+| 백엔드/DB | Supabase (PostgreSQL) | 간편한 설정, 이미지 스토리지 포함 |
+| 인증 | bcryptjs + HTTP-only Cookie | 세션 기반 관리자 인증 |
+| 배포 | Vercel | Next.js 최적화, 자동 배포 |
 
 ---
 
@@ -252,3 +390,4 @@
 | 버전 | 날짜 | 변경 내용 |
 |------|------|----------|
 | 1.0 | 2026-01-24 | 초안 작성 |
+| 2.0 | 2026-01-26 | 구현 완료 반영: i18n, About/Exhibitions/Contact 페이지, 카테고리, 워터마크 토글, 스튜디오 주소 필드 추가 |

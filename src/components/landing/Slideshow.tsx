@@ -3,12 +3,15 @@
 import { useState, useEffect, useCallback } from 'react';
 import Image from 'next/image';
 import { Artwork } from '@/types/artwork';
+import { useLocale } from '@/i18n';
+import { getLocalizedValue } from '@/lib/i18n-utils';
 
 interface SlideshowProps {
   artworks: Artwork[];
 }
 
 export default function Slideshow({ artworks }: SlideshowProps) {
+  const { locale, t } = useLocale();
   const [currentIndex, setCurrentIndex] = useState(0);
   const [isTransitioning, setIsTransitioning] = useState(false);
 
@@ -45,6 +48,7 @@ export default function Slideshow({ artworks }: SlideshowProps) {
   }
 
   const currentArtwork = artworks[currentIndex];
+  const title = getLocalizedValue(locale, currentArtwork.title, currentArtwork.title_en);
 
   return (
     <div className="h-screen pt-16 flex flex-col">
@@ -58,7 +62,7 @@ export default function Slideshow({ artworks }: SlideshowProps) {
           <div className="relative w-full h-full max-w-5xl mx-auto">
             <Image
               src={currentArtwork.image_url}
-              alt={currentArtwork.title}
+              alt={title}
               fill
               className="object-contain"
               priority
@@ -73,7 +77,7 @@ export default function Slideshow({ artworks }: SlideshowProps) {
             <button
               onClick={goToPrev}
               className="absolute left-4 top-1/2 -translate-y-1/2 p-3 text-gray-500 hover:text-white transition-colors"
-              aria-label="Previous artwork"
+              aria-label={t.aria.prevArtwork}
             >
               <svg
                 xmlns="http://www.w3.org/2000/svg"
@@ -93,7 +97,7 @@ export default function Slideshow({ artworks }: SlideshowProps) {
             <button
               onClick={goToNext}
               className="absolute right-4 top-1/2 -translate-y-1/2 p-3 text-gray-500 hover:text-white transition-colors"
-              aria-label="Next artwork"
+              aria-label={t.aria.nextArtwork}
             >
               <svg
                 xmlns="http://www.w3.org/2000/svg"
@@ -117,7 +121,7 @@ export default function Slideshow({ artworks }: SlideshowProps) {
       {/* Artwork Info */}
       <div className="py-6 px-8 text-center">
         <h2 className="text-lg font-light tracking-wide text-white">
-          {currentArtwork.title}
+          {title}
         </h2>
         <p className="text-sm text-gray-400 mt-1">
           {currentArtwork.year}

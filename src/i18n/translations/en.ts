@@ -61,7 +61,11 @@ export const en: Translations = {
   // Contact 페이지
   contact: {
     title: 'Contact',
+    artist: 'Artist',
+    introduction: 'About',
     email: 'Email',
+    socialLinks: 'Social',
+    studioAddress: 'Studio',
     noContact: 'Contact information not available',
     inquiryNotice:
       'For inquiries about artworks, exhibitions, or collaborations, please feel free to reach out via email.',
@@ -84,7 +88,7 @@ export const en: Translations = {
 
   // 언어 선택
   language: {
-    korean: '한국어',
-    english: 'English',
+    korean: 'KR',
+    english: 'EN',
   },
 };

@@ -1,7 +1,7 @@
 'use client';
 
 import { useState, useEffect } from 'react';
-import { AboutInfo, AboutFormData, EducationItem, ExhibitionItem, SocialLink } from '@/types/artwork';
+import { AboutInfo, AboutFormData, EducationItem, SocialLink } from '@/types/artwork';
 import Button from '@/components/common/Button';
 import ImageUploader from '@/components/admin/ImageUploader';
 
@@ -25,10 +25,11 @@ export default function AboutForm({ aboutInfo, onSubmit }: AboutFormProps) {
   const [bioParagraphs, setBioParagraphs] = useState<string[]>(['']);
   const [bioParagraphsEn, setBioParagraphsEn] = useState<string[]>(['']);
   const [education, setEducation] = useState<EducationItem[]>([]);
-  const [exhibitions, setExhibitions] = useState<ExhibitionItem[]>([]);
   const [contactEmail, setContactEmail] = useState('');
   const [contactPhone, setContactPhone] = useState('');
   const [phoneVisible, setPhoneVisible] = useState(false);
+  const [studioAddress, setStudioAddress] = useState('');
+  const [studioAddressEn, setStudioAddressEn] = useState('');
   const [socialLinks, setSocialLinks] = useState<SocialLink[]>([]);
   const [footerBio, setFooterBio] = useState('');
   const [footerBioEn, setFooterBioEn] = useState('');
@@ -51,10 +52,11 @@ export default function AboutForm({ aboutInfo, onSubmit }: AboutFormProps) {
           : ['']
       );
       setEducation(aboutInfo.education || []);
-      setExhibitions(aboutInfo.exhibitions || []);
       setContactEmail(aboutInfo.contact_email || '');
       setContactPhone(aboutInfo.contact_phone || '');
       setPhoneVisible(aboutInfo.phone_visible || false);
+      setStudioAddress(aboutInfo.studio_address || '');
+      setStudioAddressEn(aboutInfo.studio_address_en || '');
       setSocialLinks(aboutInfo.social_links || []);
       setFooterBio(aboutInfo.footer_bio || '');
       setFooterBioEn(aboutInfo.footer_bio_en || '');
@@ -100,20 +102,6 @@ export default function AboutForm({ aboutInfo, onSubmit }: AboutFormProps) {
     setEducation(updated);
   };
 
-  const addExhibition = () =>
-    setExhibitions([...exhibitions, { year: '', description: '' }]);
-  const removeExhibition = (index: number) =>
-    setExhibitions(exhibitions.filter((_, i) => i !== index));
-  const updateExhibition = (
-    index: number,
-    field: keyof ExhibitionItem,
-    value: string
-  ) => {
-    const updated = [...exhibitions];
-    updated[index] = { ...updated[index], [field]: value };
-    setExhibitions(updated);
-  };
-
   const addSocialLink = () =>
     setSocialLinks([...socialLinks, { platform: 'instagram', url: '' }]);
   const removeSocialLink = (index: number) =>
@@ -142,10 +130,11 @@ export default function AboutForm({ aboutInfo, onSubmit }: AboutFormProps) {
         footer_bio: footerBio || undefined,
         footer_bio_en: footerBioEn || undefined,
         education: education.filter((e) => e.year && e.description),
-        exhibitions: exhibitions.filter((e) => e.year && e.description),
         contact_email: contactEmail || undefined,
         contact_phone: contactPhone || undefined,
         phone_visible: phoneVisible,
+        studio_address: studioAddress || undefined,
+        studio_address_en: studioAddressEn || undefined,
         social_links: socialLinks.filter((s) => s.url.trim()),
         profile_image_url: profileImageUrl || undefined,
       });
@@ -314,59 +303,6 @@ export default function AboutForm({ aboutInfo, onSubmit }: AboutFormProps) {
       </div>
 
       <div>
-        <label className="block text-sm font-medium mb-2 text-gray-300">Exhibitions</label>
-        {exhibitions.map((item, index) => (
-          <div key={index} className="mb-3 p-3 border border-gray-700 rounded bg-[#141414]">
-            <div className="flex gap-2 mb-2">
-              <input
-                type="text"
-                value={item.year}
-                onChange={(e) => updateExhibition(index, 'year', e.target.value)}
-                placeholder="연도"
-                className="w-24 px-2 py-1 border border-gray-600 rounded focus:outline-none focus:ring-1 focus:ring-white bg-[#1a1a1a] text-white placeholder-gray-500"
-              />
-              <input
-                type="text"
-                value={item.description}
-                onChange={(e) =>
-                  updateExhibition(index, 'description', e.target.value)
-                }
-                placeholder="전시 정보 (한글)"
-                className="flex-1 px-2 py-1 border border-gray-600 rounded focus:outline-none focus:ring-1 focus:ring-white bg-[#1a1a1a] text-white placeholder-gray-500"
-              />
-              <button
-                type="button"
-                onClick={() => removeExhibition(index)}
-                className="text-red-400 hover:text-red-300 px-2"
-              >
-                삭제
-              </button>
-            </div>
-            <div className="flex gap-2">
-              <div className="w-24" />
-              <input
-                type="text"
-                value={item.description_en || ''}
-                onChange={(e) =>
-                  updateExhibition(index, 'description_en', e.target.value)
-                }
-                placeholder="Exhibition (English)"
-                className="flex-1 px-2 py-1 border border-gray-600 rounded focus:outline-none focus:ring-1 focus:ring-white bg-[#1a1a1a] text-white placeholder-gray-500"
-              />
-              <div className="px-2 w-[52px]" />
-            </div>
-          </div>
-        ))}
-        <button
-          type="button"
-          onClick={addExhibition}
-          className="text-sm text-blue-400 hover:text-blue-300"
-        >
-          + 전시 추가
-        </button>
-      </div>
-
-      <div>
         <label className="block text-sm font-medium mb-1 text-gray-300">연락처 이메일</label>
         <input
           type="email"
@@ -396,6 +332,29 @@ export default function AboutForm({ aboutInfo, onSubmit }: AboutFormProps) {
             />
             사이트에 노출
           </label>
+        </div>
+      </div>
+
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+        <div>
+          <label className="block text-sm font-medium mb-1 text-gray-300">작업실 주소</label>
+          <input
+            type="text"
+            value={studioAddress}
+            onChange={(e) => setStudioAddress(e.target.value)}
+            className="w-full px-3 py-2 border border-gray-600 rounded focus:outline-none focus:ring-1 focus:ring-white bg-[#1a1a1a] text-white placeholder-gray-500"
+            placeholder="서울시 강남구 ..."
+          />
+        </div>
+        <div>
+          <label className="block text-sm font-medium mb-1 text-gray-300">작업실 주소 (영문)</label>
+          <input
+            type="text"
+            value={studioAddressEn}
+            onChange={(e) => setStudioAddressEn(e.target.value)}
+            className="w-full px-3 py-2 border border-gray-600 rounded focus:outline-none focus:ring-1 focus:ring-white bg-[#1a1a1a] text-white placeholder-gray-500"
+            placeholder="Gangnam-gu, Seoul, Korea"
+          />
         </div>
       </div>
 

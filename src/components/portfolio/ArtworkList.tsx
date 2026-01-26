@@ -1,6 +1,6 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useCallback } from 'react';
 import Image from 'next/image';
 import { Artwork } from '@/types/artwork';
 import ArtworkModal from '@/components/artwork/ArtworkModal';
@@ -12,8 +12,25 @@ interface ArtworkListProps {
 }
 
 export default function ArtworkList({ artworks }: ArtworkListProps) {
-  const [selectedArtwork, setSelectedArtwork] = useState<Artwork | null>(null);
+  const [selectedIndex, setSelectedIndex] = useState<number | null>(null);
   const { locale } = useLocale();
+
+  const selectedArtwork = selectedIndex !== null ? artworks[selectedIndex] : null;
+
+  const handlePrev = useCallback(() => {
+    if (selectedIndex !== null && selectedIndex > 0) {
+      setSelectedIndex(selectedIndex - 1);
+    }
+  }, [selectedIndex]);
+
+  const handleNext = useCallback(() => {
+    if (selectedIndex !== null && selectedIndex < artworks.length - 1) {
+      setSelectedIndex(selectedIndex + 1);
+    }
+  }, [selectedIndex, artworks.length]);
+
+  const hasPrev = selectedIndex !== null && selectedIndex > 0;
+  const hasNext = selectedIndex !== null && selectedIndex < artworks.length - 1;
 
   if (artworks.length === 0) {
     return (
@@ -27,10 +44,10 @@ export default function ArtworkList({ artworks }: ArtworkListProps) {
     <>
       {/* Responsive grid: 2 cols (mobile) → 3 cols (tablet) → 4 cols (desktop) */}
       <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
-        {artworks.map((artwork) => (
+        {artworks.map((artwork, index) => (
           <button
             key={artwork.id}
-            onClick={() => setSelectedArtwork(artwork)}
+            onClick={() => setSelectedIndex(index)}
             className="group block aspect-square relative overflow-hidden bg-gray-800 text-left"
           >
             {/* Image */}
@@ -62,7 +79,11 @@ export default function ArtworkList({ artworks }: ArtworkListProps) {
       {selectedArtwork && (
         <ArtworkModal
           artwork={selectedArtwork}
-          onClose={() => setSelectedArtwork(null)}
+          onClose={() => setSelectedIndex(null)}
+          onPrev={handlePrev}
+          onNext={handleNext}
+          hasPrev={hasPrev}
+          hasNext={hasNext}
         />
       )}
     </>

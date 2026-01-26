@@ -37,6 +37,7 @@ export async function PUT(
         image_url: body.image_url,
         thumbnail_url: body.thumbnail_url,
         is_featured: body.is_featured,
+        show_watermark: body.show_watermark ?? true,
         updated_at: new Date().toISOString(),
       })
       .eq('id', id)

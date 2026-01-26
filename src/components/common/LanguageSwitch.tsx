@@ -15,7 +15,7 @@ export default function LanguageSwitch() {
             : 'text-gray-400 hover:text-white'
         }`}
       >
-        한
+        KR
       </button>
       <span className="text-gray-600">/</span>
       <button

@@ -7,7 +7,16 @@ export const revalidate = 3600;
 async function getContactInfo() {
   const { data, error } = await supabase
     .from('about_info')
-    .select('contact_email, artist_name')
+    .select(`
+      artist_name,
+      artist_name_en,
+      bio_paragraphs,
+      bio_paragraphs_en,
+      contact_email,
+      social_links,
+      studio_address,
+      studio_address_en
+    `)
     .single();
 
   if (error) {
@@ -26,7 +35,7 @@ export default async function ContactPage() {
       <Header />
       <div className="pt-24 pb-16 px-6">
         <div className="max-w-2xl mx-auto">
-          <ContactContent contactEmail={contactInfo?.contact_email || null} />
+          <ContactContent contactInfo={contactInfo} />
         </div>
       </div>
     </main>
