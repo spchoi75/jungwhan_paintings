@@ -26,8 +26,8 @@
 
 ### 1.2 Supabase 설정
 - [ ] Supabase 프로젝트 생성 ← **사용자 작업 필요**
-- [ ] `artworks` 테이블 생성 (스키마 적용)
-- [ ] Storage 버킷 생성 (`artworks/originals`, `artworks/thumbnails`)
+- [ ] `portfolio` 테이블 생성 (스키마 적용)
+- [ ] Storage 버킷 생성 (`portfolio/originals`, `portfolio/thumbnails`)
 - [ ] RLS 정책 설정 (공개 읽기)
 - [x] 환경변수 설정 (`.env.local`, `.env.example`)
 
@@ -81,9 +81,9 @@
 - [x] HTTP-only 쿠키 설정
 
 ### 4.2 작품 API
-- [x] `app/api/artworks/route.ts` 작성 (GET, POST)
-- [x] `app/api/artworks/[id]/route.ts` 작성 (PUT, DELETE)
-- [x] `app/api/artworks/upload/route.ts` 작성 (이미지 업로드)
+- [x] `app/api/portfolio/route.ts` 작성 (GET, POST)
+- [x] `app/api/portfolio/[id]/route.ts` 작성 (PUT, DELETE)
+- [x] `app/api/portfolio/upload/route.ts` 작성 (이미지 업로드)
 
 ### 4.3 관리자 페이지 (F4)
 - [x] `app/admin/page.tsx` 작성
@@ -125,7 +125,7 @@
 
 ### 2. 데이터베이스 테이블 생성
 ```sql
-CREATE TABLE artworks (
+CREATE TABLE portfolio (
   id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
   title VARCHAR(200) NOT NULL,
   year INTEGER NOT NULL,
@@ -140,12 +140,12 @@ CREATE TABLE artworks (
   updated_at TIMESTAMPTZ DEFAULT NOW()
 );
 
-CREATE INDEX idx_artworks_featured ON artworks(is_featured) WHERE is_featured = TRUE;
-CREATE INDEX idx_artworks_order ON artworks("order");
+CREATE INDEX idx_portfolio_featured ON portfolio(is_featured) WHERE is_featured = TRUE;
+CREATE INDEX idx_portfolio_order ON portfolio("order");
 ```
 
 ### 3. Storage 버킷 생성
-1. Storage → New Bucket → `artworks`
+1. Storage → New Bucket → `portfolio`
 2. Public bucket으로 설정
 3. 폴더: `originals/`, `thumbnails/`
 

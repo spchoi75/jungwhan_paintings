@@ -5,7 +5,7 @@
 | 항목 | URL |
 |------|-----|
 | 메인 사이트 | https://jungwhanpaintings.vercel.app |
-| 포트폴리오 | https://jungwhanpaintings.vercel.app/artworks |
+| 포트폴리오 | https://jungwhanpaintings.vercel.app/portfolio |
 | 작가 소개 | https://jungwhanpaintings.vercel.app/about |
 | 전시 이력 | https://jungwhanpaintings.vercel.app/exhibitions |
 | 연락처 | https://jungwhanpaintings.vercel.app/contact |
@@ -50,7 +50,7 @@
    - **카테고리 이름** (필수): 예) 풍경화, 인물화, 추상화
    - **슬러그 (URL)** (필수): 예) landscape, portrait, abstract
      - 자동 생성되며 수정 가능
-     - URL에 사용됨: `/artworks/landscape`
+     - URL에 사용됨: `/portfolio/landscape`
    - **설명** (선택): 카테고리에 대한 간단한 설명
    - **커버 이미지** (선택): 포트폴리오 페이지에서 썸네일로 표시
 5. **"저장"** 클릭
@@ -175,7 +175,7 @@ https://supabase.com/dashboard → 프로젝트 선택
 ### 테이블 구조
 | 테이블 | 용도 |
 |--------|------|
-| `artworks` | 작품 정보 |
+| `portfolio` | 작품 정보 |
 | `categories` | 카테고리 정보 |
 | `exhibitions` | 전시 정보 |
 | `about_info` | 작가 소개 정보 |
@@ -188,7 +188,7 @@ https://supabase.com/dashboard → 프로젝트 선택
 
 ### 이미지 저장소 확인
 1. **Storage** 메뉴
-2. `artworks` 버킷에서 업로드된 이미지 확인/삭제
+2. `portfolio` 버킷에서 업로드된 이미지 확인/삭제
 
 ---
 
@@ -216,7 +216,7 @@ npx vercel --prod
 3. 브라우저 캐시 삭제 후 새로고침
 
 ### 작품이 안 나와요
-1. Supabase `artworks` 테이블에 데이터 있는지 확인
+1. Supabase `portfolio` 테이블에 데이터 있는지 확인
 2. 브라우저 개발자 도구 콘솔에서 에러 확인
 
 ### 관리자 로그인이 안 돼요

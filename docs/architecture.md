@@ -48,7 +48,7 @@
 │  │                       Supabase                           │    │
 │  │  ┌─────────────────┐      ┌─────────────────────────┐   │    │
 │  │  │   PostgreSQL    │      │    Storage (Images)     │   │    │
-│  │  │   - artworks    │      │    - originals/         │   │    │
+│  │  │   - portfolio   │      │    - originals/         │   │    │
 │  │  └─────────────────┘      │    - thumbnails/        │   │    │
 │  │                           └─────────────────────────┘   │    │
 │  └─────────────────────────────────────────────────────────┘    │
@@ -94,7 +94,7 @@ jungwhan_paintings/
 │   │   └── api/
 │   │       ├── auth/
 │   │       │   └── route.ts       # 인증 API
-│   │       └── artworks/
+│   │       └── portfolio/
 │   │           └── route.ts       # 작품 CRUD API
 │   │
 │   ├── components/
@@ -265,20 +265,20 @@ App (layout.tsx)
 
 | 엔드포인트 | 메서드 | 설명 |
 |------------|--------|------|
-| `/api/artworks` | GET | 작품 목록 조회 |
-| `/api/artworks` | POST | 작품 추가 (인증 필요) |
-| `/api/artworks/[id]` | PUT | 작품 수정 (인증 필요) |
-| `/api/artworks/[id]` | DELETE | 작품 삭제 (인증 필요) |
-| `/api/artworks/upload` | POST | 이미지 업로드 (인증 필요) |
+| `/api/portfolio` | GET | 작품 목록 조회 |
+| `/api/portfolio` | POST | 작품 추가 (인증 필요) |
+| `/api/portfolio/[id]` | PUT | 작품 수정 (인증 필요) |
+| `/api/portfolio/[id]` | DELETE | 작품 삭제 (인증 필요) |
+| `/api/portfolio/upload` | POST | 이미지 업로드 (인증 필요) |
 
 ---
 
 ## 7. 데이터베이스 스키마
 
-### 7.1 artworks 테이블
+### 7.1 portfolio 테이블
 
 ```sql
-CREATE TABLE artworks (
+CREATE TABLE portfolio (
   id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
   title VARCHAR(200) NOT NULL,
   year INTEGER NOT NULL,
@@ -294,14 +294,14 @@ CREATE TABLE artworks (
 );
 
 -- 인덱스
-CREATE INDEX idx_artworks_featured ON artworks(is_featured) WHERE is_featured = TRUE;
-CREATE INDEX idx_artworks_order ON artworks("order");
+CREATE INDEX idx_portfolio_featured ON portfolio(is_featured) WHERE is_featured = TRUE;
+CREATE INDEX idx_portfolio_order ON portfolio("order");
 ```
 
 ### 7.2 Storage 버킷 구조
 
 ```
-artworks/
+portfolio/
 ├── originals/          # 원본 고해상도 이미지
 │   └── {uuid}.webp
 └── thumbnails/         # 썸네일 (800px 너비)
@@ -338,8 +338,8 @@ export function middleware(request: NextRequest) {
 
 ```sql
 -- 공개 읽기 허용
-CREATE POLICY "Anyone can view artworks"
-  ON artworks FOR SELECT
+CREATE POLICY "Anyone can view portfolio"
+  ON portfolio FOR SELECT
   TO anon
   USING (true);
 

@@ -11,8 +11,8 @@ CREATE TABLE IF NOT EXISTS categories (
 );
 
 -- Artworks 테이블에 category_id 추가 (기존 테이블이 있다면)
-ALTER TABLE artworks ADD COLUMN IF NOT EXISTS category_id UUID REFERENCES categories(id);
-ALTER TABLE artworks ADD COLUMN IF NOT EXISTS description TEXT;
+ALTER TABLE portfolio ADD COLUMN IF NOT EXISTS category_id UUID REFERENCES categories(id);
+ALTER TABLE portfolio ADD COLUMN IF NOT EXISTS description TEXT;
 
 -- Categories RLS 정책
 ALTER TABLE categories ENABLE ROW LEVEL SECURITY;
@@ -26,6 +26,6 @@ CREATE POLICY "Categories are editable by authenticated users"
   USING (true);
 
 -- 인덱스 추가
-CREATE INDEX IF NOT EXISTS idx_artworks_category_id ON artworks(category_id);
+CREATE INDEX IF NOT EXISTS idx_portfolio_category_id ON portfolio(category_id);
 CREATE INDEX IF NOT EXISTS idx_categories_slug ON categories(slug);
 CREATE INDEX IF NOT EXISTS idx_categories_order ON categories("order");
