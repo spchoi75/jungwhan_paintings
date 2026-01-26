@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { Cormorant_Garamond, Noto_Sans_KR, Noto_Serif_KR } from "next/font/google";
 import "./globals.css";
 import { SidePanelProvider } from "@/contexts/SidePanelContext";
+import Footer from "@/components/common/Footer";
 
 const cormorant = Cormorant_Garamond({
   variable: "--font-cormorant",
@@ -40,7 +41,12 @@ export default function RootLayout({
         className={`${cormorant.variable} ${notoSansKr.variable} ${notoSerifKr.variable} antialiased`}
       >
         <SidePanelProvider>
-          {children}
+          <div className="flex flex-col min-h-screen">
+            <div className="flex-grow">
+              {children}
+            </div>
+            <Footer />
+          </div>
         </SidePanelProvider>
       </body>
     </html>

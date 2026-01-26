@@ -54,13 +54,23 @@ export interface ExhibitionItem {
   description: string;
 }
 
+export interface SocialLink {
+  platform: 'instagram' | 'facebook' | 'twitter' | 'youtube' | 'website' | 'other';
+  url: string;
+  label?: string;
+}
+
 export interface AboutInfo {
   id: string;
   artist_name: string;
   bio_paragraphs: string[];
+  footer_bio: string | null;
   education: EducationItem[];
   exhibitions: ExhibitionItem[];
   contact_email: string | null;
+  contact_phone: string | null;
+  phone_visible: boolean;
+  social_links: SocialLink[];
   profile_image_url: string | null;
   cv_file_url: string | null;
   updated_at: string;
@@ -69,9 +79,13 @@ export interface AboutInfo {
 export interface AboutFormData {
   artist_name: string;
   bio_paragraphs: string[];
+  footer_bio?: string;
   education: EducationItem[];
   exhibitions: ExhibitionItem[];
   contact_email?: string;
+  contact_phone?: string;
+  phone_visible?: boolean;
+  social_links?: SocialLink[];
   profile_image_url?: string;
   cv_file_url?: string;
 }

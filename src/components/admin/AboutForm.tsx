@@ -1,9 +1,18 @@
 'use client';
 
 import { useState, useEffect } from 'react';
-import { AboutInfo, AboutFormData, EducationItem, ExhibitionItem } from '@/types/artwork';
+import { AboutInfo, AboutFormData, EducationItem, ExhibitionItem, SocialLink } from '@/types/artwork';
 import Button from '@/components/common/Button';
 import ImageUploader from '@/components/admin/ImageUploader';
+
+const SOCIAL_PLATFORMS = [
+  { value: 'instagram', label: 'Instagram' },
+  { value: 'facebook', label: 'Facebook' },
+  { value: 'twitter', label: 'Twitter/X' },
+  { value: 'youtube', label: 'YouTube' },
+  { value: 'website', label: '웹사이트' },
+  { value: 'other', label: '기타' },
+] as const;
 
 interface AboutFormProps {
   aboutInfo?: AboutInfo;
@@ -16,6 +25,10 @@ export default function AboutForm({ aboutInfo, onSubmit }: AboutFormProps) {
   const [education, setEducation] = useState<EducationItem[]>([]);
   const [exhibitions, setExhibitions] = useState<ExhibitionItem[]>([]);
   const [contactEmail, setContactEmail] = useState('');
+  const [contactPhone, setContactPhone] = useState('');
+  const [phoneVisible, setPhoneVisible] = useState(false);
+  const [socialLinks, setSocialLinks] = useState<SocialLink[]>([]);
+  const [footerBio, setFooterBio] = useState('');
   const [profileImageUrl, setProfileImageUrl] = useState('');
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
@@ -31,6 +44,10 @@ export default function AboutForm({ aboutInfo, onSubmit }: AboutFormProps) {
       setEducation(aboutInfo.education || []);
       setExhibitions(aboutInfo.exhibitions || []);
       setContactEmail(aboutInfo.contact_email || '');
+      setContactPhone(aboutInfo.contact_phone || '');
+      setPhoneVisible(aboutInfo.phone_visible || false);
+      setSocialLinks(aboutInfo.social_links || []);
+      setFooterBio(aboutInfo.footer_bio || '');
       setProfileImageUrl(aboutInfo.profile_image_url || '');
     }
   }, [aboutInfo]);
@@ -75,6 +92,20 @@ export default function AboutForm({ aboutInfo, onSubmit }: AboutFormProps) {
     setExhibitions(updated);
   };
 
+  const addSocialLink = () =>
+    setSocialLinks([...socialLinks, { platform: 'instagram', url: '' }]);
+  const removeSocialLink = (index: number) =>
+    setSocialLinks(socialLinks.filter((_, i) => i !== index));
+  const updateSocialLink = (
+    index: number,
+    field: keyof SocialLink,
+    value: string
+  ) => {
+    const updated = [...socialLinks];
+    updated[index] = { ...updated[index], [field]: value } as SocialLink;
+    setSocialLinks(updated);
+  };
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setLoading(true);
@@ -84,9 +115,13 @@ export default function AboutForm({ aboutInfo, onSubmit }: AboutFormProps) {
       await onSubmit({
         artist_name: artistName,
         bio_paragraphs: bioParagraphs.filter((p) => p.trim()),
+        footer_bio: footerBio || undefined,
         education: education.filter((e) => e.year && e.description),
         exhibitions: exhibitions.filter((e) => e.year && e.description),
         contact_email: contactEmail || undefined,
+        contact_phone: contactPhone || undefined,
+        phone_visible: phoneVisible,
+        social_links: socialLinks.filter((s) => s.url.trim()),
         profile_image_url: profileImageUrl || undefined,
       });
     } catch (err) {
@@ -238,6 +273,91 @@ export default function AboutForm({ aboutInfo, onSubmit }: AboutFormProps) {
           onChange={(e) => setContactEmail(e.target.value)}
           className="w-full px-3 py-2 border border-gray-600 rounded focus:outline-none focus:ring-1 focus:ring-white bg-[#1a1a1a] text-white placeholder-gray-500"
           placeholder="email@example.com"
+        />
+      </div>
+
+      <div>
+        <label className="block text-sm font-medium mb-1 text-gray-300">전화번호</label>
+        <div className="flex gap-3 items-center">
+          <input
+            type="tel"
+            value={contactPhone}
+            onChange={(e) => setContactPhone(e.target.value)}
+            className="flex-1 px-3 py-2 border border-gray-600 rounded focus:outline-none focus:ring-1 focus:ring-white bg-[#1a1a1a] text-white placeholder-gray-500"
+            placeholder="010-1234-5678"
+          />
+          <label className="flex items-center gap-2 text-sm text-gray-300 whitespace-nowrap">
+            <input
+              type="checkbox"
+              checked={phoneVisible}
+              onChange={(e) => setPhoneVisible(e.target.checked)}
+              className="w-4 h-4 rounded border-gray-600 bg-[#1a1a1a] text-blue-500 focus:ring-blue-500"
+            />
+            사이트에 노출
+          </label>
+        </div>
+      </div>
+
+      <div>
+        <label className="block text-sm font-medium mb-2 text-gray-300">SNS 계정</label>
+        {socialLinks.map((link, index) => (
+          <div key={index} className="flex gap-2 mb-2">
+            <select
+              value={link.platform}
+              onChange={(e) => updateSocialLink(index, 'platform', e.target.value)}
+              className="w-32 px-2 py-1 border border-gray-600 rounded focus:outline-none focus:ring-1 focus:ring-white bg-[#1a1a1a] text-white"
+            >
+              {SOCIAL_PLATFORMS.map((p) => (
+                <option key={p.value} value={p.value}>
+                  {p.label}
+                </option>
+              ))}
+            </select>
+            <input
+              type="url"
+              value={link.url}
+              onChange={(e) => updateSocialLink(index, 'url', e.target.value)}
+              placeholder="https://..."
+              className="flex-1 px-2 py-1 border border-gray-600 rounded focus:outline-none focus:ring-1 focus:ring-white bg-[#1a1a1a] text-white placeholder-gray-500"
+            />
+            {link.platform === 'other' && (
+              <input
+                type="text"
+                value={link.label || ''}
+                onChange={(e) => updateSocialLink(index, 'label', e.target.value)}
+                placeholder="표시명"
+                className="w-24 px-2 py-1 border border-gray-600 rounded focus:outline-none focus:ring-1 focus:ring-white bg-[#1a1a1a] text-white placeholder-gray-500"
+              />
+            )}
+            <button
+              type="button"
+              onClick={() => removeSocialLink(index)}
+              className="text-red-400 hover:text-red-300 px-2"
+            >
+              삭제
+            </button>
+          </div>
+        ))}
+        <button
+          type="button"
+          onClick={addSocialLink}
+          className="text-sm text-blue-400 hover:text-blue-300"
+        >
+          + SNS 추가
+        </button>
+      </div>
+
+      <div>
+        <label className="block text-sm font-medium mb-1 text-gray-300">
+          Footer 소개문
+          <span className="text-gray-500 font-normal ml-2">(사이트 하단에 표시)</span>
+        </label>
+        <input
+          type="text"
+          value={footerBio}
+          onChange={(e) => setFooterBio(e.target.value)}
+          className="w-full px-3 py-2 border border-gray-600 rounded focus:outline-none focus:ring-1 focus:ring-white bg-[#1a1a1a] text-white placeholder-gray-500"
+          placeholder="예: 한국의 자연과 인물을 담은 작품 활동을 하고 있습니다."
         />
       </div>
 

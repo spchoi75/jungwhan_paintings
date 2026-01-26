@@ -27,7 +27,7 @@ async function getCategoryBySlug(slug: string): Promise<Category | null> {
 
 async function getArtworksByCategory(categoryId: string): Promise<Artwork[]> {
   const { data, error } = await supabase
-    .from('artworks')
+    .from('portfolio')
     .select('*')
     .eq('category_id', categoryId)
     .order('year', { ascending: false });
@@ -42,7 +42,8 @@ async function getArtworksByCategory(categoryId: string): Promise<Artwork[]> {
 
 export default async function CategoryPage({ params }: PageProps) {
   const { slug } = await params;
-  const category = await getCategoryBySlug(slug);
+  const decodedSlug = decodeURIComponent(slug);
+  const category = await getCategoryBySlug(decodedSlug);
 
   if (!category) {
     notFound();

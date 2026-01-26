@@ -25,9 +25,13 @@ export async function GET() {
       id: null,
       artist_name: 'Jungwhan',
       bio_paragraphs: ['작가 소개 텍스트를 여기에 입력하세요.'],
+      footer_bio: null,
       education: [],
       exhibitions: [],
       contact_email: null,
+      contact_phone: null,
+      phone_visible: false,
+      social_links: [],
       profile_image_url: null,
       updated_at: null,
     });
@@ -55,9 +59,13 @@ export async function PUT(request: NextRequest) {
       .update({
         artist_name: body.artist_name,
         bio_paragraphs: body.bio_paragraphs,
+        footer_bio: body.footer_bio || null,
         education: body.education,
         exhibitions: body.exhibitions,
         contact_email: body.contact_email || null,
+        contact_phone: body.contact_phone || null,
+        phone_visible: body.phone_visible || false,
+        social_links: body.social_links || [],
         profile_image_url: body.profile_image_url || null,
         updated_at: new Date().toISOString(),
       })
@@ -70,9 +78,13 @@ export async function PUT(request: NextRequest) {
       .insert([{
         artist_name: body.artist_name,
         bio_paragraphs: body.bio_paragraphs,
+        footer_bio: body.footer_bio || null,
         education: body.education,
         exhibitions: body.exhibitions,
         contact_email: body.contact_email || null,
+        contact_phone: body.contact_phone || null,
+        phone_visible: body.phone_visible || false,
+        social_links: body.social_links || [],
         profile_image_url: body.profile_image_url || null,
       }])
       .select()
