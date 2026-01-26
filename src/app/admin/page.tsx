@@ -82,7 +82,7 @@ export default function AdminPage() {
 
   const fetchArtworks = async () => {
     try {
-      const response = await fetch('/api/artworks');
+      const response = await fetch('/api/portfolio');
       if (response.ok) {
         const data = await response.json();
         setArtworks(data);
@@ -158,8 +158,8 @@ export default function AdminPage() {
     data: ArtworkFormData & { image_url: string; thumbnail_url: string }
   ) => {
     const url = editingArtwork
-      ? `/api/artworks/${editingArtwork.id}`
-      : '/api/artworks';
+      ? `/api/portfolio/${editingArtwork.id}`
+      : '/api/portfolio';
     const method = editingArtwork ? 'PUT' : 'POST';
 
     const response = await fetch(url, {
@@ -184,7 +184,7 @@ export default function AdminPage() {
     setDeleteLoading(true);
 
     try {
-      const response = await fetch(`/api/artworks/${deletingArtwork.id}`, {
+      const response = await fetch(`/api/portfolio/${deletingArtwork.id}`, {
         method: 'DELETE',
       });
 

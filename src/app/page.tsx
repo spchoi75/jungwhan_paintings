@@ -7,7 +7,7 @@ export const revalidate = 3600;
 
 async function getFeaturedArtworks(): Promise<Artwork[]> {
   const { data, error } = await supabase
-    .from('artworks')
+    .from('portfolio')
     .select('*')
     .eq('is_featured', true)
     .order('order', { ascending: true })

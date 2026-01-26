@@ -13,13 +13,13 @@ const nextConfig: NextConfig = {
   async redirects() {
     return [
       {
-        source: '/portfolio',
-        destination: '/artworks',
+        source: '/artworks',
+        destination: '/portfolio',
         permanent: true,
       },
       {
-        source: '/portfolio/:slug',
-        destination: '/artworks/:slug',
+        source: '/artworks/:slug',
+        destination: '/portfolio/:slug',
         permanent: true,
       },
     ];

@@ -45,7 +45,7 @@ export default function ImageUploader({ onUpload, currentImage }: ImageUploaderP
       const formData = new FormData();
       formData.append('file', file);
 
-      const response = await fetch('/api/artworks/upload', {
+      const response = await fetch('/api/portfolio/upload', {
         method: 'POST',
         body: formData,
       });

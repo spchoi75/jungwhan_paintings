@@ -77,6 +77,36 @@ html {
   50% { transform: translateY(8px); }
 }
 
+@keyframes float {
+  0%, 100% {
+    transform: translateY(0) translateX(0);
+  }
+  25% {
+    transform: translateY(-8px) translateX(4px);
+  }
+  50% {
+    transform: translateY(-4px) translateX(-4px);
+  }
+  75% {
+    transform: translateY(-12px) translateX(2px);
+  }
+}
+
+@keyframes wobble {
+  0%, 100% {
+    transform: scale(1) rotate(0deg);
+  }
+  25% {
+    transform: scale(1.02) rotate(1deg);
+  }
+  50% {
+    transform: scale(0.98) rotate(-1deg);
+  }
+  75% {
+    transform: scale(1.01) rotate(0.5deg);
+  }
+}
+
 .animate-fade-in {
   animation: fadeIn 0.3s ease-out;
 }
@@ -87,4 +117,12 @@ html {
 
 .animate-bounce-slow {
   animation: bounce 2s ease-in-out infinite;
+}
+
+.animate-float {
+  animation: float 4s ease-in-out infinite;
+}
+
+.animate-wobble {
+  animation: wobble 3s ease-in-out infinite;
 }
