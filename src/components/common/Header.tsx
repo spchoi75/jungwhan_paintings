@@ -2,10 +2,13 @@
 
 import Link from 'next/link';
 import SidePanel from './SidePanel';
+import LanguageSwitch from './LanguageSwitch';
 import { useSidePanel } from '@/contexts/SidePanelContext';
+import { useLocale } from '@/i18n';
 
 export default function Header() {
   const { open } = useSidePanel();
+  const { t } = useLocale();
 
   return (
     <>
@@ -15,7 +18,7 @@ export default function Header() {
           <button
             onClick={open}
             className="p-2 text-gray-400 hover:text-white transition-colors"
-            aria-label="메뉴 열기"
+            aria-label={t.aria.openMenu}
           >
             <svg
               className="w-6 h-6"
@@ -32,14 +35,17 @@ export default function Header() {
             </svg>
           </button>
 
-          {/* Logo - Right with Oriental serif font */}
-          <Link
-            href="/"
-            className="text-2xl tracking-wider font-medium text-white"
-            style={{ fontFamily: 'var(--font-noto-serif), serif' }}
-          >
-            정환
-          </Link>
+          {/* Right side: Language Switch + Logo */}
+          <div className="flex items-center gap-6">
+            <LanguageSwitch />
+            <Link
+              href="/"
+              className="text-2xl tracking-wider font-medium text-white"
+              style={{ fontFamily: 'var(--font-noto-serif), serif' }}
+            >
+              {t.common.logo}
+            </Link>
+          </div>
         </div>
       </header>
 

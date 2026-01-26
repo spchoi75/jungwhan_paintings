@@ -27,8 +27,10 @@ export default function CategoryForm({
 }: CategoryFormProps) {
   const [formData, setFormData] = useState<CategoryFormData>({
     name: '',
+    name_en: '',
     slug: '',
     description: '',
+    description_en: '',
   });
   const [coverImageUrl, setCoverImageUrl] = useState<string>('');
   const [loading, setLoading] = useState(false);
@@ -38,8 +40,10 @@ export default function CategoryForm({
     if (category) {
       setFormData({
         name: category.name,
+        name_en: category.name_en || '',
         slug: category.slug,
         description: category.description || '',
+        description_en: category.description_en || '',
       });
       setCoverImageUrl(category.cover_image_url || '');
     }
@@ -78,18 +82,32 @@ export default function CategoryForm({
         </div>
       )}
 
-      <div>
-        <label className="block text-sm font-medium mb-1 text-gray-300">
-          카테고리 이름 <span className="text-red-400">*</span>
-        </label>
-        <input
-          type="text"
-          value={formData.name}
-          onChange={(e) => handleNameChange(e.target.value)}
-          className="w-full px-3 py-2 border border-gray-600 rounded focus:outline-none focus:ring-1 focus:ring-white bg-[#1a1a1a] text-white placeholder-gray-500"
-          required
-          placeholder="예: 풍경화, 인물화, 추상화"
-        />
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+        <div>
+          <label className="block text-sm font-medium mb-1 text-gray-300">
+            카테고리 이름 <span className="text-red-400">*</span>
+          </label>
+          <input
+            type="text"
+            value={formData.name}
+            onChange={(e) => handleNameChange(e.target.value)}
+            className="w-full px-3 py-2 border border-gray-600 rounded focus:outline-none focus:ring-1 focus:ring-white bg-[#1a1a1a] text-white placeholder-gray-500"
+            required
+            placeholder="예: 풍경화, 인물화, 추상화"
+          />
+        </div>
+        <div>
+          <label className="block text-sm font-medium mb-1 text-gray-300">
+            카테고리 이름 (영문)
+          </label>
+          <input
+            type="text"
+            value={formData.name_en}
+            onChange={(e) => setFormData({ ...formData, name_en: e.target.value })}
+            className="w-full px-3 py-2 border border-gray-600 rounded focus:outline-none focus:ring-1 focus:ring-white bg-[#1a1a1a] text-white placeholder-gray-500"
+            placeholder="e.g. Landscape, Portrait, Abstract"
+          />
+        </div>
       </div>
 
       <div>
@@ -109,17 +127,31 @@ export default function CategoryForm({
         </p>
       </div>
 
-      <div>
-        <label className="block text-sm font-medium mb-1 text-gray-300">설명</label>
-        <textarea
-          value={formData.description}
-          onChange={(e) =>
-            setFormData({ ...formData, description: e.target.value })
-          }
-          className="w-full px-3 py-2 border border-gray-600 rounded focus:outline-none focus:ring-1 focus:ring-white resize-none bg-[#1a1a1a] text-white placeholder-gray-500"
-          rows={3}
-          placeholder="이 카테고리에 대한 간단한 설명"
-        />
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+        <div>
+          <label className="block text-sm font-medium mb-1 text-gray-300">설명</label>
+          <textarea
+            value={formData.description}
+            onChange={(e) =>
+              setFormData({ ...formData, description: e.target.value })
+            }
+            className="w-full px-3 py-2 border border-gray-600 rounded focus:outline-none focus:ring-1 focus:ring-white resize-none bg-[#1a1a1a] text-white placeholder-gray-500"
+            rows={3}
+            placeholder="이 카테고리에 대한 간단한 설명"
+          />
+        </div>
+        <div>
+          <label className="block text-sm font-medium mb-1 text-gray-300">설명 (영문)</label>
+          <textarea
+            value={formData.description_en}
+            onChange={(e) =>
+              setFormData({ ...formData, description_en: e.target.value })
+            }
+            className="w-full px-3 py-2 border border-gray-600 rounded focus:outline-none focus:ring-1 focus:ring-white resize-none bg-[#1a1a1a] text-white placeholder-gray-500"
+            rows={3}
+            placeholder="Brief description of this category"
+          />
+        </div>
       </div>
 
       <div>

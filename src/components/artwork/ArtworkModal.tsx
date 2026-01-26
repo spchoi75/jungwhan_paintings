@@ -3,6 +3,8 @@
 import { useEffect, useCallback } from 'react';
 import { Artwork } from '@/types/artwork';
 import ZoomableImage from './ZoomableImage';
+import { useLocale } from '@/i18n';
+import { getLocalizedValue } from '@/lib/i18n-utils';
 
 interface ArtworkModalProps {
   artwork: Artwork;
@@ -21,6 +23,7 @@ export default function ArtworkModal({
   hasPrev = false,
   hasNext = false,
 }: ArtworkModalProps) {
+  const { locale, t } = useLocale();
   const handleKeyDown = useCallback(
     (e: KeyboardEvent) => {
       switch (e.key) {
@@ -59,7 +62,7 @@ export default function ArtworkModal({
       <button
         onClick={onClose}
         className="absolute top-4 right-4 z-20 w-10 h-10 flex items-center justify-center text-white/70 hover:text-white transition-colors"
-        aria-label="모달 닫기"
+        aria-label={t.aria.closeModal}
       >
         <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
           <line x1="18" y1="6" x2="6" y2="18" />
@@ -72,7 +75,7 @@ export default function ArtworkModal({
         <button
           onClick={onPrev}
           className="absolute left-4 top-1/2 -translate-y-1/2 z-20 w-12 h-12 flex items-center justify-center text-white/70 hover:text-white transition-colors"
-          aria-label="이전 작품"
+          aria-label={t.aria.prevArtwork}
         >
           <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
             <polyline points="15 18 9 12 15 6" />
@@ -84,7 +87,7 @@ export default function ArtworkModal({
         <button
           onClick={onNext}
           className="absolute right-4 top-1/2 -translate-y-1/2 z-20 w-12 h-12 flex items-center justify-center text-white/70 hover:text-white transition-colors"
-          aria-label="다음 작품"
+          aria-label={t.aria.nextArtwork}
         >
           <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
             <polyline points="9 18 15 12 9 6" />
@@ -94,21 +97,21 @@ export default function ArtworkModal({
 
       {/* Image container */}
       <div className="absolute inset-0 top-0 bottom-24">
-        <ZoomableImage src={artwork.image_url} alt={artwork.title} />
+        <ZoomableImage src={artwork.image_url} alt={getLocalizedValue(locale, artwork.title, artwork.title_en)} />
       </div>
 
       {/* Artwork info */}
       <div className="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black/80 to-transparent pt-12 pb-6 px-6 max-h-[40%] overflow-y-auto">
         <div className="max-w-2xl mx-auto text-center">
-          <h2 className="text-white text-xl font-medium">{artwork.title}</h2>
+          <h2 className="text-white text-xl font-medium">{getLocalizedValue(locale, artwork.title, artwork.title_en)}</h2>
           <p className="text-white/60 text-sm mt-2">
             {artwork.year}
             {formatSize() && ` · ${formatSize()}`}
             {artwork.medium && ` · ${artwork.medium}`}
           </p>
-          {artwork.description && (
+          {getLocalizedValue(locale, artwork.description, artwork.description_en) && (
             <p className="text-white/80 text-sm mt-4 leading-relaxed whitespace-pre-line">
-              {artwork.description}
+              {getLocalizedValue(locale, artwork.description, artwork.description_en)}
             </p>
           )}
         </div>

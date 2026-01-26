@@ -24,8 +24,11 @@ export async function GET() {
     return NextResponse.json({
       id: null,
       artist_name: 'Jungwhan',
+      artist_name_en: null,
       bio_paragraphs: ['작가 소개 텍스트를 여기에 입력하세요.'],
+      bio_paragraphs_en: [],
       footer_bio: null,
+      footer_bio_en: null,
       education: [],
       exhibitions: [],
       contact_email: null,
@@ -58,8 +61,11 @@ export async function PUT(request: NextRequest) {
       .from('about_info')
       .update({
         artist_name: body.artist_name,
+        artist_name_en: body.artist_name_en || null,
         bio_paragraphs: body.bio_paragraphs,
+        bio_paragraphs_en: body.bio_paragraphs_en || [],
         footer_bio: body.footer_bio || null,
+        footer_bio_en: body.footer_bio_en || null,
         education: body.education,
         exhibitions: body.exhibitions,
         contact_email: body.contact_email || null,
@@ -77,8 +83,11 @@ export async function PUT(request: NextRequest) {
       .from('about_info')
       .insert([{
         artist_name: body.artist_name,
+        artist_name_en: body.artist_name_en || null,
         bio_paragraphs: body.bio_paragraphs,
+        bio_paragraphs_en: body.bio_paragraphs_en || [],
         footer_bio: body.footer_bio || null,
+        footer_bio_en: body.footer_bio_en || null,
         education: body.education,
         exhibitions: body.exhibitions,
         contact_email: body.contact_email || null,

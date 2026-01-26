@@ -1,8 +1,10 @@
 export interface Category {
   id: string;
   name: string;
+  name_en: string | null;
   slug: string;
   description: string | null;
+  description_en: string | null;
   cover_image_url: string | null;
   order: number;
   created_at: string;
@@ -12,11 +14,13 @@ export interface Category {
 export interface Artwork {
   id: string;
   title: string;
+  title_en: string | null;
   year: number;
   width: number | null;
   height: number | null;
   medium: string | null;
   description: string | null;
+  description_en: string | null;
   image_url: string;
   thumbnail_url: string;
   is_featured: boolean;
@@ -29,29 +33,35 @@ export interface Artwork {
 
 export interface ArtworkFormData {
   title: string;
+  title_en?: string;
   year: number;
   width?: number;
   height?: number;
   medium?: string;
   description?: string;
+  description_en?: string;
   is_featured: boolean;
   category_id?: string;
 }
 
 export interface CategoryFormData {
   name: string;
+  name_en?: string;
   slug: string;
   description?: string;
+  description_en?: string;
 }
 
 export interface EducationItem {
   year: string;
   description: string;
+  description_en?: string;
 }
 
 export interface ExhibitionItem {
   year: string;
   description: string;
+  description_en?: string;
 }
 
 export interface SocialLink {
@@ -63,8 +73,11 @@ export interface SocialLink {
 export interface AboutInfo {
   id: string;
   artist_name: string;
+  artist_name_en: string | null;
   bio_paragraphs: string[];
+  bio_paragraphs_en: string[];
   footer_bio: string | null;
+  footer_bio_en: string | null;
   education: EducationItem[];
   exhibitions: ExhibitionItem[];
   contact_email: string | null;
@@ -78,8 +91,11 @@ export interface AboutInfo {
 
 export interface AboutFormData {
   artist_name: string;
+  artist_name_en?: string;
   bio_paragraphs: string[];
+  bio_paragraphs_en?: string[];
   footer_bio?: string;
+  footer_bio_en?: string;
   education: EducationItem[];
   exhibitions: ExhibitionItem[];
   contact_email?: string;
@@ -94,8 +110,11 @@ export interface AboutFormData {
 export interface Exhibition {
   id: string;
   title: string;
+  title_en: string | null;
   venue: string;
+  venue_en: string | null;
   location: string | null;
+  location_en: string | null;
   year: number;
   type: 'solo' | 'group';
   external_url: string | null;
@@ -105,8 +124,11 @@ export interface Exhibition {
 
 export interface ExhibitionFormData {
   title: string;
+  title_en?: string;
   venue: string;
+  venue_en?: string;
   location?: string;
+  location_en?: string;
   year: number;
   type: 'solo' | 'group';
   external_url?: string;

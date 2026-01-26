@@ -5,18 +5,20 @@ import { Dialog, DialogPanel, Transition, TransitionChild } from '@headlessui/re
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import { useSidePanel } from '@/contexts/SidePanelContext';
-
-const navItems = [
-  { href: '/', label: 'Home' },
-  { href: '/artworks', label: 'Portfolio' },
-  { href: '/about', label: 'About' },
-  { href: '/exhibitions', label: 'Exhibitions' },
-  { href: '/contact', label: 'Contact' },
-];
+import { useLocale } from '@/i18n';
 
 export default function SidePanel() {
   const pathname = usePathname();
   const { isOpen, open, close } = useSidePanel();
+  const { t } = useLocale();
+
+  const navItems = [
+    { href: '/', label: t.nav.home },
+    { href: '/portfolio', label: t.nav.portfolio },
+    { href: '/about', label: t.nav.about },
+    { href: '/exhibitions', label: t.nav.exhibitions },
+    { href: '/contact', label: t.nav.contact },
+  ];
 
   return (
     <>
@@ -28,7 +30,7 @@ export default function SidePanel() {
           style={{
             background: 'linear-gradient(to right, #1f1f1f, #2a2a2a)',
           }}
-          aria-label="메뉴 열기"
+          aria-label={t.aria.openMenu}
         >
           <div className="flex flex-col gap-1.5">
             <div className="w-1 h-1 rounded-full bg-gray-500 group-hover:bg-gray-300 transition-colors" />
@@ -78,7 +80,7 @@ export default function SidePanel() {
                 <button
                   onClick={close}
                   className="p-2 text-gray-400 hover:text-white transition-colors"
-                  aria-label="메뉴 닫기"
+                  aria-label={t.aria.closeMenu}
                 >
                   <svg
                     className="w-6 h-6"
@@ -120,7 +122,7 @@ export default function SidePanel() {
               {/* Footer */}
               <div className="absolute bottom-0 left-0 right-0 p-6 border-t border-gray-700/50">
                 <p className="text-xs text-gray-500 tracking-wide">
-                  정환
+                  {t.common.logo}
                 </p>
               </div>
 

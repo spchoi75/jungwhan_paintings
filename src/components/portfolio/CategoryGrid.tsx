@@ -4,6 +4,8 @@ import Link from 'next/link';
 import Image from 'next/image';
 import { Category } from '@/types/artwork';
 import { useState, useEffect } from 'react';
+import { useLocale } from '@/i18n';
+import { getLocalizedValue } from '@/lib/i18n-utils';
 
 interface CategoryGridProps {
   categories: Category[];
@@ -52,6 +54,7 @@ function generateCircleStyles(index: number, total: number) {
 export default function CategoryGrid({ categories }: CategoryGridProps) {
   const [mounted, setMounted] = useState(false);
   const [hoveredId, setHoveredId] = useState<string | null>(null);
+  const { locale } = useLocale();
 
   useEffect(() => {
     // 탭 전환 시 애니메이션 트리거
@@ -114,7 +117,7 @@ export default function CategoryGrid({ categories }: CategoryGridProps) {
               {category.cover_image_url && (
                 <Image
                   src={category.cover_image_url}
-                  alt={category.name}
+                  alt={getLocalizedValue(locale, category.name, category.name_en)}
                   fill
                   loading="lazy"
                   className={`object-cover transition-all duration-500

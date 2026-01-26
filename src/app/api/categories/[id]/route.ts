@@ -31,8 +31,10 @@ export async function PUT(
     .from('categories')
     .update({
       name: body.name,
+      name_en: body.name_en || null,
       slug: body.slug,
       description: body.description,
+      description_en: body.description_en || null,
       cover_image_url: body.cover_image_url,
       order: body.order,
       updated_at: new Date().toISOString(),

@@ -1,7 +1,7 @@
 import { supabase } from '@/lib/supabase/client';
 import { Exhibition } from '@/types/artwork';
 import Header from '@/components/common/Header';
-import ExhibitionList from '@/components/exhibitions/ExhibitionList';
+import ExhibitionsContent from '@/components/exhibitions/ExhibitionsContent';
 
 export const revalidate = 3600;
 
@@ -32,25 +32,7 @@ export default async function ExhibitionsPage() {
       <Header />
       <div className="pt-24 pb-16 px-6">
         <div className="max-w-4xl mx-auto">
-          <h1 className="text-3xl font-light tracking-wide mb-12 text-white">
-            Exhibitions
-          </h1>
-
-          {/* Solo Exhibitions */}
-          <section className="mb-16">
-            <h2 className="text-xl font-medium mb-6 pb-2 border-b border-gray-700 text-white">
-              Selected Solo Exhibitions
-            </h2>
-            <ExhibitionList exhibitions={solo} />
-          </section>
-
-          {/* Group Exhibitions */}
-          <section>
-            <h2 className="text-xl font-medium mb-6 pb-2 border-b border-gray-700 text-white">
-              Selected Group Exhibitions
-            </h2>
-            <ExhibitionList exhibitions={group} />
-          </section>
+          <ExhibitionsContent solo={solo} group={group} />
         </div>
       </div>
     </main>

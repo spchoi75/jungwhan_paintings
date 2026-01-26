@@ -4,6 +4,8 @@ import { useState } from 'react';
 import Image from 'next/image';
 import { Artwork } from '@/types/artwork';
 import ArtworkModal from '@/components/artwork/ArtworkModal';
+import { useLocale } from '@/i18n';
+import { getLocalizedValue } from '@/lib/i18n-utils';
 
 interface ArtworkListProps {
   artworks: Artwork[];
@@ -11,6 +13,7 @@ interface ArtworkListProps {
 
 export default function ArtworkList({ artworks }: ArtworkListProps) {
   const [selectedArtwork, setSelectedArtwork] = useState<Artwork | null>(null);
+  const { locale } = useLocale();
 
   if (artworks.length === 0) {
     return (
@@ -33,7 +36,7 @@ export default function ArtworkList({ artworks }: ArtworkListProps) {
             {/* Image */}
             <Image
               src={artwork.thumbnail_url || artwork.image_url}
-              alt={artwork.title}
+              alt={getLocalizedValue(locale, artwork.title, artwork.title_en)}
               fill
               loading="lazy"
               className="object-contain transition-transform duration-500 group-hover:scale-110"
@@ -46,7 +49,7 @@ export default function ArtworkList({ artworks }: ArtworkListProps) {
             {/* Artwork info (visible on hover) */}
             <div className="absolute inset-0 flex flex-col items-center justify-center p-4 opacity-0 group-hover:opacity-100 transition-opacity duration-300">
               <span className="text-white text-center text-sm font-light tracking-wider">
-                {artwork.title}
+                {getLocalizedValue(locale, artwork.title, artwork.title_en)}
               </span>
               <span className="text-white/70 text-xs mt-1">
                 {artwork.year}

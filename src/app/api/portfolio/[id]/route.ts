@@ -26,11 +26,13 @@ export async function PUT(
       .from('portfolio')
       .update({
         title: body.title,
+        title_en: body.title_en || null,
         year: body.year,
         width: body.width || null,
         height: body.height || null,
         medium: body.medium || null,
         description: body.description || null,
+        description_en: body.description_en || null,
         category_id: body.category_id || null,
         image_url: body.image_url,
         thumbnail_url: body.thumbnail_url,
