@@ -10,6 +10,7 @@ export const ko = {
     portfolio: 'Portfolio',
     about: 'About',
     exhibitions: 'Exhibitions',
+    news: 'News',
     contact: 'Contact',
   },
 
@@ -48,12 +49,41 @@ export const ko = {
     ],
   },
 
-  // Exhibitions 페이지
+  // Exhibitions 페이지 (Phase 4에서 삭제 예정)
   exhibitions: {
     title: 'Exhibitions',
     soloExhibitions: '개인전',
     groupExhibitions: '단체전',
     noExhibitions: 'No exhibitions to display',
+  },
+
+  // CV 섹션 (About 페이지 내)
+  cv: {
+    bornIn: 'Born in',
+    liveAndWorkIn: 'Live & Work in',
+    education: 'Education',
+    residencies: 'Residency',
+    fellowships: 'Fellowships',
+    awards: 'Awards',
+    soloExhibitions: 'Selected Solo Exhibitions',
+    groupExhibitions: 'Selected Group Exhibitions',
+    popupExhibitions: 'Pop-up Exhibitions',
+    publications: 'Published',
+  },
+
+  // News 페이지
+  news: {
+    title: 'News',
+    noNews: 'No news to display',
+    readMore: '자세히 보기',
+    externalLink: '원문 보기',
+    downloadPdf: 'PDF 다운로드',
+    types: {
+      article: '기사',
+      interview: '인터뷰',
+      artist_note: '작가노트',
+      review: '리뷰',
+    },
   },
 
   // Contact 페이지
@@ -67,6 +97,32 @@ export const ko = {
     noContact: 'Contact information not available',
     inquiryNotice:
       '작품, 전시, 협업에 관한 문의는 이메일로 연락 바랍니다.',
+  },
+
+  // Contact 폼
+  contactForm: {
+    title: '문의하기',
+    name: '이름',
+    namePlaceholder: '이름을 입력해주세요',
+    email: '이메일',
+    emailPlaceholder: '이메일 주소를 입력해주세요',
+    subject: '제목',
+    subjectPlaceholder: '문의 제목을 입력해주세요',
+    message: '메시지',
+    messagePlaceholder: '문의 내용을 입력해주세요',
+    submit: '전송',
+    sending: '전송 중...',
+    success: '메시지가 성공적으로 전송되었습니다.',
+    error: '메시지 전송에 실패했습니다. 다시 시도해주세요.',
+  },
+
+  // Artwork 새 필드
+  artwork: {
+    medium: '재료/기법',
+    collection: '소장처',
+    variableSize: '가변크기',
+    dimensions: '{height} × {width} cm',
+    dimensionsInch: '{height} × {width} in',
   },
 
   // Portfolio 페이지

@@ -1,7 +1,16 @@
 'use client';
 
 import { useState, useEffect } from 'react';
-import { AboutInfo, AboutFormData, EducationItem, SocialLink } from '@/types/artwork';
+import {
+  AboutInfo,
+  AboutFormData,
+  EducationItem,
+  SocialLink,
+  ResidencyItem,
+  FellowshipItem,
+  AwardItem,
+  PublicationItem,
+} from '@/types/artwork';
 import Button from '@/components/common/Button';
 import ImageUploader from '@/components/admin/ImageUploader';
 
@@ -25,6 +34,21 @@ export default function AboutForm({ aboutInfo, onSubmit }: AboutFormProps) {
   const [bioParagraphs, setBioParagraphs] = useState<string[]>(['']);
   const [bioParagraphsEn, setBioParagraphsEn] = useState<string[]>(['']);
   const [education, setEducation] = useState<EducationItem[]>([]);
+  // CV 출생지/거주지
+  const [birthCity, setBirthCity] = useState('');
+  const [birthCityEn, setBirthCityEn] = useState('');
+  const [birthCountry, setBirthCountry] = useState('');
+  const [birthCountryEn, setBirthCountryEn] = useState('');
+  const [liveCity, setLiveCity] = useState('');
+  const [liveCityEn, setLiveCityEn] = useState('');
+  const [liveCountry, setLiveCountry] = useState('');
+  const [liveCountryEn, setLiveCountryEn] = useState('');
+  // CV 경력 섹션
+  const [residencies, setResidencies] = useState<ResidencyItem[]>([]);
+  const [fellowships, setFellowships] = useState<FellowshipItem[]>([]);
+  const [awards, setAwards] = useState<AwardItem[]>([]);
+  const [publications, setPublications] = useState<PublicationItem[]>([]);
+  // 연락처
   const [contactEmail, setContactEmail] = useState('');
   const [contactPhone, setContactPhone] = useState('');
   const [phoneVisible, setPhoneVisible] = useState(false);
@@ -52,6 +76,21 @@ export default function AboutForm({ aboutInfo, onSubmit }: AboutFormProps) {
           : ['']
       );
       setEducation(aboutInfo.education || []);
+      // CV 출생지/거주지
+      setBirthCity(aboutInfo.birth_city || '');
+      setBirthCityEn(aboutInfo.birth_city_en || '');
+      setBirthCountry(aboutInfo.birth_country || '');
+      setBirthCountryEn(aboutInfo.birth_country_en || '');
+      setLiveCity(aboutInfo.live_city || '');
+      setLiveCityEn(aboutInfo.live_city_en || '');
+      setLiveCountry(aboutInfo.live_country || '');
+      setLiveCountryEn(aboutInfo.live_country_en || '');
+      // CV 경력 섹션
+      setResidencies(aboutInfo.residencies || []);
+      setFellowships(aboutInfo.fellowships || []);
+      setAwards(aboutInfo.awards || []);
+      setPublications(aboutInfo.publications || []);
+      // 연락처
       setContactEmail(aboutInfo.contact_email || '');
       setContactPhone(aboutInfo.contact_phone || '');
       setPhoneVisible(aboutInfo.phone_visible || false);
@@ -116,6 +155,50 @@ export default function AboutForm({ aboutInfo, onSubmit }: AboutFormProps) {
     setSocialLinks(updated);
   };
 
+  // Residencies CRUD
+  const addResidency = () =>
+    setResidencies([...residencies, { year: '', program: '', location: '' }]);
+  const removeResidency = (index: number) =>
+    setResidencies(residencies.filter((_, i) => i !== index));
+  const updateResidency = (index: number, field: keyof ResidencyItem, value: string) => {
+    const updated = [...residencies];
+    updated[index] = { ...updated[index], [field]: value };
+    setResidencies(updated);
+  };
+
+  // Fellowships CRUD
+  const addFellowship = () =>
+    setFellowships([...fellowships, { year: '', name: '' }]);
+  const removeFellowship = (index: number) =>
+    setFellowships(fellowships.filter((_, i) => i !== index));
+  const updateFellowship = (index: number, field: keyof FellowshipItem, value: string) => {
+    const updated = [...fellowships];
+    updated[index] = { ...updated[index], [field]: value };
+    setFellowships(updated);
+  };
+
+  // Awards CRUD
+  const addAward = () =>
+    setAwards([...awards, { year: '', name: '' }]);
+  const removeAward = (index: number) =>
+    setAwards(awards.filter((_, i) => i !== index));
+  const updateAward = (index: number, field: keyof AwardItem, value: string) => {
+    const updated = [...awards];
+    updated[index] = { ...updated[index], [field]: value };
+    setAwards(updated);
+  };
+
+  // Publications CRUD
+  const addPublication = () =>
+    setPublications([...publications, { year: '', title: '' }]);
+  const removePublication = (index: number) =>
+    setPublications(publications.filter((_, i) => i !== index));
+  const updatePublication = (index: number, field: keyof PublicationItem, value: string) => {
+    const updated = [...publications];
+    updated[index] = { ...updated[index], [field]: value };
+    setPublications(updated);
+  };
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setLoading(true);
@@ -130,6 +213,21 @@ export default function AboutForm({ aboutInfo, onSubmit }: AboutFormProps) {
         footer_bio: footerBio || undefined,
         footer_bio_en: footerBioEn || undefined,
         education: education.filter((e) => e.year && e.description),
+        // CV 출생지/거주지
+        birth_city: birthCity || undefined,
+        birth_city_en: birthCityEn || undefined,
+        birth_country: birthCountry || undefined,
+        birth_country_en: birthCountryEn || undefined,
+        live_city: liveCity || undefined,
+        live_city_en: liveCityEn || undefined,
+        live_country: liveCountry || undefined,
+        live_country_en: liveCountryEn || undefined,
+        // CV 경력 섹션
+        residencies: residencies.filter((r) => r.year && r.program),
+        fellowships: fellowships.filter((f) => f.year && f.name),
+        awards: awards.filter((a) => a.year && a.name),
+        publications: publications.filter((p) => p.year && p.title),
+        // 연락처
         contact_email: contactEmail || undefined,
         contact_phone: contactPhone || undefined,
         phone_visible: phoneVisible,
@@ -300,6 +398,314 @@ export default function AboutForm({ aboutInfo, onSubmit }: AboutFormProps) {
         >
           + 학력 추가
         </button>
+      </div>
+
+      {/* CV 출생지/거주지 */}
+      <div className="border-t border-gray-700 pt-6">
+        <h3 className="text-lg font-medium text-gray-200 mb-4">CV 정보</h3>
+
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
+          <div>
+            <label className="block text-sm font-medium mb-1 text-gray-300">출생 도시</label>
+            <div className="grid grid-cols-2 gap-2">
+              <input
+                type="text"
+                value={birthCity}
+                onChange={(e) => setBirthCity(e.target.value)}
+                className="px-3 py-2 border border-gray-600 rounded focus:outline-none focus:ring-1 focus:ring-white bg-[#1a1a1a] text-white placeholder-gray-500"
+                placeholder="서울"
+              />
+              <input
+                type="text"
+                value={birthCityEn}
+                onChange={(e) => setBirthCityEn(e.target.value)}
+                className="px-3 py-2 border border-gray-600 rounded focus:outline-none focus:ring-1 focus:ring-white bg-[#1a1a1a] text-white placeholder-gray-500"
+                placeholder="Seoul"
+              />
+            </div>
+          </div>
+          <div>
+            <label className="block text-sm font-medium mb-1 text-gray-300">출생 국가</label>
+            <div className="grid grid-cols-2 gap-2">
+              <input
+                type="text"
+                value={birthCountry}
+                onChange={(e) => setBirthCountry(e.target.value)}
+                className="px-3 py-2 border border-gray-600 rounded focus:outline-none focus:ring-1 focus:ring-white bg-[#1a1a1a] text-white placeholder-gray-500"
+                placeholder="대한민국"
+              />
+              <input
+                type="text"
+                value={birthCountryEn}
+                onChange={(e) => setBirthCountryEn(e.target.value)}
+                className="px-3 py-2 border border-gray-600 rounded focus:outline-none focus:ring-1 focus:ring-white bg-[#1a1a1a] text-white placeholder-gray-500"
+                placeholder="South Korea"
+              />
+            </div>
+          </div>
+        </div>
+
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+          <div>
+            <label className="block text-sm font-medium mb-1 text-gray-300">거주 도시</label>
+            <div className="grid grid-cols-2 gap-2">
+              <input
+                type="text"
+                value={liveCity}
+                onChange={(e) => setLiveCity(e.target.value)}
+                className="px-3 py-2 border border-gray-600 rounded focus:outline-none focus:ring-1 focus:ring-white bg-[#1a1a1a] text-white placeholder-gray-500"
+                placeholder="서울"
+              />
+              <input
+                type="text"
+                value={liveCityEn}
+                onChange={(e) => setLiveCityEn(e.target.value)}
+                className="px-3 py-2 border border-gray-600 rounded focus:outline-none focus:ring-1 focus:ring-white bg-[#1a1a1a] text-white placeholder-gray-500"
+                placeholder="Seoul"
+              />
+            </div>
+          </div>
+          <div>
+            <label className="block text-sm font-medium mb-1 text-gray-300">거주 국가</label>
+            <div className="grid grid-cols-2 gap-2">
+              <input
+                type="text"
+                value={liveCountry}
+                onChange={(e) => setLiveCountry(e.target.value)}
+                className="px-3 py-2 border border-gray-600 rounded focus:outline-none focus:ring-1 focus:ring-white bg-[#1a1a1a] text-white placeholder-gray-500"
+                placeholder="대한민국"
+              />
+              <input
+                type="text"
+                value={liveCountryEn}
+                onChange={(e) => setLiveCountryEn(e.target.value)}
+                className="px-3 py-2 border border-gray-600 rounded focus:outline-none focus:ring-1 focus:ring-white bg-[#1a1a1a] text-white placeholder-gray-500"
+                placeholder="South Korea"
+              />
+            </div>
+          </div>
+        </div>
+      </div>
+
+      {/* Residencies */}
+      <div>
+        <label className="block text-sm font-medium mb-2 text-gray-300">Residency</label>
+        {residencies.map((item, index) => (
+          <div key={index} className="mb-3 p-3 border border-gray-700 rounded bg-[#141414]">
+            <div className="flex gap-2 mb-2">
+              <input
+                type="text"
+                value={item.year}
+                onChange={(e) => updateResidency(index, 'year', e.target.value)}
+                placeholder="연도"
+                className="w-24 px-2 py-1 border border-gray-600 rounded focus:outline-none focus:ring-1 focus:ring-white bg-[#1a1a1a] text-white placeholder-gray-500"
+              />
+              <input
+                type="text"
+                value={item.program}
+                onChange={(e) => updateResidency(index, 'program', e.target.value)}
+                placeholder="프로그램명"
+                className="flex-1 px-2 py-1 border border-gray-600 rounded focus:outline-none focus:ring-1 focus:ring-white bg-[#1a1a1a] text-white placeholder-gray-500"
+              />
+              <button
+                type="button"
+                onClick={() => removeResidency(index)}
+                className="text-red-400 hover:text-red-300 px-2"
+              >
+                삭제
+              </button>
+            </div>
+            <div className="flex gap-2 mb-2">
+              <div className="w-24" />
+              <input
+                type="text"
+                value={item.program_en || ''}
+                onChange={(e) => updateResidency(index, 'program_en', e.target.value)}
+                placeholder="Program Name (English)"
+                className="flex-1 px-2 py-1 border border-gray-600 rounded focus:outline-none focus:ring-1 focus:ring-white bg-[#1a1a1a] text-white placeholder-gray-500"
+              />
+              <div className="px-2 w-[52px]" />
+            </div>
+            <div className="flex gap-2">
+              <div className="w-24" />
+              <input
+                type="text"
+                value={item.location}
+                onChange={(e) => updateResidency(index, 'location', e.target.value)}
+                placeholder="장소 (한글)"
+                className="flex-1 px-2 py-1 border border-gray-600 rounded focus:outline-none focus:ring-1 focus:ring-white bg-[#1a1a1a] text-white placeholder-gray-500"
+              />
+              <input
+                type="text"
+                value={item.location_en || ''}
+                onChange={(e) => updateResidency(index, 'location_en', e.target.value)}
+                placeholder="Location (English)"
+                className="flex-1 px-2 py-1 border border-gray-600 rounded focus:outline-none focus:ring-1 focus:ring-white bg-[#1a1a1a] text-white placeholder-gray-500"
+              />
+            </div>
+          </div>
+        ))}
+        <button
+          type="button"
+          onClick={addResidency}
+          className="text-sm text-blue-400 hover:text-blue-300"
+        >
+          + 레지던시 추가
+        </button>
+      </div>
+
+      {/* Fellowships */}
+      <div>
+        <label className="block text-sm font-medium mb-2 text-gray-300">Fellowships</label>
+        {fellowships.map((item, index) => (
+          <div key={index} className="mb-3 p-3 border border-gray-700 rounded bg-[#141414]">
+            <div className="flex gap-2 mb-2">
+              <input
+                type="text"
+                value={item.year}
+                onChange={(e) => updateFellowship(index, 'year', e.target.value)}
+                placeholder="연도"
+                className="w-24 px-2 py-1 border border-gray-600 rounded focus:outline-none focus:ring-1 focus:ring-white bg-[#1a1a1a] text-white placeholder-gray-500"
+              />
+              <input
+                type="text"
+                value={item.name}
+                onChange={(e) => updateFellowship(index, 'name', e.target.value)}
+                placeholder="펠로우십명"
+                className="flex-1 px-2 py-1 border border-gray-600 rounded focus:outline-none focus:ring-1 focus:ring-white bg-[#1a1a1a] text-white placeholder-gray-500"
+              />
+              <button
+                type="button"
+                onClick={() => removeFellowship(index)}
+                className="text-red-400 hover:text-red-300 px-2"
+              >
+                삭제
+              </button>
+            </div>
+            <div className="flex gap-2">
+              <div className="w-24" />
+              <input
+                type="text"
+                value={item.name_en || ''}
+                onChange={(e) => updateFellowship(index, 'name_en', e.target.value)}
+                placeholder="Fellowship Name (English)"
+                className="flex-1 px-2 py-1 border border-gray-600 rounded focus:outline-none focus:ring-1 focus:ring-white bg-[#1a1a1a] text-white placeholder-gray-500"
+              />
+              <div className="px-2 w-[52px]" />
+            </div>
+          </div>
+        ))}
+        <button
+          type="button"
+          onClick={addFellowship}
+          className="text-sm text-blue-400 hover:text-blue-300"
+        >
+          + 펠로우십 추가
+        </button>
+      </div>
+
+      {/* Awards */}
+      <div>
+        <label className="block text-sm font-medium mb-2 text-gray-300">Awards</label>
+        {awards.map((item, index) => (
+          <div key={index} className="mb-3 p-3 border border-gray-700 rounded bg-[#141414]">
+            <div className="flex gap-2 mb-2">
+              <input
+                type="text"
+                value={item.year}
+                onChange={(e) => updateAward(index, 'year', e.target.value)}
+                placeholder="연도"
+                className="w-24 px-2 py-1 border border-gray-600 rounded focus:outline-none focus:ring-1 focus:ring-white bg-[#1a1a1a] text-white placeholder-gray-500"
+              />
+              <input
+                type="text"
+                value={item.name}
+                onChange={(e) => updateAward(index, 'name', e.target.value)}
+                placeholder="수상명"
+                className="flex-1 px-2 py-1 border border-gray-600 rounded focus:outline-none focus:ring-1 focus:ring-white bg-[#1a1a1a] text-white placeholder-gray-500"
+              />
+              <button
+                type="button"
+                onClick={() => removeAward(index)}
+                className="text-red-400 hover:text-red-300 px-2"
+              >
+                삭제
+              </button>
+            </div>
+            <div className="flex gap-2">
+              <div className="w-24" />
+              <input
+                type="text"
+                value={item.name_en || ''}
+                onChange={(e) => updateAward(index, 'name_en', e.target.value)}
+                placeholder="Award Name (English)"
+                className="flex-1 px-2 py-1 border border-gray-600 rounded focus:outline-none focus:ring-1 focus:ring-white bg-[#1a1a1a] text-white placeholder-gray-500"
+              />
+              <div className="px-2 w-[52px]" />
+            </div>
+          </div>
+        ))}
+        <button
+          type="button"
+          onClick={addAward}
+          className="text-sm text-blue-400 hover:text-blue-300"
+        >
+          + 수상 추가
+        </button>
+      </div>
+
+      {/* Publications */}
+      <div>
+        <label className="block text-sm font-medium mb-2 text-gray-300">Publications</label>
+        {publications.map((item, index) => (
+          <div key={index} className="mb-3 p-3 border border-gray-700 rounded bg-[#141414]">
+            <div className="flex gap-2 mb-2">
+              <input
+                type="text"
+                value={item.year}
+                onChange={(e) => updatePublication(index, 'year', e.target.value)}
+                placeholder="연도"
+                className="w-24 px-2 py-1 border border-gray-600 rounded focus:outline-none focus:ring-1 focus:ring-white bg-[#1a1a1a] text-white placeholder-gray-500"
+              />
+              <input
+                type="text"
+                value={item.title}
+                onChange={(e) => updatePublication(index, 'title', e.target.value)}
+                placeholder="출판물 제목"
+                className="flex-1 px-2 py-1 border border-gray-600 rounded focus:outline-none focus:ring-1 focus:ring-white bg-[#1a1a1a] text-white placeholder-gray-500"
+              />
+              <button
+                type="button"
+                onClick={() => removePublication(index)}
+                className="text-red-400 hover:text-red-300 px-2"
+              >
+                삭제
+              </button>
+            </div>
+            <div className="flex gap-2">
+              <div className="w-24" />
+              <input
+                type="text"
+                value={item.title_en || ''}
+                onChange={(e) => updatePublication(index, 'title_en', e.target.value)}
+                placeholder="Publication Title (English)"
+                className="flex-1 px-2 py-1 border border-gray-600 rounded focus:outline-none focus:ring-1 focus:ring-white bg-[#1a1a1a] text-white placeholder-gray-500"
+              />
+              <div className="px-2 w-[52px]" />
+            </div>
+          </div>
+        ))}
+        <button
+          type="button"
+          onClick={addPublication}
+          className="text-sm text-blue-400 hover:text-blue-300"
+        >
+          + 출판물 추가
+        </button>
+      </div>
+
+      <div className="border-t border-gray-700 pt-6">
+        <h3 className="text-lg font-medium text-gray-200 mb-4">연락처 정보</h3>
       </div>
 
       <div>

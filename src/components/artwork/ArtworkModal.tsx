@@ -96,8 +96,27 @@ export default function ArtworkModal({
   }, []);
 
   const formatSize = () => {
+    // variable_size가 true이면 가변크기 표시
+    if (artwork.variable_size) {
+      return locale === 'en' ? 'Variable dimensions' : '가변크기';
+    }
     if (!artwork.width || !artwork.height) return null;
-    return `${artwork.width} × ${artwork.height} cm`;
+    // 세로(height) x 가로(width) 순서
+    if (locale === 'en') {
+      // cm to inch 변환 (1cm = 0.393701 inch)
+      const heightInch = (artwork.height * 0.393701).toFixed(1);
+      const widthInch = (artwork.width * 0.393701).toFixed(1);
+      return `${artwork.height} × ${artwork.width} cm (${heightInch} × ${widthInch} in)`;
+    }
+    return `${artwork.height} × ${artwork.width} cm`;
+  };
+
+  const getMedium = () => {
+    return getLocalizedValue(locale, artwork.medium, artwork.medium_en);
+  };
+
+  const getCollection = () => {
+    return getLocalizedValue(locale, artwork.collection, artwork.collection_en);
   };
 
   return (
@@ -225,8 +244,13 @@ export default function ArtworkModal({
           <p className="text-white/60 text-sm mt-2">
             {artwork.year}
             {formatSize() && ` · ${formatSize()}`}
-            {artwork.medium && ` · ${artwork.medium}`}
+            {getMedium() && ` · ${getMedium()}`}
           </p>
+          {getCollection() && (
+            <p className="text-white/50 text-sm mt-1">
+              {t.artwork.collection}: {getCollection()}
+            </p>
+          )}
           {getLocalizedValue(locale, artwork.description, artwork.description_en) && (
             <p className="text-white/80 text-sm mt-4 leading-relaxed whitespace-pre-line">
               {getLocalizedValue(locale, artwork.description, artwork.description_en)}

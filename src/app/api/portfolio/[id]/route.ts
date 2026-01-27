@@ -22,24 +22,48 @@ export async function PUT(
     const { id } = await params;
     const body = await request.json();
 
+    // description이 undefined인 경우 기존 값 보존
+    const { data: existing } = await supabaseAdmin
+      .from('portfolio')
+      .select('description, description_en')
+      .eq('id', id)
+      .single();
+
+    const updateData: Record<string, unknown> = {
+      title: body.title,
+      title_en: body.title_en || null,
+      year: body.year,
+      width: body.width || null,
+      height: body.height || null,
+      medium: body.medium || null,
+      medium_en: body.medium_en || null,
+      collection: body.collection || null,
+      collection_en: body.collection_en || null,
+      variable_size: body.variable_size || false,
+      category_id: body.category_id || null,
+      image_url: body.image_url,
+      thumbnail_url: body.thumbnail_url,
+      is_featured: body.is_featured,
+      show_watermark: body.show_watermark ?? true,
+      updated_at: new Date().toISOString(),
+    };
+
+    // description이 명시적으로 전달된 경우에만 업데이트
+    if (body.description !== undefined) {
+      updateData.description = body.description || null;
+    } else if (existing) {
+      updateData.description = existing.description;
+    }
+
+    if (body.description_en !== undefined) {
+      updateData.description_en = body.description_en || null;
+    } else if (existing) {
+      updateData.description_en = existing.description_en;
+    }
+
     const { data, error } = await supabaseAdmin
       .from('portfolio')
-      .update({
-        title: body.title,
-        title_en: body.title_en || null,
-        year: body.year,
-        width: body.width || null,
-        height: body.height || null,
-        medium: body.medium || null,
-        description: body.description || null,
-        description_en: body.description_en || null,
-        category_id: body.category_id || null,
-        image_url: body.image_url,
-        thumbnail_url: body.thumbnail_url,
-        is_featured: body.is_featured,
-        show_watermark: body.show_watermark ?? true,
-        updated_at: new Date().toISOString(),
-      })
+      .update(updateData)
       .eq('id', id)
       .select()
       .single();

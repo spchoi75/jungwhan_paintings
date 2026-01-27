@@ -12,6 +12,7 @@ export const en: Translations = {
     portfolio: 'Portfolio',
     about: 'About',
     exhibitions: 'Exhibitions',
+    news: 'News',
     contact: 'Contact',
   },
 
@@ -50,12 +51,41 @@ export const en: Translations = {
     ],
   },
 
-  // Exhibitions 페이지
+  // Exhibitions 페이지 (Phase 4에서 삭제 예정)
   exhibitions: {
     title: 'Exhibitions',
     soloExhibitions: 'Selected Solo Exhibitions',
     groupExhibitions: 'Selected Group Exhibitions',
     noExhibitions: 'No exhibitions to display',
+  },
+
+  // CV 섹션 (About 페이지 내)
+  cv: {
+    bornIn: 'Born in',
+    liveAndWorkIn: 'Live & Work in',
+    education: 'Education',
+    residencies: 'Residency',
+    fellowships: 'Fellowships',
+    awards: 'Awards',
+    soloExhibitions: 'Selected Solo Exhibitions',
+    groupExhibitions: 'Selected Group Exhibitions',
+    popupExhibitions: 'Pop-up Exhibitions',
+    publications: 'Published',
+  },
+
+  // News 페이지
+  news: {
+    title: 'News',
+    noNews: 'No news to display',
+    readMore: 'Read More',
+    externalLink: 'View Original',
+    downloadPdf: 'Download PDF',
+    types: {
+      article: 'Article',
+      interview: 'Interview',
+      artist_note: 'Artist Note',
+      review: 'Review',
+    },
   },
 
   // Contact 페이지
@@ -69,6 +99,32 @@ export const en: Translations = {
     noContact: 'Contact information not available',
     inquiryNotice:
       'For inquiries about artworks, exhibitions, or collaborations, please feel free to reach out via email.',
+  },
+
+  // Contact 폼
+  contactForm: {
+    title: 'Get in Touch',
+    name: 'Name',
+    namePlaceholder: 'Enter your name',
+    email: 'Email',
+    emailPlaceholder: 'Enter your email address',
+    subject: 'Subject',
+    subjectPlaceholder: 'Enter the subject',
+    message: 'Message',
+    messagePlaceholder: 'Enter your message',
+    submit: 'Send',
+    sending: 'Sending...',
+    success: 'Your message has been sent successfully.',
+    error: 'Failed to send message. Please try again.',
+  },
+
+  // Artwork 새 필드
+  artwork: {
+    medium: 'Medium',
+    collection: 'Collection',
+    variableSize: 'Variable dimensions',
+    dimensions: '{height} × {width} cm',
+    dimensionsInch: '{height} × {width} in',
   },
 
   // Portfolio 페이지

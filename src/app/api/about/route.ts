@@ -30,6 +30,21 @@ export async function GET() {
       footer_bio: null,
       footer_bio_en: null,
       education: [],
+      // CV 출생지/거주지
+      birth_city: null,
+      birth_city_en: null,
+      birth_country: null,
+      birth_country_en: null,
+      live_city: null,
+      live_city_en: null,
+      live_country: null,
+      live_country_en: null,
+      // CV 경력 섹션
+      residencies: [],
+      fellowships: [],
+      awards: [],
+      publications: [],
+      // 연락처
       contact_email: null,
       contact_phone: null,
       phone_visible: false,
@@ -37,6 +52,7 @@ export async function GET() {
       studio_address_en: null,
       social_links: [],
       profile_image_url: null,
+      cv_file_url: null,
       updated_at: null,
     });
   }
@@ -56,25 +72,45 @@ export async function PUT(request: NextRequest) {
     .select('id')
     .single();
 
+  const aboutData = {
+    artist_name: body.artist_name,
+    artist_name_en: body.artist_name_en || null,
+    bio_paragraphs: body.bio_paragraphs,
+    bio_paragraphs_en: body.bio_paragraphs_en || [],
+    footer_bio: body.footer_bio || null,
+    footer_bio_en: body.footer_bio_en || null,
+    education: body.education || [],
+    // CV 출생지/거주지
+    birth_city: body.birth_city || null,
+    birth_city_en: body.birth_city_en || null,
+    birth_country: body.birth_country || null,
+    birth_country_en: body.birth_country_en || null,
+    live_city: body.live_city || null,
+    live_city_en: body.live_city_en || null,
+    live_country: body.live_country || null,
+    live_country_en: body.live_country_en || null,
+    // CV 경력 섹션
+    residencies: body.residencies || [],
+    fellowships: body.fellowships || [],
+    awards: body.awards || [],
+    publications: body.publications || [],
+    // 연락처
+    contact_email: body.contact_email || null,
+    contact_phone: body.contact_phone || null,
+    phone_visible: body.phone_visible || false,
+    studio_address: body.studio_address || null,
+    studio_address_en: body.studio_address_en || null,
+    social_links: body.social_links || [],
+    profile_image_url: body.profile_image_url || null,
+    cv_file_url: body.cv_file_url || null,
+  };
+
   let result;
   if (existing) {
     result = await supabaseAdmin
       .from('about_info')
       .update({
-        artist_name: body.artist_name,
-        artist_name_en: body.artist_name_en || null,
-        bio_paragraphs: body.bio_paragraphs,
-        bio_paragraphs_en: body.bio_paragraphs_en || [],
-        footer_bio: body.footer_bio || null,
-        footer_bio_en: body.footer_bio_en || null,
-        education: body.education,
-        contact_email: body.contact_email || null,
-        contact_phone: body.contact_phone || null,
-        phone_visible: body.phone_visible || false,
-        studio_address: body.studio_address || null,
-        studio_address_en: body.studio_address_en || null,
-        social_links: body.social_links || [],
-        profile_image_url: body.profile_image_url || null,
+        ...aboutData,
         updated_at: new Date().toISOString(),
       })
       .eq('id', existing.id)
@@ -83,22 +119,7 @@ export async function PUT(request: NextRequest) {
   } else {
     result = await supabaseAdmin
       .from('about_info')
-      .insert([{
-        artist_name: body.artist_name,
-        artist_name_en: body.artist_name_en || null,
-        bio_paragraphs: body.bio_paragraphs,
-        bio_paragraphs_en: body.bio_paragraphs_en || [],
-        footer_bio: body.footer_bio || null,
-        footer_bio_en: body.footer_bio_en || null,
-        education: body.education,
-        contact_email: body.contact_email || null,
-        contact_phone: body.contact_phone || null,
-        phone_visible: body.phone_visible || false,
-        studio_address: body.studio_address || null,
-        studio_address_en: body.studio_address_en || null,
-        social_links: body.social_links || [],
-        profile_image_url: body.profile_image_url || null,
-      }])
+      .insert([aboutData])
       .select()
       .single();
   }

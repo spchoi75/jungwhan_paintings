@@ -16,7 +16,7 @@ export default function SidePanel() {
     { href: '/', label: t.nav.home },
     { href: '/portfolio', label: t.nav.portfolio },
     { href: '/about', label: t.nav.about },
-    { href: '/exhibitions', label: t.nav.exhibitions },
+    { href: '/news', label: t.nav.news },
     { href: '/contact', label: t.nav.contact },
   ];
 

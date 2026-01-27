@@ -156,11 +156,12 @@ export default function ExhibitionForm({
           </label>
           <select
             value={formData.type}
-            onChange={(e) => setFormData({ ...formData, type: e.target.value as 'solo' | 'group' })}
+            onChange={(e) => setFormData({ ...formData, type: e.target.value as 'solo' | 'group' | 'popup' })}
             className="w-full px-3 py-2 border border-gray-600 rounded focus:outline-none focus:ring-1 focus:ring-white bg-[#1a1a1a] text-white"
           >
             <option value="solo">개인전</option>
             <option value="group">그룹전</option>
+            <option value="popup">팝업전</option>
           </select>
         </div>
       </div>

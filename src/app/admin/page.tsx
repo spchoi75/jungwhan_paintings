@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
-import { Artwork, ArtworkFormData, Category, CategoryFormData, AboutInfo, AboutFormData, Exhibition, ExhibitionFormData } from '@/types/artwork';
+import { Artwork, ArtworkFormData, Category, CategoryFormData, AboutInfo, AboutFormData, Exhibition, ExhibitionFormData, News, NewsFormData } from '@/types/artwork';
 import Button from '@/components/common/Button';
 import Modal from '@/components/common/Modal';
 import ArtworkTable from '@/components/admin/ArtworkTable';
@@ -13,8 +13,10 @@ import AboutForm from '@/components/admin/AboutForm';
 import SettingsForm from '@/components/admin/SettingsForm';
 import ExhibitionTable from '@/components/admin/ExhibitionTable';
 import ExhibitionForm from '@/components/admin/ExhibitionForm';
+import NewsTable from '@/components/admin/NewsTable';
+import NewsForm from '@/components/admin/NewsForm';
 
-type Tab = 'artworks' | 'categories' | 'exhibitions' | 'about' | 'settings';
+type Tab = 'artworks' | 'categories' | 'exhibitions' | 'news' | 'about' | 'settings';
 
 export default function AdminPage() {
   const router = useRouter();
@@ -41,6 +43,12 @@ export default function AdminPage() {
   const [editingExhibition, setEditingExhibition] = useState<Exhibition | null>(null);
   const [deletingExhibition, setDeletingExhibition] = useState<Exhibition | null>(null);
 
+  // News state
+  const [news, setNews] = useState<News[]>([]);
+  const [newsLoading, setNewsLoading] = useState(true);
+  const [isNewsFormOpen, setIsNewsFormOpen] = useState(false);
+  const [editingNews, setEditingNews] = useState<News | null>(null);
+
   // About state
   const [aboutInfo, setAboutInfo] = useState<AboutInfo | null>(null);
   const [aboutLoading, setAboutLoading] = useState(true);
@@ -58,6 +66,7 @@ export default function AdminPage() {
     fetchArtworks();
     fetchCategories();
     fetchExhibitions();
+    fetchNews();
     fetchAbout();
     fetchSettings();
   }, []);
@@ -119,6 +128,20 @@ export default function AdminPage() {
       setError('전시 목록을 불러올 수 없습니다');
     } finally {
       setExhibitionsLoading(false);
+    }
+  };
+
+  const fetchNews = async () => {
+    try {
+      const response = await fetch('/api/news');
+      if (response.ok) {
+        const data = await response.json();
+        setNews(data);
+      }
+    } catch {
+      setError('뉴스 목록을 불러올 수 없습니다');
+    } finally {
+      setNewsLoading(false);
     }
   };
 
@@ -290,6 +313,45 @@ export default function AdminPage() {
     }
   };
 
+  // News handlers
+  const handleNewsFormSubmit = async (data: NewsFormData) => {
+    const url = editingNews
+      ? `/api/news/${editingNews.id}`
+      : '/api/news';
+    const method = editingNews ? 'PUT' : 'POST';
+
+    const response = await fetch(url, {
+      method,
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(data),
+    });
+
+    if (response.ok) {
+      setIsNewsFormOpen(false);
+      setEditingNews(null);
+      fetchNews();
+      setToast(editingNews ? '수정되었습니다' : '저장되었습니다');
+    } else {
+      const { error } = await response.json();
+      throw new Error(error || '저장 실패');
+    }
+  };
+
+  const handleNewsDelete = async (id: string) => {
+    try {
+      const response = await fetch(`/api/news/${id}`, {
+        method: 'DELETE',
+      });
+
+      if (response.ok) {
+        fetchNews();
+        setToast('삭제되었습니다');
+      }
+    } catch (err) {
+      console.error('Delete error:', err);
+    }
+  };
+
   const handleAboutSubmit = async (data: AboutFormData) => {
     const response = await fetch('/api/about', {
       method: 'PUT',
@@ -374,6 +436,16 @@ export default function AdminPage() {
               }`}
             >
               전시 관리
+            </button>
+            <button
+              onClick={() => setActiveTab('news')}
+              className={`px-6 py-4 text-sm font-medium border-b-2 transition-colors ${
+                activeTab === 'news'
+                  ? 'border-white text-white'
+                  : 'border-transparent text-gray-400 hover:text-white'
+              }`}
+            >
+              뉴스 관리
             </button>
             <button
               onClick={() => setActiveTab('about')}
@@ -478,6 +550,30 @@ export default function AdminPage() {
             </>
           )}
 
+          {activeTab === 'news' && (
+            <>
+              <div className="flex justify-between items-center mb-6">
+                <h2 className="text-lg font-medium text-white">뉴스 목록</h2>
+                <Button onClick={() => { setEditingNews(null); setIsNewsFormOpen(true); }}>
+                  + 새 뉴스
+                </Button>
+              </div>
+              {newsLoading ? (
+                <div className="space-y-4">
+                  {[...Array(3)].map((_, i) => (
+                    <div key={i} className="h-16 bg-gray-700 animate-pulse rounded" />
+                  ))}
+                </div>
+              ) : (
+                <NewsTable
+                  news={news}
+                  onEdit={(newsItem) => { setEditingNews(newsItem); setIsNewsFormOpen(true); }}
+                  onDelete={handleNewsDelete}
+                />
+              )}
+            </>
+          )}
+
           {activeTab === 'about' && (
             <>
               <h2 className="text-lg font-medium mb-6 text-white">작가소개 관리</h2>
@@ -559,6 +655,24 @@ export default function AdminPage() {
             exhibition={editingExhibition || undefined}
             onSubmit={handleExhibitionFormSubmit}
             onCancel={() => { setIsExhibitionFormOpen(false); setEditingExhibition(null); }}
+          />
+        </div>
+      </Modal>
+
+      {/* News Form Modal */}
+      <Modal
+        isOpen={isNewsFormOpen}
+        onClose={() => { setIsNewsFormOpen(false); setEditingNews(null); }}
+        className="w-full max-w-2xl max-h-[90vh] overflow-y-auto"
+      >
+        <div className="p-6">
+          <h2 className="text-xl font-medium mb-6 text-white">
+            {editingNews ? '뉴스 수정' : '새 뉴스 추가'}
+          </h2>
+          <NewsForm
+            news={editingNews || undefined}
+            onSubmit={handleNewsFormSubmit}
+            onCancel={() => { setIsNewsFormOpen(false); setEditingNews(null); }}
           />
         </div>
       </Modal>

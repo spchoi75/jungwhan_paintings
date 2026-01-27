@@ -3,6 +3,7 @@
 import { useLocale } from '@/i18n';
 import { getLocalizedValue } from '@/lib/i18n-utils';
 import { SocialLink } from '@/types/artwork';
+import ContactForm from './ContactForm';
 
 interface ContactInfo {
   artist_name: string;
@@ -178,6 +179,9 @@ export default function ContactContent({ contactInfo }: ContactContentProps) {
             {t.contact.inquiryNotice}
           </p>
         </div>
+
+        {/* Contact Form */}
+        <ContactForm />
       </div>
     </>
   );

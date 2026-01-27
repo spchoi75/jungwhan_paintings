@@ -12,9 +12,9 @@ async function isAuthenticated(): Promise<boolean> {
 
 export async function GET() {
   const { data, error } = await supabaseAdmin
-    .from('portfolio')
+    .from('news')
     .select('*')
-    .order('order', { ascending: true });
+    .order('published_at', { ascending: false });
 
   if (error) {
     return NextResponse.json({ error: error.message }, { status: 500 });
@@ -31,48 +31,30 @@ export async function POST(request: NextRequest) {
   try {
     const body = await request.json();
 
-    const { data: maxOrderData } = await supabaseAdmin
-      .from('portfolio')
-      .select('order')
-      .order('order', { ascending: false })
-      .limit(1)
-      .maybeSingle();
-
-    const newOrder = (maxOrderData?.order ?? -1) + 1;
-
     const { data, error } = await supabaseAdmin
-      .from('portfolio')
+      .from('news')
       .insert({
         title: body.title,
         title_en: body.title_en || null,
-        year: body.year,
-        width: body.width || null,
-        height: body.height || null,
-        medium: body.medium || null,
-        medium_en: body.medium_en || null,
-        description: body.description || null,
-        description_en: body.description_en || null,
-        collection: body.collection || null,
-        collection_en: body.collection_en || null,
-        variable_size: body.variable_size || false,
-        category_id: body.category_id || null,
-        image_url: body.image_url,
-        thumbnail_url: body.thumbnail_url,
-        is_featured: body.is_featured || false,
-        show_watermark: body.show_watermark ?? true,
-        order: newOrder,
+        content: body.content,
+        content_en: body.content_en || null,
+        thumbnail_url: body.thumbnail_url || null,
+        link_url: body.link_url || null,
+        pdf_url: body.pdf_url || null,
+        type: body.type || 'article',
+        published_at: body.published_at || new Date().toISOString(),
       })
       .select()
       .single();
 
     if (error) {
-      console.error('Artwork insert error:', error);
+      console.error('News insert error:', error);
       return NextResponse.json({ error: error.message }, { status: 500 });
     }
 
     return NextResponse.json(data, { status: 201 });
   } catch (err) {
-    console.error('Artwork POST error:', err);
+    console.error('News POST error:', err);
     return NextResponse.json({ error: 'Invalid request' }, { status: 400 });
   }
 }

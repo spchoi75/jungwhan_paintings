@@ -19,8 +19,10 @@ export default function ArtworkForm({ artwork, categories, onSubmit, onCancel }:
   const [width, setWidth] = useState(artwork?.width?.toString() || '');
   const [height, setHeight] = useState(artwork?.height?.toString() || '');
   const [medium, setMedium] = useState(artwork?.medium || '');
-  const [description, setDescription] = useState(artwork?.description || '');
-  const [descriptionEn, setDescriptionEn] = useState(artwork?.description_en || '');
+  const [mediumEn, setMediumEn] = useState(artwork?.medium_en || '');
+  const [collection, setCollection] = useState(artwork?.collection || '');
+  const [collectionEn, setCollectionEn] = useState(artwork?.collection_en || '');
+  const [variableSize, setVariableSize] = useState(artwork?.variable_size || false);
   const [categoryId, setCategoryId] = useState(artwork?.category_id || '');
   const [isFeatured, setIsFeatured] = useState(artwork?.is_featured || false);
   const [showWatermark, setShowWatermark] = useState(artwork?.show_watermark ?? true);
@@ -37,8 +39,10 @@ export default function ArtworkForm({ artwork, categories, onSubmit, onCancel }:
     setWidth(artwork?.width?.toString() || '');
     setHeight(artwork?.height?.toString() || '');
     setMedium(artwork?.medium || '');
-    setDescription(artwork?.description || '');
-    setDescriptionEn(artwork?.description_en || '');
+    setMediumEn(artwork?.medium_en || '');
+    setCollection(artwork?.collection || '');
+    setCollectionEn(artwork?.collection_en || '');
+    setVariableSize(artwork?.variable_size || false);
     setCategoryId(artwork?.category_id || '');
     setIsFeatured(artwork?.is_featured || false);
     setShowWatermark(artwork?.show_watermark ?? true);
@@ -83,8 +87,10 @@ export default function ArtworkForm({ artwork, categories, onSubmit, onCancel }:
         width: width ? parseInt(width) : undefined,
         height: height ? parseInt(height) : undefined,
         medium: medium.trim() || undefined,
-        description: description.trim() || undefined,
-        description_en: descriptionEn.trim() || undefined,
+        medium_en: mediumEn.trim() || undefined,
+        collection: collection.trim() || undefined,
+        collection_en: collectionEn.trim() || undefined,
+        variable_size: variableSize,
         category_id: categoryId || undefined,
         is_featured: isFeatured,
         show_watermark: showWatermark,
@@ -168,7 +174,7 @@ export default function ArtworkForm({ artwork, categories, onSubmit, onCancel }:
         </select>
       </div>
 
-      <div className="grid grid-cols-3 gap-4">
+      <div className="grid grid-cols-4 gap-4">
         <div>
           <label className="block text-sm font-medium mb-1 text-gray-300">
             연도 <span className="text-red-400">*</span>
@@ -188,18 +194,6 @@ export default function ArtworkForm({ artwork, categories, onSubmit, onCancel }:
         </div>
 
         <div>
-          <label className="block text-sm font-medium mb-1 text-gray-300">가로 (cm)</label>
-          <input
-            type="number"
-            value={width}
-            onChange={(e) => setWidth(e.target.value)}
-            className="w-full h-10 px-3 border border-gray-600 rounded focus:outline-none focus:ring-1 focus:ring-white bg-[#1a1a1a] text-white placeholder-gray-500"
-            placeholder="100"
-            min="1"
-          />
-        </div>
-
-        <div>
           <label className="block text-sm font-medium mb-1 text-gray-300">세로 (cm)</label>
           <input
             type="number"
@@ -208,38 +202,78 @@ export default function ArtworkForm({ artwork, categories, onSubmit, onCancel }:
             className="w-full h-10 px-3 border border-gray-600 rounded focus:outline-none focus:ring-1 focus:ring-white bg-[#1a1a1a] text-white placeholder-gray-500"
             placeholder="80"
             min="1"
+            disabled={variableSize}
           />
         </div>
-      </div>
 
-      <div>
-        <label className="block text-sm font-medium mb-1 text-gray-300">재료/기법</label>
-        <input
-          type="text"
-          value={medium}
-          onChange={(e) => setMedium(e.target.value)}
-          className="w-full h-10 px-3 border border-gray-600 rounded focus:outline-none focus:ring-1 focus:ring-white bg-[#1a1a1a] text-white placeholder-gray-500"
-          placeholder="Oil on canvas"
-        />
+        <div>
+          <label className="block text-sm font-medium mb-1 text-gray-300">가로 (cm)</label>
+          <input
+            type="number"
+            value={width}
+            onChange={(e) => setWidth(e.target.value)}
+            className="w-full h-10 px-3 border border-gray-600 rounded focus:outline-none focus:ring-1 focus:ring-white bg-[#1a1a1a] text-white placeholder-gray-500"
+            placeholder="100"
+            min="1"
+            disabled={variableSize}
+          />
+        </div>
+
+        <div className="flex items-end pb-2">
+          <label className="flex items-center gap-2 cursor-pointer">
+            <input
+              type="checkbox"
+              checked={variableSize}
+              onChange={(e) => setVariableSize(e.target.checked)}
+              className="w-4 h-4"
+            />
+            <span className="text-sm text-gray-300">가변크기</span>
+          </label>
+        </div>
       </div>
 
       <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
         <div>
-          <label className="block text-sm font-medium mb-1 text-gray-300">작품 설명</label>
-          <textarea
-            value={description}
-            onChange={(e) => setDescription(e.target.value)}
-            className="w-full h-32 px-3 py-2 border border-gray-600 rounded focus:outline-none focus:ring-1 focus:ring-white resize-none bg-[#1a1a1a] text-white placeholder-gray-500"
-            placeholder="작품에 대한 설명을 입력하세요..."
+          <label className="block text-sm font-medium mb-1 text-gray-300">재료/기법</label>
+          <input
+            type="text"
+            value={medium}
+            onChange={(e) => setMedium(e.target.value)}
+            className="w-full h-10 px-3 border border-gray-600 rounded focus:outline-none focus:ring-1 focus:ring-white bg-[#1a1a1a] text-white placeholder-gray-500"
+            placeholder="캔버스에 유채"
           />
         </div>
         <div>
-          <label className="block text-sm font-medium mb-1 text-gray-300">작품 설명 (영문)</label>
-          <textarea
-            value={descriptionEn}
-            onChange={(e) => setDescriptionEn(e.target.value)}
-            className="w-full h-32 px-3 py-2 border border-gray-600 rounded focus:outline-none focus:ring-1 focus:ring-white resize-none bg-[#1a1a1a] text-white placeholder-gray-500"
-            placeholder="Enter artwork description..."
+          <label className="block text-sm font-medium mb-1 text-gray-300">재료/기법 (영문)</label>
+          <input
+            type="text"
+            value={mediumEn}
+            onChange={(e) => setMediumEn(e.target.value)}
+            className="w-full h-10 px-3 border border-gray-600 rounded focus:outline-none focus:ring-1 focus:ring-white bg-[#1a1a1a] text-white placeholder-gray-500"
+            placeholder="Oil on canvas"
+          />
+        </div>
+      </div>
+
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+        <div>
+          <label className="block text-sm font-medium mb-1 text-gray-300">소장처</label>
+          <input
+            type="text"
+            value={collection}
+            onChange={(e) => setCollection(e.target.value)}
+            className="w-full h-10 px-3 border border-gray-600 rounded focus:outline-none focus:ring-1 focus:ring-white bg-[#1a1a1a] text-white placeholder-gray-500"
+            placeholder="국립현대미술관"
+          />
+        </div>
+        <div>
+          <label className="block text-sm font-medium mb-1 text-gray-300">소장처 (영문)</label>
+          <input
+            type="text"
+            value={collectionEn}
+            onChange={(e) => setCollectionEn(e.target.value)}
+            className="w-full h-10 px-3 border border-gray-600 rounded focus:outline-none focus:ring-1 focus:ring-white bg-[#1a1a1a] text-white placeholder-gray-500"
+            placeholder="National Museum of Modern and Contemporary Art"
           />
         </div>
       </div>

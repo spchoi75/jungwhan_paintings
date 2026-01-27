@@ -1,6 +1,5 @@
 'use client';
 
-import Image from 'next/image';
 import { AboutInfo, Exhibition } from '@/types/artwork';
 import { useLocale } from '@/i18n';
 import { getLocalizedValue } from '@/lib/i18n-utils';
@@ -17,149 +16,221 @@ export default function AboutContent({ aboutInfo, exhibitions }: AboutContentPro
     ? getLocalizedValue(locale, aboutInfo.artist_name, aboutInfo.artist_name_en)
     : 'Jungwhan';
 
-  const bioParagraphs = aboutInfo
+  const education = aboutInfo?.education || [];
+  const residencies = aboutInfo?.residencies || [];
+  const fellowships = aboutInfo?.fellowships || [];
+  const awards = aboutInfo?.awards || [];
+  const publications = aboutInfo?.publications || [];
+  const cvFileUrl = aboutInfo?.cv_file_url;
+
+  // Born in / Live & Work in
+  const birthPlace = aboutInfo
     ? getLocalizedValue(
         locale,
-        aboutInfo.bio_paragraphs && aboutInfo.bio_paragraphs.length > 0
-          ? aboutInfo.bio_paragraphs
-          : t.about.defaultBio,
-        aboutInfo.bio_paragraphs_en && aboutInfo.bio_paragraphs_en.length > 0
-          ? aboutInfo.bio_paragraphs_en
-          : null
+        [aboutInfo.birth_city, aboutInfo.birth_country].filter(Boolean).join(', '),
+        [aboutInfo.birth_city_en, aboutInfo.birth_country_en].filter(Boolean).join(', ')
       )
-    : t.about.defaultBio;
+    : null;
 
-  const education = aboutInfo?.education || [];
-  const profileImageUrl = aboutInfo?.profile_image_url;
-  const cvFileUrl = aboutInfo?.cv_file_url;
+  const livePlace = aboutInfo
+    ? getLocalizedValue(
+        locale,
+        [aboutInfo.live_city, aboutInfo.live_country].filter(Boolean).join(', '),
+        [aboutInfo.live_city_en, aboutInfo.live_country_en].filter(Boolean).join(', ')
+      )
+    : null;
 
   // Group exhibitions by type
   const soloExhibitions = exhibitions.filter(e => e.type === 'solo');
   const groupExhibitions = exhibitions.filter(e => e.type === 'group');
+  const popupExhibitions = exhibitions.filter(e => e.type === 'popup');
+
+  // CV Section Component
+  const CVSection = ({
+    title,
+    children
+  }: {
+    title: string;
+    children: React.ReactNode;
+  }) => (
+    <div className="mb-10">
+      <h3 className="text-sm font-medium tracking-wider text-gray-400 uppercase mb-4">
+        {title}
+      </h3>
+      {children}
+    </div>
+  );
+
+  // Exhibition List Component
+  const ExhibitionList = ({ items }: { items: Exhibition[] }) => (
+    <ul className="space-y-1.5 text-gray-300">
+      {items.map((exhibition) => (
+        <li key={exhibition.id} className="leading-relaxed">
+          <span className="text-gray-500 mr-2">{exhibition.year}</span>
+          {getLocalizedValue(locale, exhibition.title, exhibition.title_en)}
+          {(exhibition.venue || exhibition.venue_en) && (
+            <span className="text-gray-500">
+              , {getLocalizedValue(locale, exhibition.venue, exhibition.venue_en)}
+            </span>
+          )}
+          {(exhibition.location || exhibition.location_en) && (
+            <span className="text-gray-500">
+              , {getLocalizedValue(locale, exhibition.location, exhibition.location_en)}
+            </span>
+          )}
+        </li>
+      ))}
+    </ul>
+  );
 
   return (
-    <div className="grid md:grid-cols-2 gap-12 items-start">
-      {/* Profile Image */}
-      <div className="aspect-[3/4] relative bg-gray-800">
-        {profileImageUrl ? (
-          <Image
-            src={profileImageUrl}
-            alt={artistName}
-            fill
-            className="object-cover"
-            priority
-          />
-        ) : (
-          <div className="absolute inset-0 flex items-center justify-center text-gray-600">
-            <svg
-              xmlns="http://www.w3.org/2000/svg"
-              width="64"
-              height="64"
-              viewBox="0 0 24 24"
-              fill="none"
-              stroke="currentColor"
-              strokeWidth="1"
-            >
-              <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2" />
-              <circle cx="12" cy="7" r="4" />
-            </svg>
-          </div>
-        )}
-      </div>
+    <div className="max-w-2xl">
+      {/* Artist Name */}
+      <h1 className="text-4xl font-light tracking-wide mb-8 text-white">
+        {artistName}
+      </h1>
 
-      {/* Bio */}
-      <div>
-        <h1 className="text-4xl font-light tracking-wide mb-6 text-white">
-          {artistName}
-        </h1>
-
-        <div className="space-y-4 text-gray-300 leading-relaxed">
-          {bioParagraphs.map((para, index) => (
-            <p key={index}>{para}</p>
-          ))}
+      {/* Born in / Live & Work in */}
+      {(birthPlace || livePlace) && (
+        <div className="mb-10 space-y-1 text-gray-300">
+          {birthPlace && (
+            <p>
+              <span className="text-gray-500">{t.cv.bornIn}</span> {birthPlace}
+            </p>
+          )}
+          {livePlace && (
+            <p>
+              <span className="text-gray-500">{t.cv.liveAndWorkIn}</span> {livePlace}
+            </p>
+          )}
         </div>
+      )}
 
-        {/* Education */}
-        {education.length > 0 && (
-          <div className="mt-10">
-            <h3 className="text-lg font-medium mb-4 text-white">{t.about.education}</h3>
-            <ul className="space-y-2 text-gray-400">
-              {education.map((item, index) => (
-                <li key={index}>
-                  {item.year} — {getLocalizedValue(locale, item.description, item.description_en)}
-                </li>
-              ))}
-            </ul>
-          </div>
-        )}
+      {/* Education */}
+      {education.length > 0 && (
+        <CVSection title={t.cv.education}>
+          <ul className="space-y-1.5 text-gray-300">
+            {education.map((item, index) => (
+              <li key={index} className="leading-relaxed">
+                <span className="text-gray-500 mr-2">{item.year}</span>
+                {getLocalizedValue(locale, item.description, item.description_en)}
+              </li>
+            ))}
+          </ul>
+        </CVSection>
+      )}
 
-        {/* Solo Exhibitions */}
-        {soloExhibitions.length > 0 && (
-          <div className="mt-8">
-            <h3 className="text-lg font-medium mb-4 text-white">
-              {locale === 'en' ? 'Solo Exhibitions' : '개인전'}
-            </h3>
-            <ul className="space-y-2 text-gray-400">
-              {soloExhibitions.map((exhibition) => (
-                <li key={exhibition.id}>
-                  {exhibition.year} — {getLocalizedValue(locale, exhibition.title, exhibition.title_en)}
-                  {(exhibition.venue || exhibition.venue_en) && (
-                    <span className="text-gray-500">
-                      , {getLocalizedValue(locale, exhibition.venue, exhibition.venue_en)}
-                    </span>
-                  )}
-                  {(exhibition.location || exhibition.location_en) && (
-                    <span className="text-gray-500">
-                      , {getLocalizedValue(locale, exhibition.location, exhibition.location_en)}
-                    </span>
-                  )}
-                </li>
-              ))}
-            </ul>
-          </div>
-        )}
+      {/* Residencies */}
+      {residencies.length > 0 && (
+        <CVSection title={t.cv.residencies}>
+          <ul className="space-y-1.5 text-gray-300">
+            {residencies.map((item, index) => (
+              <li key={index} className="leading-relaxed">
+                <span className="text-gray-500 mr-2">{item.year}</span>
+                {getLocalizedValue(locale, item.program, item.program_en)}
+                {(item.location || item.location_en) && (
+                  <span className="text-gray-500">
+                    , {getLocalizedValue(locale, item.location, item.location_en)}
+                  </span>
+                )}
+              </li>
+            ))}
+          </ul>
+        </CVSection>
+      )}
 
-        {/* Group Exhibitions */}
-        {groupExhibitions.length > 0 && (
-          <div className="mt-8">
-            <h3 className="text-lg font-medium mb-4 text-white">
-              {locale === 'en' ? 'Group Exhibitions' : '단체전'}
-            </h3>
-            <ul className="space-y-2 text-gray-400">
-              {groupExhibitions.map((exhibition) => (
-                <li key={exhibition.id}>
-                  {exhibition.year} — {getLocalizedValue(locale, exhibition.title, exhibition.title_en)}
-                  {(exhibition.venue || exhibition.venue_en) && (
-                    <span className="text-gray-500">
-                      , {getLocalizedValue(locale, exhibition.venue, exhibition.venue_en)}
-                    </span>
-                  )}
-                  {(exhibition.location || exhibition.location_en) && (
-                    <span className="text-gray-500">
-                      , {getLocalizedValue(locale, exhibition.location, exhibition.location_en)}
-                    </span>
-                  )}
-                </li>
-              ))}
-            </ul>
-          </div>
-        )}
+      {/* Fellowships */}
+      {fellowships.length > 0 && (
+        <CVSection title={t.cv.fellowships}>
+          <ul className="space-y-1.5 text-gray-300">
+            {fellowships.map((item, index) => (
+              <li key={index} className="leading-relaxed">
+                <span className="text-gray-500 mr-2">{item.year}</span>
+                {getLocalizedValue(locale, item.name, item.name_en)}
+                {(item.organization || item.organization_en) && (
+                  <span className="text-gray-500">
+                    , {getLocalizedValue(locale, item.organization, item.organization_en)}
+                  </span>
+                )}
+              </li>
+            ))}
+          </ul>
+        </CVSection>
+      )}
 
-        {/* CV Download */}
-        {cvFileUrl && (
-          <div className="mt-8">
-            <a
-              href={cvFileUrl}
-              download
-              target="_blank"
-              rel="noopener noreferrer"
-              className="inline-block px-6 py-3 border border-white text-white text-sm tracking-wider hover:bg-white hover:text-black transition-colors"
-            >
-              {t.about.downloadCv}
-            </a>
-          </div>
-        )}
-      </div>
+      {/* Awards */}
+      {awards.length > 0 && (
+        <CVSection title={t.cv.awards}>
+          <ul className="space-y-1.5 text-gray-300">
+            {awards.map((item, index) => (
+              <li key={index} className="leading-relaxed">
+                <span className="text-gray-500 mr-2">{item.year}</span>
+                {getLocalizedValue(locale, item.name, item.name_en)}
+                {(item.organization || item.organization_en) && (
+                  <span className="text-gray-500">
+                    , {getLocalizedValue(locale, item.organization, item.organization_en)}
+                  </span>
+                )}
+              </li>
+            ))}
+          </ul>
+        </CVSection>
+      )}
+
+      {/* Solo Exhibitions */}
+      {soloExhibitions.length > 0 && (
+        <CVSection title={t.cv.soloExhibitions}>
+          <ExhibitionList items={soloExhibitions} />
+        </CVSection>
+      )}
+
+      {/* Group Exhibitions */}
+      {groupExhibitions.length > 0 && (
+        <CVSection title={t.cv.groupExhibitions}>
+          <ExhibitionList items={groupExhibitions} />
+        </CVSection>
+      )}
+
+      {/* Pop-up Exhibitions */}
+      {popupExhibitions.length > 0 && (
+        <CVSection title={t.cv.popupExhibitions}>
+          <ExhibitionList items={popupExhibitions} />
+        </CVSection>
+      )}
+
+      {/* Publications */}
+      {publications.length > 0 && (
+        <CVSection title={t.cv.publications}>
+          <ul className="space-y-1.5 text-gray-300">
+            {publications.map((item, index) => (
+              <li key={index} className="leading-relaxed">
+                <span className="text-gray-500 mr-2">{item.year}</span>
+                {getLocalizedValue(locale, item.title, item.title_en)}
+                {(item.publisher || item.publisher_en) && (
+                  <span className="text-gray-500">
+                    , {getLocalizedValue(locale, item.publisher, item.publisher_en)}
+                  </span>
+                )}
+              </li>
+            ))}
+          </ul>
+        </CVSection>
+      )}
+
+      {/* CV Download */}
+      {cvFileUrl && (
+        <div className="mt-12">
+          <a
+            href={cvFileUrl}
+            download
+            target="_blank"
+            rel="noopener noreferrer"
+            className="inline-block px-6 py-3 border border-white text-white text-sm tracking-wider hover:bg-white hover:text-black transition-colors"
+          >
+            {t.about.downloadCv}
+          </a>
+        </div>
+      )}
     </div>
   );
 }

@@ -1,7 +1,8 @@
 {
   "permissions": {
     "allow": [
-      "WebFetch(domain:jadefadojutimi.com)"
+      "WebFetch(domain:jadefadojutimi.com)",
+      "WebFetch(domain:www.jisanahn.com)"
     ]
   }
 }
