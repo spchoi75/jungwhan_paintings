@@ -120,6 +120,46 @@ export default function AboutContent({ aboutInfo, exhibitions }: AboutContentPro
         </CVSection>
       )}
 
+      {/* Solo Exhibitions */}
+      {soloExhibitions.length > 0 && (
+        <CVSection title={t.cv.soloExhibitions}>
+          <ExhibitionList items={soloExhibitions} />
+        </CVSection>
+      )}
+
+      {/* Group Exhibitions */}
+      {groupExhibitions.length > 0 && (
+        <CVSection title={t.cv.groupExhibitions}>
+          <ExhibitionList items={groupExhibitions} />
+        </CVSection>
+      )}
+
+      {/* Pop-up Exhibitions */}
+      {popupExhibitions.length > 0 && (
+        <CVSection title={t.cv.popupExhibitions}>
+          <ExhibitionList items={popupExhibitions} />
+        </CVSection>
+      )}
+
+      {/* Publications */}
+      {publications.length > 0 && (
+        <CVSection title={t.cv.publications}>
+          <ul className="space-y-1.5 text-gray-300">
+            {publications.map((item, index) => (
+              <li key={index} className="leading-relaxed">
+                <span className="text-gray-500 mr-2">{item.year}</span>
+                {getLocalizedValue(locale, item.title, item.title_en)}
+                {(item.publisher || item.publisher_en) && (
+                  <span className="text-gray-500">
+                    , {getLocalizedValue(locale, item.publisher, item.publisher_en)}
+                  </span>
+                )}
+              </li>
+            ))}
+          </ul>
+        </CVSection>
+      )}
+
       {/* Residencies */}
       {residencies.length > 0 && (
         <CVSection title={t.cv.residencies}>
@@ -169,46 +209,6 @@ export default function AboutContent({ aboutInfo, exhibitions }: AboutContentPro
                 {(item.organization || item.organization_en) && (
                   <span className="text-gray-500">
                     , {getLocalizedValue(locale, item.organization, item.organization_en)}
-                  </span>
-                )}
-              </li>
-            ))}
-          </ul>
-        </CVSection>
-      )}
-
-      {/* Solo Exhibitions */}
-      {soloExhibitions.length > 0 && (
-        <CVSection title={t.cv.soloExhibitions}>
-          <ExhibitionList items={soloExhibitions} />
-        </CVSection>
-      )}
-
-      {/* Group Exhibitions */}
-      {groupExhibitions.length > 0 && (
-        <CVSection title={t.cv.groupExhibitions}>
-          <ExhibitionList items={groupExhibitions} />
-        </CVSection>
-      )}
-
-      {/* Pop-up Exhibitions */}
-      {popupExhibitions.length > 0 && (
-        <CVSection title={t.cv.popupExhibitions}>
-          <ExhibitionList items={popupExhibitions} />
-        </CVSection>
-      )}
-
-      {/* Publications */}
-      {publications.length > 0 && (
-        <CVSection title={t.cv.publications}>
-          <ul className="space-y-1.5 text-gray-300">
-            {publications.map((item, index) => (
-              <li key={index} className="leading-relaxed">
-                <span className="text-gray-500 mr-2">{item.year}</span>
-                {getLocalizedValue(locale, item.title, item.title_en)}
-                {(item.publisher || item.publisher_en) && (
-                  <span className="text-gray-500">
-                    , {getLocalizedValue(locale, item.publisher, item.publisher_en)}
                   </span>
                 )}
               </li>
