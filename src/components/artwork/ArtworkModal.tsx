@@ -27,6 +27,7 @@ export default function ArtworkModal({
   const [showCopyrightPopup, setShowCopyrightPopup] = useState(false);
   const [contactEmail, setContactEmail] = useState<string | null>(null);
   const [isZoomed, setIsZoomed] = useState(false);
+  const [slideDirection, setSlideDirection] = useState<'left' | 'right' | null>(null);
   const swipeRef = useRef<{ startX: number; startY: number; startTime: number } | null>(null);
 
   const handleKeyDown = useCallback(
@@ -40,10 +41,16 @@ export default function ArtworkModal({
           }
           break;
         case 'ArrowLeft':
-          if (hasPrev && onPrev && !showCopyrightPopup) onPrev();
+          if (hasPrev && onPrev && !showCopyrightPopup) {
+            setSlideDirection('right');
+            onPrev();
+          }
           break;
         case 'ArrowRight':
-          if (hasNext && onNext && !showCopyrightPopup) onNext();
+          if (hasNext && onNext && !showCopyrightPopup) {
+            setSlideDirection('left');
+            onNext();
+          }
           break;
       }
     },
@@ -61,11 +68,17 @@ export default function ArtworkModal({
   }, [handleKeyDown]);
 
   // 브라우저 기본 우클릭 메뉴 차단 및 저작권 팝업 표시
+  // 모바일에서는 contextmenu가 ~1초에 발동되므로 팝업 표시하지 않음
+  // 모바일 저작권 팝업은 ZoomableImage의 3초 onLongPress 콜백으로 처리
   useEffect(() => {
     const handleContextMenuEvent = (e: MouseEvent) => {
       e.preventDefault();
       e.stopPropagation();
-      setShowCopyrightPopup(true);
+      // 포인터 디바이스(마우스)에서만 저작권 팝업 표시
+      const isPointerFine = window.matchMedia('(pointer: fine)').matches;
+      if (isPointerFine) {
+        setShowCopyrightPopup(true);
+      }
       return false;
     };
     document.addEventListener('contextmenu', handleContextMenuEvent, true);
@@ -118,8 +131,10 @@ export default function ArtworkModal({
     if (Math.abs(deltaX) < Math.abs(deltaY)) return;
 
     if (deltaX < 0 && hasNext && onNext) {
+      setSlideDirection('left');
       onNext();
     } else if (deltaX > 0 && hasPrev && onPrev) {
+      setSlideDirection('right');
       onPrev();
     }
   }, [isZoomed, hasNext, hasPrev, onNext, onPrev]);
@@ -221,7 +236,7 @@ export default function ArtworkModal({
       {/* Navigation buttons */}
       {hasPrev && onPrev && (
         <button
-          onClick={onPrev}
+          onClick={() => { setSlideDirection('right'); onPrev(); }}
           className="absolute left-4 top-1/2 -translate-y-1/2 z-20 w-14 h-14 landscape:w-10 landscape:h-10 flex items-center justify-center rounded-full bg-white/10 text-white/70 hover:bg-white/30 hover:text-white hover:scale-110 transition-all duration-300 backdrop-blur-sm"
           aria-label={t.aria.prevArtwork}
         >
@@ -233,7 +248,7 @@ export default function ArtworkModal({
 
       {hasNext && onNext && (
         <button
-          onClick={onNext}
+          onClick={() => { setSlideDirection('left'); onNext(); }}
           className="absolute right-4 top-1/2 -translate-y-1/2 z-20 w-14 h-14 landscape:w-10 landscape:h-10 flex items-center justify-center rounded-full bg-white/10 text-white/70 hover:bg-white/30 hover:text-white hover:scale-110 transition-all duration-300 backdrop-blur-sm"
           aria-label={t.aria.nextArtwork}
         >
@@ -245,9 +260,14 @@ export default function ArtworkModal({
 
       {/* Image container */}
       <div
-        className="absolute inset-0 top-0 bottom-24 landscape:bottom-16"
+        key={artwork.id}
+        className={`absolute inset-0 top-0 bottom-24 landscape:bottom-16 ${
+          slideDirection === 'left' ? 'animate-slide-in-right' :
+          slideDirection === 'right' ? 'animate-slide-in-left' : ''
+        }`}
         onTouchStart={handleSwipeStart}
         onTouchEnd={handleSwipeEnd}
+        onAnimationEnd={() => setSlideDirection(null)}
       >
         <ZoomableImage
           src={artwork.image_url}
@@ -283,7 +303,13 @@ export default function ArtworkModal({
       </div>
 
       {/* Artwork info */}
-      <div className="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black/80 to-transparent pt-12 pb-6 px-6 max-h-[40%] overflow-y-auto landscape:pt-4 landscape:pb-3 landscape:px-4 landscape:max-h-[30%]">
+      <div
+        key={`info-${artwork.id}`}
+        className={`absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black/80 to-transparent pt-12 pb-6 px-6 max-h-[40%] overflow-y-auto landscape:pt-4 landscape:pb-3 landscape:px-4 landscape:max-h-[30%] ${
+          slideDirection === 'left' ? 'animate-slide-in-right' :
+          slideDirection === 'right' ? 'animate-slide-in-left' : ''
+        }`}
+      >
         <div className="max-w-2xl mx-auto text-center">
           <h2 className="text-white text-xl font-medium">{getLocalizedValue(locale, artwork.title, artwork.title_en)}</h2>
           <p className="text-white/60 text-sm mt-2">
