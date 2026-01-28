@@ -8,6 +8,7 @@ interface ZoomableImageProps {
   src: string;
   alt: string;
   onScaleChange?: (scale: number) => void;
+  onLongPress?: () => void;
 }
 
 const MAGNIFIER_SIZE = 400;
@@ -51,7 +52,10 @@ function ZoomControls() {
   );
 }
 
-export default function ZoomableImage({ src, alt, onScaleChange }: ZoomableImageProps) {
+const MAGNIFIER_DELAY = 500; // 0.5초 후 돋보기 활성화
+const LONG_PRESS_DELAY = 3000; // 3초 후 롱프레스
+
+export default function ZoomableImage({ src, alt, onScaleChange, onLongPress }: ZoomableImageProps) {
   const [showMagnifier, setShowMagnifier] = useState(false);
   const [magnifierPos, setMagnifierPos] = useState({ x: 0, y: 0 });
   const [imageDimensions, setImageDimensions] = useState({ width: 0, height: 0, naturalWidth: 0, naturalHeight: 0 });
@@ -59,6 +63,9 @@ export default function ZoomableImage({ src, alt, onScaleChange }: ZoomableImage
   const isZoomed = currentScale > 1.05;
   const imageContainerRef = useRef<HTMLDivElement>(null);
   const imageRef = useRef<HTMLImageElement | null>(null);
+  const magnifierTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+  const longPressTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+  const touchPosRef = useRef<{ clientX: number; clientY: number } | null>(null);
 
   const updateImageDimensions = useCallback(() => {
     if (imageRef.current && imageContainerRef.current) {
@@ -131,23 +138,56 @@ export default function ZoomableImage({ src, alt, onScaleChange }: ZoomableImage
     setShowMagnifier(false);
   }, []);
 
-  const handleTouchStart = useCallback((e: React.TouchEvent<HTMLDivElement>) => {
-    if (e.touches.length === 1 && !isZoomed) {
-      const touch = e.touches[0];
-      updateMagnifierPosition(touch.clientX, touch.clientY);
-      setShowMagnifier(true);
+  const clearTouchTimers = useCallback(() => {
+    if (magnifierTimerRef.current) {
+      clearTimeout(magnifierTimerRef.current);
+      magnifierTimerRef.current = null;
     }
-  }, [updateMagnifierPosition, isZoomed]);
+    if (longPressTimerRef.current) {
+      clearTimeout(longPressTimerRef.current);
+      longPressTimerRef.current = null;
+    }
+  }, []);
+
+  const handleTouchStart = useCallback((e: React.TouchEvent<HTMLDivElement>) => {
+    if (e.touches.length !== 1 || isZoomed) return;
+    const touch = e.touches[0];
+    touchPosRef.current = { clientX: touch.clientX, clientY: touch.clientY };
+
+    // 500ms 후 돋보기 활성화
+    magnifierTimerRef.current = setTimeout(() => {
+      if (touchPosRef.current) {
+        updateMagnifierPosition(touchPosRef.current.clientX, touchPosRef.current.clientY);
+        setShowMagnifier(true);
+      }
+    }, MAGNIFIER_DELAY);
+
+    // 3초 후 롱프레스 (저작권 팝업)
+    longPressTimerRef.current = setTimeout(() => {
+      setShowMagnifier(false);
+      clearTouchTimers();
+      onLongPress?.();
+    }, LONG_PRESS_DELAY);
+  }, [isZoomed, updateMagnifierPosition, clearTouchTimers, onLongPress]);
 
   const handleTouchMove = useCallback((e: React.TouchEvent<HTMLDivElement>) => {
-    if (!showMagnifier || e.touches.length !== 1 || isZoomed) return;
+    if (e.touches.length !== 1) return;
     const touch = e.touches[0];
-    updateMagnifierPosition(touch.clientX, touch.clientY);
-  }, [showMagnifier, updateMagnifierPosition, isZoomed]);
+    touchPosRef.current = { clientX: touch.clientX, clientY: touch.clientY };
+
+    if (showMagnifier && !isZoomed) {
+      updateMagnifierPosition(touch.clientX, touch.clientY);
+    } else {
+      // 움직이면 타이머 취소 (스와이프 중)
+      clearTouchTimers();
+    }
+  }, [showMagnifier, isZoomed, updateMagnifierPosition, clearTouchTimers]);
 
   const handleTouchEnd = useCallback(() => {
+    clearTouchTimers();
+    touchPosRef.current = null;
     setShowMagnifier(false);
-  }, []);
+  }, [clearTouchTimers]);
 
   const getMagnifierStyle = useCallback(() => {
     if (!imageContainerRef.current || !imageDimensions.width) return {};

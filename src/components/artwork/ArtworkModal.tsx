@@ -111,7 +111,7 @@ export default function ArtworkModal({
     swipeRef.current = null;
 
     const SWIPE_THRESHOLD = 50;
-    const SWIPE_MAX_TIME = 300;
+    const SWIPE_MAX_TIME = 500;
 
     if (elapsed > SWIPE_MAX_TIME) return;
     if (Math.abs(deltaX) < SWIPE_THRESHOLD) return;
@@ -253,6 +253,7 @@ export default function ArtworkModal({
           src={artwork.image_url}
           alt={getLocalizedValue(locale, artwork.title, artwork.title_en)}
           onScaleChange={(scale) => setIsZoomed(scale > 1.05)}
+          onLongPress={() => setShowCopyrightPopup(true)}
         />
         {/* Copyright watermark overlay - 4 quadrants */}
         {(artwork.show_watermark ?? true) && (
