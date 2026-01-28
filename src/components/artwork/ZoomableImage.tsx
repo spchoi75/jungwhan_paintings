@@ -7,6 +7,7 @@ import Image from 'next/image';
 interface ZoomableImageProps {
   src: string;
   alt: string;
+  onScaleChange?: (scale: number) => void;
 }
 
 const MAGNIFIER_SIZE = 400;
@@ -50,10 +51,12 @@ function ZoomControls() {
   );
 }
 
-export default function ZoomableImage({ src, alt }: ZoomableImageProps) {
+export default function ZoomableImage({ src, alt, onScaleChange }: ZoomableImageProps) {
   const [showMagnifier, setShowMagnifier] = useState(false);
   const [magnifierPos, setMagnifierPos] = useState({ x: 0, y: 0 });
   const [imageDimensions, setImageDimensions] = useState({ width: 0, height: 0, naturalWidth: 0, naturalHeight: 0 });
+  const [currentScale, setCurrentScale] = useState(1);
+  const isZoomed = currentScale > 1.05;
   const imageContainerRef = useRef<HTMLDivElement>(null);
   const imageRef = useRef<HTMLImageElement | null>(null);
 
@@ -110,9 +113,10 @@ export default function ZoomableImage({ src, alt }: ZoomableImageProps) {
   }, []);
 
   const handleMouseDown = useCallback((e: React.MouseEvent<HTMLDivElement>) => {
+    if (isZoomed) return;
     updateMagnifierPosition(e.clientX, e.clientY);
     setShowMagnifier(true);
-  }, [updateMagnifierPosition]);
+  }, [updateMagnifierPosition, isZoomed]);
 
   const handleMouseUp = useCallback(() => {
     setShowMagnifier(false);
@@ -128,18 +132,18 @@ export default function ZoomableImage({ src, alt }: ZoomableImageProps) {
   }, []);
 
   const handleTouchStart = useCallback((e: React.TouchEvent<HTMLDivElement>) => {
-    if (e.touches.length === 1) {
+    if (e.touches.length === 1 && !isZoomed) {
       const touch = e.touches[0];
       updateMagnifierPosition(touch.clientX, touch.clientY);
       setShowMagnifier(true);
     }
-  }, [updateMagnifierPosition]);
+  }, [updateMagnifierPosition, isZoomed]);
 
   const handleTouchMove = useCallback((e: React.TouchEvent<HTMLDivElement>) => {
-    if (!showMagnifier || e.touches.length !== 1) return;
+    if (!showMagnifier || e.touches.length !== 1 || isZoomed) return;
     const touch = e.touches[0];
     updateMagnifierPosition(touch.clientX, touch.clientY);
-  }, [showMagnifier, updateMagnifierPosition]);
+  }, [showMagnifier, updateMagnifierPosition, isZoomed]);
 
   const handleTouchEnd = useCallback(() => {
     setShowMagnifier(false);
@@ -186,7 +190,11 @@ export default function ZoomableImage({ src, alt }: ZoomableImageProps) {
       centerOnInit
       wheel={{ smoothStep: 0.1 }}
       doubleClick={{ mode: 'toggle' }}
-      panning={{ disabled: showMagnifier }}
+      panning={{ disabled: showMagnifier && !isZoomed }}
+      onTransformed={(_ref, state) => {
+        setCurrentScale(state.scale);
+        onScaleChange?.(state.scale);
+      }}
     >
       <div className="relative w-full h-full">
         <TransformComponent
