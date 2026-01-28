@@ -1,6 +1,6 @@
 'use client';
 
-import { Fragment } from 'react';
+import { Fragment, useEffect, useRef, useCallback } from 'react';
 import { Dialog, DialogPanel, Transition, TransitionChild } from '@headlessui/react';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
@@ -11,6 +11,37 @@ export default function SidePanel() {
   const pathname = usePathname();
   const { isOpen, open, close } = useSidePanel();
   const { t } = useLocale();
+  const edgeSwipeRef = useRef<{ startX: number; startY: number } | null>(null);
+
+  const handleEdgeTouchStart = useCallback((e: TouchEvent) => {
+    if (e.touches.length !== 1) return;
+    const startX = e.touches[0].clientX;
+    if (startX <= 30) {
+      edgeSwipeRef.current = { startX, startY: e.touches[0].clientY };
+    }
+  }, []);
+
+  const handleEdgeTouchEnd = useCallback((e: TouchEvent) => {
+    if (!edgeSwipeRef.current) return;
+    const touch = e.changedTouches[0];
+    const deltaX = touch.clientX - edgeSwipeRef.current.startX;
+    const deltaY = touch.clientY - edgeSwipeRef.current.startY;
+    edgeSwipeRef.current = null;
+
+    if (deltaX > 50 && Math.abs(deltaX) > Math.abs(deltaY)) {
+      open();
+    }
+  }, [open]);
+
+  useEffect(() => {
+    if (isOpen) return;
+    document.addEventListener('touchstart', handleEdgeTouchStart, { passive: true });
+    document.addEventListener('touchend', handleEdgeTouchEnd, { passive: true });
+    return () => {
+      document.removeEventListener('touchstart', handleEdgeTouchStart);
+      document.removeEventListener('touchend', handleEdgeTouchEnd);
+    };
+  }, [isOpen, handleEdgeTouchStart, handleEdgeTouchEnd]);
 
   const navItems = [
     { href: '/', label: t.nav.home },
@@ -70,13 +101,13 @@ export default function SidePanel() {
             leaveTo="-translate-x-full"
           >
             <DialogPanel
-              className="fixed left-0 top-0 h-full w-72 shadow-xl"
+              className="fixed left-0 top-0 h-full w-56 sm:w-72 shadow-xl"
               style={{
                 background: 'linear-gradient(to right, #141414, #1f1f1f)',
               }}
             >
               {/* Close button */}
-              <div className="flex justify-end p-6">
+              <div className="flex justify-end p-4 sm:p-6">
                 <button
                   onClick={close}
                   className="p-2 text-gray-400 hover:text-white transition-colors"
@@ -99,7 +130,7 @@ export default function SidePanel() {
               </div>
 
               {/* Navigation links - clicking these does NOT close the panel */}
-              <nav className="px-6">
+              <nav className="px-4 sm:px-6">
                 <ul className="space-y-1">
                   {navItems.map((item) => (
                     <li key={item.href}>
@@ -120,7 +151,7 @@ export default function SidePanel() {
               </nav>
 
               {/* Footer */}
-              <div className="absolute bottom-0 left-0 right-0 p-6 border-t border-gray-700/50">
+              <div className="absolute bottom-0 left-0 right-0 p-4 sm:p-6 border-t border-gray-700/50">
                 <p className="text-xs text-gray-500 tracking-wide">
                   {t.common.logo}
                 </p>
