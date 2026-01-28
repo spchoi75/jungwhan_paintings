@@ -11,37 +11,41 @@ export default function SidePanel() {
   const pathname = usePathname();
   const { isOpen, open, close } = useSidePanel();
   const { t } = useLocale();
-  const edgeSwipeRef = useRef<{ startX: number; startY: number } | null>(null);
+  const swipeRef = useRef<{ startX: number; startY: number } | null>(null);
 
-  const handleEdgeTouchStart = useCallback((e: TouchEvent) => {
+  const handleTouchStart = useCallback((e: TouchEvent) => {
     if (e.touches.length !== 1) return;
     const startX = e.touches[0].clientX;
-    if (startX <= 30) {
-      edgeSwipeRef.current = { startX, startY: e.touches[0].clientY };
-    }
-  }, []);
+    // 패널 닫힘: 좌측 30px 영역에서만 추적 (엣지 스와이프 열기)
+    // 패널 열림: 어디서든 추적 (스와이프 닫기)
+    if (!isOpen && startX > 30) return;
+    swipeRef.current = { startX, startY: e.touches[0].clientY };
+  }, [isOpen]);
 
-  const handleEdgeTouchEnd = useCallback((e: TouchEvent) => {
-    if (!edgeSwipeRef.current) return;
+  const handleTouchEnd = useCallback((e: TouchEvent) => {
+    if (!swipeRef.current) return;
     const touch = e.changedTouches[0];
-    const deltaX = touch.clientX - edgeSwipeRef.current.startX;
-    const deltaY = touch.clientY - edgeSwipeRef.current.startY;
-    edgeSwipeRef.current = null;
+    const deltaX = touch.clientX - swipeRef.current.startX;
+    const deltaY = touch.clientY - swipeRef.current.startY;
+    swipeRef.current = null;
 
-    if (deltaX > 50 && Math.abs(deltaX) > Math.abs(deltaY)) {
+    if (Math.abs(deltaX) < 50 || Math.abs(deltaX) < Math.abs(deltaY)) return;
+
+    if (!isOpen && deltaX > 0) {
       open();
+    } else if (isOpen && deltaX < 0) {
+      close();
     }
-  }, [open]);
+  }, [isOpen, open, close]);
 
   useEffect(() => {
-    if (isOpen) return;
-    document.addEventListener('touchstart', handleEdgeTouchStart, { passive: true });
-    document.addEventListener('touchend', handleEdgeTouchEnd, { passive: true });
+    document.addEventListener('touchstart', handleTouchStart, { passive: true });
+    document.addEventListener('touchend', handleTouchEnd, { passive: true });
     return () => {
-      document.removeEventListener('touchstart', handleEdgeTouchStart);
-      document.removeEventListener('touchend', handleEdgeTouchEnd);
+      document.removeEventListener('touchstart', handleTouchStart);
+      document.removeEventListener('touchend', handleTouchEnd);
     };
-  }, [isOpen, handleEdgeTouchStart, handleEdgeTouchEnd]);
+  }, [handleTouchStart, handleTouchEnd]);
 
   const navItems = [
     { href: '/', label: t.nav.home },
@@ -72,7 +76,7 @@ export default function SidePanel() {
       )}
 
       <Transition show={isOpen} as={Fragment}>
-        <Dialog onClose={() => {}} className="relative z-50">
+        <Dialog onClose={close} className="relative z-50">
           {/* Overlay - clicking this closes the panel */}
           <TransitionChild
             as={Fragment}
