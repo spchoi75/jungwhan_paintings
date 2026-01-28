@@ -1,6 +1,6 @@
 'use client';
 
-import { useEffect, useCallback, useState } from 'react';
+import { useEffect, useCallback, useState, useRef } from 'react';
 import { Artwork } from '@/types/artwork';
 import ZoomableImage from './ZoomableImage';
 import { useLocale } from '@/i18n';
@@ -26,6 +26,8 @@ export default function ArtworkModal({
   const { locale, t } = useLocale();
   const [showCopyrightPopup, setShowCopyrightPopup] = useState(false);
   const [contactEmail, setContactEmail] = useState<string | null>(null);
+  const [isZoomed, setIsZoomed] = useState(false);
+  const swipeRef = useRef<{ startX: number; startY: number; startTime: number } | null>(null);
 
   const handleKeyDown = useCallback(
     (e: KeyboardEvent) => {
@@ -87,6 +89,40 @@ export default function ArtworkModal({
     };
     fetchContactEmail();
   }, []);
+
+  const handleSwipeStart = useCallback((e: React.TouchEvent) => {
+    if (e.touches.length !== 1 || isZoomed) return;
+    swipeRef.current = {
+      startX: e.touches[0].clientX,
+      startY: e.touches[0].clientY,
+      startTime: Date.now(),
+    };
+  }, [isZoomed]);
+
+  const handleSwipeEnd = useCallback((e: React.TouchEvent) => {
+    if (!swipeRef.current || isZoomed) {
+      swipeRef.current = null;
+      return;
+    }
+    const touch = e.changedTouches[0];
+    const deltaX = touch.clientX - swipeRef.current.startX;
+    const deltaY = touch.clientY - swipeRef.current.startY;
+    const elapsed = Date.now() - swipeRef.current.startTime;
+    swipeRef.current = null;
+
+    const SWIPE_THRESHOLD = 50;
+    const SWIPE_MAX_TIME = 300;
+
+    if (elapsed > SWIPE_MAX_TIME) return;
+    if (Math.abs(deltaX) < SWIPE_THRESHOLD) return;
+    if (Math.abs(deltaX) < Math.abs(deltaY)) return;
+
+    if (deltaX < 0 && hasNext && onNext) {
+      onNext();
+    } else if (deltaX > 0 && hasPrev && onPrev) {
+      onPrev();
+    }
+  }, [isZoomed, hasNext, hasPrev, onNext, onPrev]);
 
   const handleContextMenu = useCallback((e: React.MouseEvent) => {
     e.preventDefault();
@@ -186,7 +222,7 @@ export default function ArtworkModal({
       {hasPrev && onPrev && (
         <button
           onClick={onPrev}
-          className="absolute left-4 top-1/2 -translate-y-1/2 z-20 w-14 h-14 flex items-center justify-center rounded-full bg-white/10 text-white/70 hover:bg-white/30 hover:text-white hover:scale-110 transition-all duration-300 backdrop-blur-sm"
+          className="absolute left-4 top-1/2 -translate-y-1/2 z-20 w-14 h-14 landscape:w-10 landscape:h-10 flex items-center justify-center rounded-full bg-white/10 text-white/70 hover:bg-white/30 hover:text-white hover:scale-110 transition-all duration-300 backdrop-blur-sm"
           aria-label={t.aria.prevArtwork}
         >
           <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
@@ -198,7 +234,7 @@ export default function ArtworkModal({
       {hasNext && onNext && (
         <button
           onClick={onNext}
-          className="absolute right-4 top-1/2 -translate-y-1/2 z-20 w-14 h-14 flex items-center justify-center rounded-full bg-white/10 text-white/70 hover:bg-white/30 hover:text-white hover:scale-110 transition-all duration-300 backdrop-blur-sm"
+          className="absolute right-4 top-1/2 -translate-y-1/2 z-20 w-14 h-14 landscape:w-10 landscape:h-10 flex items-center justify-center rounded-full bg-white/10 text-white/70 hover:bg-white/30 hover:text-white hover:scale-110 transition-all duration-300 backdrop-blur-sm"
           aria-label={t.aria.nextArtwork}
         >
           <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
@@ -208,8 +244,16 @@ export default function ArtworkModal({
       )}
 
       {/* Image container */}
-      <div className="absolute inset-0 top-0 bottom-24">
-        <ZoomableImage src={artwork.image_url} alt={getLocalizedValue(locale, artwork.title, artwork.title_en)} />
+      <div
+        className="absolute inset-0 top-0 bottom-24 landscape:bottom-16"
+        onTouchStart={handleSwipeStart}
+        onTouchEnd={handleSwipeEnd}
+      >
+        <ZoomableImage
+          src={artwork.image_url}
+          alt={getLocalizedValue(locale, artwork.title, artwork.title_en)}
+          onScaleChange={(scale) => setIsZoomed(scale > 1.05)}
+        />
         {/* Copyright watermark overlay - 4 quadrants */}
         {(artwork.show_watermark ?? true) && (
           <div className="absolute inset-0 pointer-events-none grid grid-cols-2 grid-rows-2">
@@ -238,7 +282,7 @@ export default function ArtworkModal({
       </div>
 
       {/* Artwork info */}
-      <div className="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black/80 to-transparent pt-12 pb-6 px-6 max-h-[40%] overflow-y-auto">
+      <div className="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black/80 to-transparent pt-12 pb-6 px-6 max-h-[40%] overflow-y-auto landscape:pt-4 landscape:pb-3 landscape:px-4 landscape:max-h-[30%]">
         <div className="max-w-2xl mx-auto text-center">
           <h2 className="text-white text-xl font-medium">{getLocalizedValue(locale, artwork.title, artwork.title_en)}</h2>
           <p className="text-white/60 text-sm mt-2">
