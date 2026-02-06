@@ -250,7 +250,7 @@ export default function AboutForm({ aboutInfo, onSubmit }: AboutFormProps) {
       )}
 
       <div>
-        <label className="block text-sm font-medium mb-2 text-gray-300">프로필 이미지</label>
+        <label className="block text-sm font-medium mb-2 text-gray-700">프로필 이미지</label>
         <ImageUploader
           onUpload={(url) => setProfileImageUrl(url)}
           currentImage={profileImageUrl}
@@ -259,26 +259,26 @@ export default function AboutForm({ aboutInfo, onSubmit }: AboutFormProps) {
 
       <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
         <div>
-          <label className="block text-sm font-medium mb-1 text-gray-300">
+          <label className="block text-sm font-medium mb-1 text-gray-700">
             작가명 <span className="text-red-400">*</span>
           </label>
           <input
             type="text"
             value={artistName}
             onChange={(e) => setArtistName(e.target.value)}
-            className="w-full px-3 py-2 border border-gray-600 rounded focus:outline-none focus:ring-1 focus:ring-white bg-[#1a1a1a] text-white placeholder-gray-500"
+            className="w-full px-3 py-2 border border-gray-300 rounded focus:outline-none focus:ring-1 focus:ring-gray-400 bg-white text-gray-900 placeholder-gray-400"
             required
           />
         </div>
         <div>
-          <label className="block text-sm font-medium mb-1 text-gray-300">
+          <label className="block text-sm font-medium mb-1 text-gray-700">
             작가명 (영문)
           </label>
           <input
             type="text"
             value={artistNameEn}
             onChange={(e) => setArtistNameEn(e.target.value)}
-            className="w-full px-3 py-2 border border-gray-600 rounded focus:outline-none focus:ring-1 focus:ring-white bg-[#1a1a1a] text-white placeholder-gray-500"
+            className="w-full px-3 py-2 border border-gray-300 rounded focus:outline-none focus:ring-1 focus:ring-gray-400 bg-white text-gray-900 placeholder-gray-400"
             placeholder="Artist Name"
           />
         </div>
@@ -286,13 +286,13 @@ export default function AboutForm({ aboutInfo, onSubmit }: AboutFormProps) {
 
       <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
         <div>
-          <label className="block text-sm font-medium mb-2 text-gray-300">소개글</label>
+          <label className="block text-sm font-medium mb-2 text-gray-700">소개글</label>
           {bioParagraphs.map((para, index) => (
             <div key={index} className="flex gap-2 mb-2">
               <textarea
                 value={para}
                 onChange={(e) => updateBioParagraph(index, e.target.value)}
-                className="flex-1 px-3 py-2 border border-gray-600 rounded focus:outline-none focus:ring-1 focus:ring-white resize-none bg-[#1a1a1a] text-white placeholder-gray-500"
+                className="flex-1 px-3 py-2 border border-gray-300 rounded focus:outline-none focus:ring-1 focus:ring-gray-400 resize-none bg-white text-gray-900 placeholder-gray-400"
                 rows={3}
                 placeholder="소개글 문단을 입력하세요"
               />
@@ -316,13 +316,13 @@ export default function AboutForm({ aboutInfo, onSubmit }: AboutFormProps) {
           </button>
         </div>
         <div>
-          <label className="block text-sm font-medium mb-2 text-gray-300">소개글 (영문)</label>
+          <label className="block text-sm font-medium mb-2 text-gray-700">소개글 (영문)</label>
           {bioParagraphsEn.map((para, index) => (
             <div key={index} className="flex gap-2 mb-2">
               <textarea
                 value={para}
                 onChange={(e) => updateBioParagraphEn(index, e.target.value)}
-                className="flex-1 px-3 py-2 border border-gray-600 rounded focus:outline-none focus:ring-1 focus:ring-white resize-none bg-[#1a1a1a] text-white placeholder-gray-500"
+                className="flex-1 px-3 py-2 border border-gray-300 rounded focus:outline-none focus:ring-1 focus:ring-gray-400 resize-none bg-white text-gray-900 placeholder-gray-400"
                 rows={3}
                 placeholder="Enter bio paragraph in English"
               />
@@ -348,16 +348,16 @@ export default function AboutForm({ aboutInfo, onSubmit }: AboutFormProps) {
       </div>
 
       <div>
-        <label className="block text-sm font-medium mb-2 text-gray-300">Education</label>
+        <label className="block text-sm font-medium mb-2 text-gray-700">Education</label>
         {education.map((item, index) => (
-          <div key={index} className="mb-3 p-3 border border-gray-700 rounded bg-[#141414]">
+          <div key={index} className="mb-3 p-3 border border-gray-200 rounded bg-[#141414]">
             <div className="flex gap-2 mb-2">
               <input
                 type="text"
                 value={item.year}
                 onChange={(e) => updateEducation(index, 'year', e.target.value)}
                 placeholder="연도"
-                className="w-24 px-2 py-1 border border-gray-600 rounded focus:outline-none focus:ring-1 focus:ring-white bg-[#1a1a1a] text-white placeholder-gray-500"
+                className="w-24 px-2 py-1 border border-gray-300 rounded focus:outline-none focus:ring-1 focus:ring-gray-400 bg-white text-gray-900 placeholder-gray-400"
               />
               <input
                 type="text"
@@ -366,7 +366,7 @@ export default function AboutForm({ aboutInfo, onSubmit }: AboutFormProps) {
                   updateEducation(index, 'description', e.target.value)
                 }
                 placeholder="학력 내용 (한글)"
-                className="flex-1 px-2 py-1 border border-gray-600 rounded focus:outline-none focus:ring-1 focus:ring-white bg-[#1a1a1a] text-white placeholder-gray-500"
+                className="flex-1 px-2 py-1 border border-gray-300 rounded focus:outline-none focus:ring-1 focus:ring-gray-400 bg-white text-gray-900 placeholder-gray-400"
               />
               <button
                 type="button"
@@ -385,7 +385,7 @@ export default function AboutForm({ aboutInfo, onSubmit }: AboutFormProps) {
                   updateEducation(index, 'description_en', e.target.value)
                 }
                 placeholder="Education (English)"
-                className="flex-1 px-2 py-1 border border-gray-600 rounded focus:outline-none focus:ring-1 focus:ring-white bg-[#1a1a1a] text-white placeholder-gray-500"
+                className="flex-1 px-2 py-1 border border-gray-300 rounded focus:outline-none focus:ring-1 focus:ring-gray-400 bg-white text-gray-900 placeholder-gray-400"
               />
               <div className="px-2 w-[52px]" />
             </div>
@@ -401,44 +401,44 @@ export default function AboutForm({ aboutInfo, onSubmit }: AboutFormProps) {
       </div>
 
       {/* CV 출생지/거주지 */}
-      <div className="border-t border-gray-700 pt-6">
+      <div className="border-t border-gray-200 pt-6">
         <h3 className="text-lg font-medium text-gray-200 mb-4">CV 정보</h3>
 
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
           <div>
-            <label className="block text-sm font-medium mb-1 text-gray-300">출생 도시</label>
+            <label className="block text-sm font-medium mb-1 text-gray-700">출생 도시</label>
             <div className="grid grid-cols-2 gap-2">
               <input
                 type="text"
                 value={birthCity}
                 onChange={(e) => setBirthCity(e.target.value)}
-                className="px-3 py-2 border border-gray-600 rounded focus:outline-none focus:ring-1 focus:ring-white bg-[#1a1a1a] text-white placeholder-gray-500"
+                className="px-3 py-2 border border-gray-300 rounded focus:outline-none focus:ring-1 focus:ring-gray-400 bg-white text-gray-900 placeholder-gray-400"
                 placeholder="서울"
               />
               <input
                 type="text"
                 value={birthCityEn}
                 onChange={(e) => setBirthCityEn(e.target.value)}
-                className="px-3 py-2 border border-gray-600 rounded focus:outline-none focus:ring-1 focus:ring-white bg-[#1a1a1a] text-white placeholder-gray-500"
+                className="px-3 py-2 border border-gray-300 rounded focus:outline-none focus:ring-1 focus:ring-gray-400 bg-white text-gray-900 placeholder-gray-400"
                 placeholder="Seoul"
               />
             </div>
           </div>
           <div>
-            <label className="block text-sm font-medium mb-1 text-gray-300">출생 국가</label>
+            <label className="block text-sm font-medium mb-1 text-gray-700">출생 국가</label>
             <div className="grid grid-cols-2 gap-2">
               <input
                 type="text"
                 value={birthCountry}
                 onChange={(e) => setBirthCountry(e.target.value)}
-                className="px-3 py-2 border border-gray-600 rounded focus:outline-none focus:ring-1 focus:ring-white bg-[#1a1a1a] text-white placeholder-gray-500"
+                className="px-3 py-2 border border-gray-300 rounded focus:outline-none focus:ring-1 focus:ring-gray-400 bg-white text-gray-900 placeholder-gray-400"
                 placeholder="대한민국"
               />
               <input
                 type="text"
                 value={birthCountryEn}
                 onChange={(e) => setBirthCountryEn(e.target.value)}
-                className="px-3 py-2 border border-gray-600 rounded focus:outline-none focus:ring-1 focus:ring-white bg-[#1a1a1a] text-white placeholder-gray-500"
+                className="px-3 py-2 border border-gray-300 rounded focus:outline-none focus:ring-1 focus:ring-gray-400 bg-white text-gray-900 placeholder-gray-400"
                 placeholder="South Korea"
               />
             </div>
@@ -447,39 +447,39 @@ export default function AboutForm({ aboutInfo, onSubmit }: AboutFormProps) {
 
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
           <div>
-            <label className="block text-sm font-medium mb-1 text-gray-300">거주 도시</label>
+            <label className="block text-sm font-medium mb-1 text-gray-700">거주 도시</label>
             <div className="grid grid-cols-2 gap-2">
               <input
                 type="text"
                 value={liveCity}
                 onChange={(e) => setLiveCity(e.target.value)}
-                className="px-3 py-2 border border-gray-600 rounded focus:outline-none focus:ring-1 focus:ring-white bg-[#1a1a1a] text-white placeholder-gray-500"
+                className="px-3 py-2 border border-gray-300 rounded focus:outline-none focus:ring-1 focus:ring-gray-400 bg-white text-gray-900 placeholder-gray-400"
                 placeholder="서울"
               />
               <input
                 type="text"
                 value={liveCityEn}
                 onChange={(e) => setLiveCityEn(e.target.value)}
-                className="px-3 py-2 border border-gray-600 rounded focus:outline-none focus:ring-1 focus:ring-white bg-[#1a1a1a] text-white placeholder-gray-500"
+                className="px-3 py-2 border border-gray-300 rounded focus:outline-none focus:ring-1 focus:ring-gray-400 bg-white text-gray-900 placeholder-gray-400"
                 placeholder="Seoul"
               />
             </div>
           </div>
           <div>
-            <label className="block text-sm font-medium mb-1 text-gray-300">거주 국가</label>
+            <label className="block text-sm font-medium mb-1 text-gray-700">거주 국가</label>
             <div className="grid grid-cols-2 gap-2">
               <input
                 type="text"
                 value={liveCountry}
                 onChange={(e) => setLiveCountry(e.target.value)}
-                className="px-3 py-2 border border-gray-600 rounded focus:outline-none focus:ring-1 focus:ring-white bg-[#1a1a1a] text-white placeholder-gray-500"
+                className="px-3 py-2 border border-gray-300 rounded focus:outline-none focus:ring-1 focus:ring-gray-400 bg-white text-gray-900 placeholder-gray-400"
                 placeholder="대한민국"
               />
               <input
                 type="text"
                 value={liveCountryEn}
                 onChange={(e) => setLiveCountryEn(e.target.value)}
-                className="px-3 py-2 border border-gray-600 rounded focus:outline-none focus:ring-1 focus:ring-white bg-[#1a1a1a] text-white placeholder-gray-500"
+                className="px-3 py-2 border border-gray-300 rounded focus:outline-none focus:ring-1 focus:ring-gray-400 bg-white text-gray-900 placeholder-gray-400"
                 placeholder="South Korea"
               />
             </div>
@@ -489,23 +489,23 @@ export default function AboutForm({ aboutInfo, onSubmit }: AboutFormProps) {
 
       {/* Residencies */}
       <div>
-        <label className="block text-sm font-medium mb-2 text-gray-300">Residency</label>
+        <label className="block text-sm font-medium mb-2 text-gray-700">Residency</label>
         {residencies.map((item, index) => (
-          <div key={index} className="mb-3 p-3 border border-gray-700 rounded bg-[#141414]">
+          <div key={index} className="mb-3 p-3 border border-gray-200 rounded bg-[#141414]">
             <div className="flex gap-2 mb-2">
               <input
                 type="text"
                 value={item.year}
                 onChange={(e) => updateResidency(index, 'year', e.target.value)}
                 placeholder="연도"
-                className="w-24 px-2 py-1 border border-gray-600 rounded focus:outline-none focus:ring-1 focus:ring-white bg-[#1a1a1a] text-white placeholder-gray-500"
+                className="w-24 px-2 py-1 border border-gray-300 rounded focus:outline-none focus:ring-1 focus:ring-gray-400 bg-white text-gray-900 placeholder-gray-400"
               />
               <input
                 type="text"
                 value={item.program}
                 onChange={(e) => updateResidency(index, 'program', e.target.value)}
                 placeholder="프로그램명"
-                className="flex-1 px-2 py-1 border border-gray-600 rounded focus:outline-none focus:ring-1 focus:ring-white bg-[#1a1a1a] text-white placeholder-gray-500"
+                className="flex-1 px-2 py-1 border border-gray-300 rounded focus:outline-none focus:ring-1 focus:ring-gray-400 bg-white text-gray-900 placeholder-gray-400"
               />
               <button
                 type="button"
@@ -522,7 +522,7 @@ export default function AboutForm({ aboutInfo, onSubmit }: AboutFormProps) {
                 value={item.program_en || ''}
                 onChange={(e) => updateResidency(index, 'program_en', e.target.value)}
                 placeholder="Program Name (English)"
-                className="flex-1 px-2 py-1 border border-gray-600 rounded focus:outline-none focus:ring-1 focus:ring-white bg-[#1a1a1a] text-white placeholder-gray-500"
+                className="flex-1 px-2 py-1 border border-gray-300 rounded focus:outline-none focus:ring-1 focus:ring-gray-400 bg-white text-gray-900 placeholder-gray-400"
               />
               <div className="px-2 w-[52px]" />
             </div>
@@ -533,14 +533,14 @@ export default function AboutForm({ aboutInfo, onSubmit }: AboutFormProps) {
                 value={item.location}
                 onChange={(e) => updateResidency(index, 'location', e.target.value)}
                 placeholder="장소 (한글)"
-                className="flex-1 px-2 py-1 border border-gray-600 rounded focus:outline-none focus:ring-1 focus:ring-white bg-[#1a1a1a] text-white placeholder-gray-500"
+                className="flex-1 px-2 py-1 border border-gray-300 rounded focus:outline-none focus:ring-1 focus:ring-gray-400 bg-white text-gray-900 placeholder-gray-400"
               />
               <input
                 type="text"
                 value={item.location_en || ''}
                 onChange={(e) => updateResidency(index, 'location_en', e.target.value)}
                 placeholder="Location (English)"
-                className="flex-1 px-2 py-1 border border-gray-600 rounded focus:outline-none focus:ring-1 focus:ring-white bg-[#1a1a1a] text-white placeholder-gray-500"
+                className="flex-1 px-2 py-1 border border-gray-300 rounded focus:outline-none focus:ring-1 focus:ring-gray-400 bg-white text-gray-900 placeholder-gray-400"
               />
             </div>
           </div>
@@ -556,23 +556,23 @@ export default function AboutForm({ aboutInfo, onSubmit }: AboutFormProps) {
 
       {/* Fellowships */}
       <div>
-        <label className="block text-sm font-medium mb-2 text-gray-300">Fellowships</label>
+        <label className="block text-sm font-medium mb-2 text-gray-700">Fellowships</label>
         {fellowships.map((item, index) => (
-          <div key={index} className="mb-3 p-3 border border-gray-700 rounded bg-[#141414]">
+          <div key={index} className="mb-3 p-3 border border-gray-200 rounded bg-[#141414]">
             <div className="flex gap-2 mb-2">
               <input
                 type="text"
                 value={item.year}
                 onChange={(e) => updateFellowship(index, 'year', e.target.value)}
                 placeholder="연도"
-                className="w-24 px-2 py-1 border border-gray-600 rounded focus:outline-none focus:ring-1 focus:ring-white bg-[#1a1a1a] text-white placeholder-gray-500"
+                className="w-24 px-2 py-1 border border-gray-300 rounded focus:outline-none focus:ring-1 focus:ring-gray-400 bg-white text-gray-900 placeholder-gray-400"
               />
               <input
                 type="text"
                 value={item.name}
                 onChange={(e) => updateFellowship(index, 'name', e.target.value)}
                 placeholder="펠로우십명"
-                className="flex-1 px-2 py-1 border border-gray-600 rounded focus:outline-none focus:ring-1 focus:ring-white bg-[#1a1a1a] text-white placeholder-gray-500"
+                className="flex-1 px-2 py-1 border border-gray-300 rounded focus:outline-none focus:ring-1 focus:ring-gray-400 bg-white text-gray-900 placeholder-gray-400"
               />
               <button
                 type="button"
@@ -589,7 +589,7 @@ export default function AboutForm({ aboutInfo, onSubmit }: AboutFormProps) {
                 value={item.name_en || ''}
                 onChange={(e) => updateFellowship(index, 'name_en', e.target.value)}
                 placeholder="Fellowship Name (English)"
-                className="flex-1 px-2 py-1 border border-gray-600 rounded focus:outline-none focus:ring-1 focus:ring-white bg-[#1a1a1a] text-white placeholder-gray-500"
+                className="flex-1 px-2 py-1 border border-gray-300 rounded focus:outline-none focus:ring-1 focus:ring-gray-400 bg-white text-gray-900 placeholder-gray-400"
               />
               <div className="px-2 w-[52px]" />
             </div>
@@ -606,23 +606,23 @@ export default function AboutForm({ aboutInfo, onSubmit }: AboutFormProps) {
 
       {/* Awards */}
       <div>
-        <label className="block text-sm font-medium mb-2 text-gray-300">Awards</label>
+        <label className="block text-sm font-medium mb-2 text-gray-700">Awards</label>
         {awards.map((item, index) => (
-          <div key={index} className="mb-3 p-3 border border-gray-700 rounded bg-[#141414]">
+          <div key={index} className="mb-3 p-3 border border-gray-200 rounded bg-[#141414]">
             <div className="flex gap-2 mb-2">
               <input
                 type="text"
                 value={item.year}
                 onChange={(e) => updateAward(index, 'year', e.target.value)}
                 placeholder="연도"
-                className="w-24 px-2 py-1 border border-gray-600 rounded focus:outline-none focus:ring-1 focus:ring-white bg-[#1a1a1a] text-white placeholder-gray-500"
+                className="w-24 px-2 py-1 border border-gray-300 rounded focus:outline-none focus:ring-1 focus:ring-gray-400 bg-white text-gray-900 placeholder-gray-400"
               />
               <input
                 type="text"
                 value={item.name}
                 onChange={(e) => updateAward(index, 'name', e.target.value)}
                 placeholder="수상명"
-                className="flex-1 px-2 py-1 border border-gray-600 rounded focus:outline-none focus:ring-1 focus:ring-white bg-[#1a1a1a] text-white placeholder-gray-500"
+                className="flex-1 px-2 py-1 border border-gray-300 rounded focus:outline-none focus:ring-1 focus:ring-gray-400 bg-white text-gray-900 placeholder-gray-400"
               />
               <button
                 type="button"
@@ -639,7 +639,7 @@ export default function AboutForm({ aboutInfo, onSubmit }: AboutFormProps) {
                 value={item.name_en || ''}
                 onChange={(e) => updateAward(index, 'name_en', e.target.value)}
                 placeholder="Award Name (English)"
-                className="flex-1 px-2 py-1 border border-gray-600 rounded focus:outline-none focus:ring-1 focus:ring-white bg-[#1a1a1a] text-white placeholder-gray-500"
+                className="flex-1 px-2 py-1 border border-gray-300 rounded focus:outline-none focus:ring-1 focus:ring-gray-400 bg-white text-gray-900 placeholder-gray-400"
               />
               <div className="px-2 w-[52px]" />
             </div>
@@ -656,23 +656,23 @@ export default function AboutForm({ aboutInfo, onSubmit }: AboutFormProps) {
 
       {/* Publications */}
       <div>
-        <label className="block text-sm font-medium mb-2 text-gray-300">Publications</label>
+        <label className="block text-sm font-medium mb-2 text-gray-700">Publications</label>
         {publications.map((item, index) => (
-          <div key={index} className="mb-3 p-3 border border-gray-700 rounded bg-[#141414]">
+          <div key={index} className="mb-3 p-3 border border-gray-200 rounded bg-[#141414]">
             <div className="flex gap-2 mb-2">
               <input
                 type="text"
                 value={item.year}
                 onChange={(e) => updatePublication(index, 'year', e.target.value)}
                 placeholder="연도"
-                className="w-24 px-2 py-1 border border-gray-600 rounded focus:outline-none focus:ring-1 focus:ring-white bg-[#1a1a1a] text-white placeholder-gray-500"
+                className="w-24 px-2 py-1 border border-gray-300 rounded focus:outline-none focus:ring-1 focus:ring-gray-400 bg-white text-gray-900 placeholder-gray-400"
               />
               <input
                 type="text"
                 value={item.title}
                 onChange={(e) => updatePublication(index, 'title', e.target.value)}
                 placeholder="출판물 제목"
-                className="flex-1 px-2 py-1 border border-gray-600 rounded focus:outline-none focus:ring-1 focus:ring-white bg-[#1a1a1a] text-white placeholder-gray-500"
+                className="flex-1 px-2 py-1 border border-gray-300 rounded focus:outline-none focus:ring-1 focus:ring-gray-400 bg-white text-gray-900 placeholder-gray-400"
               />
               <button
                 type="button"
@@ -689,7 +689,7 @@ export default function AboutForm({ aboutInfo, onSubmit }: AboutFormProps) {
                 value={item.title_en || ''}
                 onChange={(e) => updatePublication(index, 'title_en', e.target.value)}
                 placeholder="Publication Title (English)"
-                className="flex-1 px-2 py-1 border border-gray-600 rounded focus:outline-none focus:ring-1 focus:ring-white bg-[#1a1a1a] text-white placeholder-gray-500"
+                className="flex-1 px-2 py-1 border border-gray-300 rounded focus:outline-none focus:ring-1 focus:ring-gray-400 bg-white text-gray-900 placeholder-gray-400"
               />
               <div className="px-2 w-[52px]" />
             </div>
@@ -704,37 +704,37 @@ export default function AboutForm({ aboutInfo, onSubmit }: AboutFormProps) {
         </button>
       </div>
 
-      <div className="border-t border-gray-700 pt-6">
+      <div className="border-t border-gray-200 pt-6">
         <h3 className="text-lg font-medium text-gray-200 mb-4">연락처 정보</h3>
       </div>
 
       <div>
-        <label className="block text-sm font-medium mb-1 text-gray-300">연락처 이메일</label>
+        <label className="block text-sm font-medium mb-1 text-gray-700">연락처 이메일</label>
         <input
           type="email"
           value={contactEmail}
           onChange={(e) => setContactEmail(e.target.value)}
-          className="w-full px-3 py-2 border border-gray-600 rounded focus:outline-none focus:ring-1 focus:ring-white bg-[#1a1a1a] text-white placeholder-gray-500"
+          className="w-full px-3 py-2 border border-gray-300 rounded focus:outline-none focus:ring-1 focus:ring-gray-400 bg-white text-gray-900 placeholder-gray-400"
           placeholder="email@example.com"
         />
       </div>
 
       <div>
-        <label className="block text-sm font-medium mb-1 text-gray-300">전화번호</label>
+        <label className="block text-sm font-medium mb-1 text-gray-700">전화번호</label>
         <div className="flex gap-3 items-center">
           <input
             type="tel"
             value={contactPhone}
             onChange={(e) => setContactPhone(e.target.value)}
-            className="flex-1 px-3 py-2 border border-gray-600 rounded focus:outline-none focus:ring-1 focus:ring-white bg-[#1a1a1a] text-white placeholder-gray-500"
+            className="flex-1 px-3 py-2 border border-gray-300 rounded focus:outline-none focus:ring-1 focus:ring-gray-400 bg-white text-gray-900 placeholder-gray-400"
             placeholder="010-1234-5678"
           />
-          <label className="flex items-center gap-2 text-sm text-gray-300 whitespace-nowrap">
+          <label className="flex items-center gap-2 text-sm text-gray-700 whitespace-nowrap">
             <input
               type="checkbox"
               checked={phoneVisible}
               onChange={(e) => setPhoneVisible(e.target.checked)}
-              className="w-4 h-4 rounded border-gray-600 bg-[#1a1a1a] text-blue-500 focus:ring-blue-500"
+              className="w-4 h-4 rounded border-gray-300 bg-white text-blue-500 focus:ring-blue-500"
             />
             사이트에 노출
           </label>
@@ -743,35 +743,35 @@ export default function AboutForm({ aboutInfo, onSubmit }: AboutFormProps) {
 
       <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
         <div>
-          <label className="block text-sm font-medium mb-1 text-gray-300">작업실 주소</label>
+          <label className="block text-sm font-medium mb-1 text-gray-700">작업실 주소</label>
           <input
             type="text"
             value={studioAddress}
             onChange={(e) => setStudioAddress(e.target.value)}
-            className="w-full px-3 py-2 border border-gray-600 rounded focus:outline-none focus:ring-1 focus:ring-white bg-[#1a1a1a] text-white placeholder-gray-500"
+            className="w-full px-3 py-2 border border-gray-300 rounded focus:outline-none focus:ring-1 focus:ring-gray-400 bg-white text-gray-900 placeholder-gray-400"
             placeholder="서울시 강남구 ..."
           />
         </div>
         <div>
-          <label className="block text-sm font-medium mb-1 text-gray-300">작업실 주소 (영문)</label>
+          <label className="block text-sm font-medium mb-1 text-gray-700">작업실 주소 (영문)</label>
           <input
             type="text"
             value={studioAddressEn}
             onChange={(e) => setStudioAddressEn(e.target.value)}
-            className="w-full px-3 py-2 border border-gray-600 rounded focus:outline-none focus:ring-1 focus:ring-white bg-[#1a1a1a] text-white placeholder-gray-500"
+            className="w-full px-3 py-2 border border-gray-300 rounded focus:outline-none focus:ring-1 focus:ring-gray-400 bg-white text-gray-900 placeholder-gray-400"
             placeholder="Gangnam-gu, Seoul, Korea"
           />
         </div>
       </div>
 
       <div>
-        <label className="block text-sm font-medium mb-2 text-gray-300">SNS 계정</label>
+        <label className="block text-sm font-medium mb-2 text-gray-700">SNS 계정</label>
         {socialLinks.map((link, index) => (
           <div key={index} className="flex gap-2 mb-2">
             <select
               value={link.platform}
               onChange={(e) => updateSocialLink(index, 'platform', e.target.value)}
-              className="w-32 px-2 py-1 border border-gray-600 rounded focus:outline-none focus:ring-1 focus:ring-white bg-[#1a1a1a] text-white"
+              className="w-32 px-2 py-1 border border-gray-300 rounded focus:outline-none focus:ring-1 focus:ring-gray-400 bg-white text-gray-900"
             >
               {SOCIAL_PLATFORMS.map((p) => (
                 <option key={p.value} value={p.value}>
@@ -784,7 +784,7 @@ export default function AboutForm({ aboutInfo, onSubmit }: AboutFormProps) {
               value={link.url}
               onChange={(e) => updateSocialLink(index, 'url', e.target.value)}
               placeholder="https://..."
-              className="flex-1 px-2 py-1 border border-gray-600 rounded focus:outline-none focus:ring-1 focus:ring-white bg-[#1a1a1a] text-white placeholder-gray-500"
+              className="flex-1 px-2 py-1 border border-gray-300 rounded focus:outline-none focus:ring-1 focus:ring-gray-400 bg-white text-gray-900 placeholder-gray-400"
             />
             {link.platform === 'other' && (
               <input
@@ -792,7 +792,7 @@ export default function AboutForm({ aboutInfo, onSubmit }: AboutFormProps) {
                 value={link.label || ''}
                 onChange={(e) => updateSocialLink(index, 'label', e.target.value)}
                 placeholder="표시명"
-                className="w-24 px-2 py-1 border border-gray-600 rounded focus:outline-none focus:ring-1 focus:ring-white bg-[#1a1a1a] text-white placeholder-gray-500"
+                className="w-24 px-2 py-1 border border-gray-300 rounded focus:outline-none focus:ring-1 focus:ring-gray-400 bg-white text-gray-900 placeholder-gray-400"
               />
             )}
             <button
@@ -815,7 +815,7 @@ export default function AboutForm({ aboutInfo, onSubmit }: AboutFormProps) {
 
       <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
         <div>
-          <label className="block text-sm font-medium mb-1 text-gray-300">
+          <label className="block text-sm font-medium mb-1 text-gray-700">
             Footer 소개문
             <span className="text-gray-500 font-normal ml-2">(사이트 하단에 표시)</span>
           </label>
@@ -823,25 +823,25 @@ export default function AboutForm({ aboutInfo, onSubmit }: AboutFormProps) {
             type="text"
             value={footerBio}
             onChange={(e) => setFooterBio(e.target.value)}
-            className="w-full px-3 py-2 border border-gray-600 rounded focus:outline-none focus:ring-1 focus:ring-white bg-[#1a1a1a] text-white placeholder-gray-500"
+            className="w-full px-3 py-2 border border-gray-300 rounded focus:outline-none focus:ring-1 focus:ring-gray-400 bg-white text-gray-900 placeholder-gray-400"
             placeholder="예: 한국의 자연과 인물을 담은 작품 활동을 하고 있습니다."
           />
         </div>
         <div>
-          <label className="block text-sm font-medium mb-1 text-gray-300">
+          <label className="block text-sm font-medium mb-1 text-gray-700">
             Footer 소개문 (영문)
           </label>
           <input
             type="text"
             value={footerBioEn}
             onChange={(e) => setFooterBioEn(e.target.value)}
-            className="w-full px-3 py-2 border border-gray-600 rounded focus:outline-none focus:ring-1 focus:ring-white bg-[#1a1a1a] text-white placeholder-gray-500"
+            className="w-full px-3 py-2 border border-gray-300 rounded focus:outline-none focus:ring-1 focus:ring-gray-400 bg-white text-gray-900 placeholder-gray-400"
             placeholder="e.g. Creating artworks that capture the nature and people of Korea."
           />
         </div>
       </div>
 
-      <div className="pt-4 border-t border-gray-700">
+      <div className="pt-4 border-t border-gray-200">
         <Button type="submit" loading={loading}>
           저장
         </Button>

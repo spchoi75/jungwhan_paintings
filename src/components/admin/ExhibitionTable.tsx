@@ -15,8 +15,8 @@ export default function ExhibitionTable({
 }: ExhibitionTableProps) {
   if (exhibitions.length === 0) {
     return (
-      <div className="text-center py-12 bg-[#141414] rounded-lg border border-gray-700">
-        <p className="text-gray-400">등록된 전시가 없습니다</p>
+      <div className="text-center py-12 bg-white rounded-lg border border-gray-200">
+        <p className="text-gray-600">등록된 전시가 없습니다</p>
       </div>
     );
   }
@@ -27,30 +27,30 @@ export default function ExhibitionTable({
 
   const renderTable = (items: Exhibition[], title: string) => (
     <div className="mb-8">
-      <h3 className="text-sm font-medium text-gray-400 mb-3">{title}</h3>
-      <div className="bg-[#141414] rounded-lg border border-gray-700 overflow-hidden">
+      <h3 className="text-sm font-medium text-gray-600 mb-3">{title}</h3>
+      <div className="bg-white rounded-lg border border-gray-200 overflow-hidden">
         <table className="w-full">
-          <thead className="bg-[#1a1a1a]">
+          <thead className="bg-gray-50">
             <tr>
-              <th className="px-4 py-3 text-left text-xs font-medium text-gray-400 uppercase">
+              <th className="px-4 py-3 text-left text-xs font-medium text-gray-600 uppercase">
                 연도
               </th>
-              <th className="px-4 py-3 text-left text-xs font-medium text-gray-400 uppercase">
+              <th className="px-4 py-3 text-left text-xs font-medium text-gray-600 uppercase">
                 전시명
               </th>
-              <th className="px-4 py-3 text-left text-xs font-medium text-gray-400 uppercase">
+              <th className="px-4 py-3 text-left text-xs font-medium text-gray-600 uppercase">
                 장소
               </th>
-              <th className="px-4 py-3 text-right text-xs font-medium text-gray-400 uppercase">
+              <th className="px-4 py-3 text-right text-xs font-medium text-gray-600 uppercase">
                 관리
               </th>
             </tr>
           </thead>
-          <tbody className="divide-y divide-gray-700">
+          <tbody className="divide-y divide-gray-100">
             {items.map((exhibition) => (
-              <tr key={exhibition.id} className="hover:bg-gray-800">
+              <tr key={exhibition.id} className="hover:bg-gray-50">
                 <td className="px-4 py-3 text-sm text-gray-300">{exhibition.year}</td>
-                <td className="px-4 py-3 text-sm text-white">
+                <td className="px-4 py-3 text-sm text-gray-900">
                   {exhibition.external_url ? (
                     <a
                       href={exhibition.external_url}
@@ -64,14 +64,14 @@ export default function ExhibitionTable({
                     exhibition.title
                   )}
                 </td>
-                <td className="px-4 py-3 text-sm text-gray-400">
+                <td className="px-4 py-3 text-sm text-gray-600">
                   {exhibition.venue}
                   {exhibition.location && `, ${exhibition.location}`}
                 </td>
                 <td className="px-4 py-3 text-right">
                   <button
                     onClick={() => onEdit(exhibition)}
-                    className="text-gray-400 hover:text-white text-sm mr-3"
+                    className="text-gray-600 hover:text-gray-900 text-sm mr-3"
                   >
                     수정
                   </button>

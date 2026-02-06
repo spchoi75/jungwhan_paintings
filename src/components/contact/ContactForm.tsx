@@ -63,7 +63,7 @@ export default function ContactForm() {
               onChange={handleChange}
               required
               placeholder={t.contactForm.namePlaceholder}
-              className="w-full px-4 py-3 bg-gray-900 border border-[var(--border)] text-[var(--foreground)] placeholder-gray-500 focus:border-white focus:outline-none transition-colors"
+              className="w-full px-4 py-3 bg-gray-100 border border-[var(--border)] text-[var(--foreground)] placeholder-gray-500 focus:border-white focus:outline-none transition-colors"
             />
           </div>
           <div>
@@ -78,7 +78,7 @@ export default function ContactForm() {
               onChange={handleChange}
               required
               placeholder={t.contactForm.emailPlaceholder}
-              className="w-full px-4 py-3 bg-gray-900 border border-[var(--border)] text-[var(--foreground)] placeholder-gray-500 focus:border-white focus:outline-none transition-colors"
+              className="w-full px-4 py-3 bg-gray-100 border border-[var(--border)] text-[var(--foreground)] placeholder-gray-500 focus:border-white focus:outline-none transition-colors"
             />
           </div>
         </div>
@@ -95,7 +95,7 @@ export default function ContactForm() {
             onChange={handleChange}
             required
             placeholder={t.contactForm.subjectPlaceholder}
-            className="w-full px-4 py-3 bg-gray-900 border border-[var(--border)] text-[var(--foreground)] placeholder-gray-500 focus:border-white focus:outline-none transition-colors"
+            className="w-full px-4 py-3 bg-gray-100 border border-[var(--border)] text-[var(--foreground)] placeholder-gray-500 focus:border-white focus:outline-none transition-colors"
           />
         </div>
 
@@ -111,7 +111,7 @@ export default function ContactForm() {
             required
             rows={6}
             placeholder={t.contactForm.messagePlaceholder}
-            className="w-full px-4 py-3 bg-gray-900 border border-[var(--border)] text-[var(--foreground)] placeholder-gray-500 focus:border-white focus:outline-none transition-colors resize-none"
+            className="w-full px-4 py-3 bg-gray-100 border border-[var(--border)] text-[var(--foreground)] placeholder-gray-500 focus:border-white focus:outline-none transition-colors resize-none"
           />
         </div>
 

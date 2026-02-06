@@ -82,26 +82,26 @@ export default function NewsForm({ news, onSubmit, onCancel }: NewsFormProps) {
 
       <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
         <div>
-          <label className="block text-sm font-medium text-gray-300 mb-1">
+          <label className="block text-sm font-medium text-gray-700 mb-1">
             제목 *
           </label>
           <input
             type="text"
             value={formData.title}
             onChange={(e) => setFormData({ ...formData, title: e.target.value })}
-            className="w-full px-3 py-2 border border-gray-600 rounded focus:outline-none focus:ring-1 focus:ring-white bg-[#1a1a1a] text-white placeholder-gray-500"
+            className="w-full px-3 py-2 border border-gray-300 rounded focus:outline-none focus:ring-1 focus:ring-gray-400 bg-white text-gray-900 placeholder-gray-400"
             required
           />
         </div>
         <div>
-          <label className="block text-sm font-medium text-gray-300 mb-1">
+          <label className="block text-sm font-medium text-gray-700 mb-1">
             제목 (영문)
           </label>
           <input
             type="text"
             value={formData.title_en || ''}
             onChange={(e) => setFormData({ ...formData, title_en: e.target.value })}
-            className="w-full px-3 py-2 border border-gray-600 rounded focus:outline-none focus:ring-1 focus:ring-white bg-[#1a1a1a] text-white placeholder-gray-500"
+            className="w-full px-3 py-2 border border-gray-300 rounded focus:outline-none focus:ring-1 focus:ring-gray-400 bg-white text-gray-900 placeholder-gray-400"
             placeholder="News Title"
           />
         </div>
@@ -109,24 +109,24 @@ export default function NewsForm({ news, onSubmit, onCancel }: NewsFormProps) {
 
       <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
         <div>
-          <label className="block text-sm font-medium text-gray-300 mb-1">
+          <label className="block text-sm font-medium text-gray-700 mb-1">
             내용 *
           </label>
           <textarea
             value={formData.content}
             onChange={(e) => setFormData({ ...formData, content: e.target.value })}
-            className="w-full h-40 px-3 py-2 border border-gray-600 rounded focus:outline-none focus:ring-1 focus:ring-white resize-none bg-[#1a1a1a] text-white placeholder-gray-500"
+            className="w-full h-40 px-3 py-2 border border-gray-300 rounded focus:outline-none focus:ring-1 focus:ring-gray-400 resize-none bg-white text-gray-900 placeholder-gray-400"
             required
           />
         </div>
         <div>
-          <label className="block text-sm font-medium text-gray-300 mb-1">
+          <label className="block text-sm font-medium text-gray-700 mb-1">
             내용 (영문)
           </label>
           <textarea
             value={formData.content_en || ''}
             onChange={(e) => setFormData({ ...formData, content_en: e.target.value })}
-            className="w-full h-40 px-3 py-2 border border-gray-600 rounded focus:outline-none focus:ring-1 focus:ring-white resize-none bg-[#1a1a1a] text-white placeholder-gray-500"
+            className="w-full h-40 px-3 py-2 border border-gray-300 rounded focus:outline-none focus:ring-1 focus:ring-gray-400 resize-none bg-white text-gray-900 placeholder-gray-400"
             placeholder="News content in English"
           />
         </div>
@@ -134,7 +134,7 @@ export default function NewsForm({ news, onSubmit, onCancel }: NewsFormProps) {
 
       <div className="grid grid-cols-2 gap-4">
         <div>
-          <label className="block text-sm font-medium text-gray-300 mb-1">
+          <label className="block text-sm font-medium text-gray-700 mb-1">
             유형 *
           </label>
           <select
@@ -145,7 +145,7 @@ export default function NewsForm({ news, onSubmit, onCancel }: NewsFormProps) {
                 type: e.target.value as NewsFormData['type'],
               })
             }
-            className="w-full px-3 py-2 border border-gray-600 rounded focus:outline-none focus:ring-1 focus:ring-white bg-[#1a1a1a] text-white"
+            className="w-full px-3 py-2 border border-gray-300 rounded focus:outline-none focus:ring-1 focus:ring-gray-400 bg-white text-gray-900"
           >
             {NEWS_TYPES.map((type) => (
               <option key={type.value} value={type.value}>
@@ -155,20 +155,20 @@ export default function NewsForm({ news, onSubmit, onCancel }: NewsFormProps) {
           </select>
         </div>
         <div>
-          <label className="block text-sm font-medium text-gray-300 mb-1">
+          <label className="block text-sm font-medium text-gray-700 mb-1">
             발행일
           </label>
           <input
             type="date"
             value={formData.published_at || ''}
             onChange={(e) => setFormData({ ...formData, published_at: e.target.value })}
-            className="w-full px-3 py-2 border border-gray-600 rounded focus:outline-none focus:ring-1 focus:ring-white bg-[#1a1a1a] text-white"
+            className="w-full px-3 py-2 border border-gray-300 rounded focus:outline-none focus:ring-1 focus:ring-gray-400 bg-white text-gray-900"
           />
         </div>
       </div>
 
       <div>
-        <label className="block text-sm font-medium text-gray-300 mb-1">
+        <label className="block text-sm font-medium text-gray-700 mb-1">
           썸네일 URL
         </label>
         <input
@@ -176,14 +176,14 @@ export default function NewsForm({ news, onSubmit, onCancel }: NewsFormProps) {
           value={formData.thumbnail_url || ''}
           onChange={(e) => setFormData({ ...formData, thumbnail_url: e.target.value })}
           placeholder="https://..."
-          className="w-full px-3 py-2 border border-gray-600 rounded focus:outline-none focus:ring-1 focus:ring-white bg-[#1a1a1a] text-white placeholder-gray-500"
+          className="w-full px-3 py-2 border border-gray-300 rounded focus:outline-none focus:ring-1 focus:ring-gray-400 bg-white text-gray-900 placeholder-gray-400"
         />
         <p className="text-xs text-gray-500 mt-1">외부 이미지 URL을 입력하세요</p>
       </div>
 
       <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
         <div>
-          <label className="block text-sm font-medium text-gray-300 mb-1">
+          <label className="block text-sm font-medium text-gray-700 mb-1">
             외부 링크 URL
           </label>
           <input
@@ -191,11 +191,11 @@ export default function NewsForm({ news, onSubmit, onCancel }: NewsFormProps) {
             value={formData.link_url || ''}
             onChange={(e) => setFormData({ ...formData, link_url: e.target.value })}
             placeholder="https://..."
-            className="w-full px-3 py-2 border border-gray-600 rounded focus:outline-none focus:ring-1 focus:ring-white bg-[#1a1a1a] text-white placeholder-gray-500"
+            className="w-full px-3 py-2 border border-gray-300 rounded focus:outline-none focus:ring-1 focus:ring-gray-400 bg-white text-gray-900 placeholder-gray-400"
           />
         </div>
         <div>
-          <label className="block text-sm font-medium text-gray-300 mb-1">
+          <label className="block text-sm font-medium text-gray-700 mb-1">
             PDF URL
           </label>
           <input
@@ -203,7 +203,7 @@ export default function NewsForm({ news, onSubmit, onCancel }: NewsFormProps) {
             value={formData.pdf_url || ''}
             onChange={(e) => setFormData({ ...formData, pdf_url: e.target.value })}
             placeholder="https://..."
-            className="w-full px-3 py-2 border border-gray-600 rounded focus:outline-none focus:ring-1 focus:ring-white bg-[#1a1a1a] text-white placeholder-gray-500"
+            className="w-full px-3 py-2 border border-gray-300 rounded focus:outline-none focus:ring-1 focus:ring-gray-400 bg-white text-gray-900 placeholder-gray-400"
           />
         </div>
       </div>

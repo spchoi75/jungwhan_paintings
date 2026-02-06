@@ -37,18 +37,18 @@ export default function NewsTable({ news, onEdit, onDelete }: NewsTableProps) {
     <div className="overflow-x-auto">
       <table className="w-full text-sm">
         <thead>
-          <tr className="border-b border-gray-700">
-            <th className="text-left py-3 px-4 text-gray-400 font-medium">제목</th>
-            <th className="text-left py-3 px-4 text-gray-400 font-medium w-24">유형</th>
-            <th className="text-left py-3 px-4 text-gray-400 font-medium w-28">발행일</th>
-            <th className="text-right py-3 px-4 text-gray-400 font-medium w-32">관리</th>
+          <tr className="border-b border-gray-200">
+            <th className="text-left py-3 px-4 text-gray-600 font-medium">제목</th>
+            <th className="text-left py-3 px-4 text-gray-600 font-medium w-24">유형</th>
+            <th className="text-left py-3 px-4 text-gray-600 font-medium w-28">발행일</th>
+            <th className="text-right py-3 px-4 text-gray-600 font-medium w-32">관리</th>
           </tr>
         </thead>
         <tbody>
           {news.map((item) => (
             <tr
               key={item.id}
-              className="border-b border-gray-800 hover:bg-gray-800/50"
+              className="border-b border-gray-800 hover:bg-gray-50/50"
             >
               <td className="py-3 px-4">
                 <div className="flex items-center gap-3">
@@ -60,7 +60,7 @@ export default function NewsTable({ news, onEdit, onDelete }: NewsTableProps) {
                     />
                   )}
                   <div>
-                    <div className="text-white font-medium">{item.title}</div>
+                    <div className="text-gray-900 font-medium">{item.title}</div>
                     {item.title_en && (
                       <div className="text-gray-500 text-xs">{item.title_en}</div>
                     )}
@@ -72,7 +72,7 @@ export default function NewsTable({ news, onEdit, onDelete }: NewsTableProps) {
                   {NEWS_TYPE_LABELS[item.type]}
                 </span>
               </td>
-              <td className="py-3 px-4 text-gray-400">
+              <td className="py-3 px-4 text-gray-600">
                 {formatDate(item.published_at)}
               </td>
               <td className="py-3 px-4 text-right">

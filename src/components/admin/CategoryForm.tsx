@@ -84,41 +84,41 @@ export default function CategoryForm({
 
       <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
         <div>
-          <label className="block text-sm font-medium mb-1 text-gray-300">
+          <label className="block text-sm font-medium mb-1 text-gray-700">
             카테고리 이름 <span className="text-red-400">*</span>
           </label>
           <input
             type="text"
             value={formData.name}
             onChange={(e) => handleNameChange(e.target.value)}
-            className="w-full px-3 py-2 border border-gray-600 rounded focus:outline-none focus:ring-1 focus:ring-white bg-[#1a1a1a] text-white placeholder-gray-500"
+            className="w-full px-3 py-2 border border-gray-300 rounded focus:outline-none focus:ring-1 focus:ring-gray-400 bg-white text-gray-900 placeholder-gray-400"
             required
             placeholder="예: 풍경화, 인물화, 추상화"
           />
         </div>
         <div>
-          <label className="block text-sm font-medium mb-1 text-gray-300">
+          <label className="block text-sm font-medium mb-1 text-gray-700">
             카테고리 이름 (영문)
           </label>
           <input
             type="text"
             value={formData.name_en}
             onChange={(e) => setFormData({ ...formData, name_en: e.target.value })}
-            className="w-full px-3 py-2 border border-gray-600 rounded focus:outline-none focus:ring-1 focus:ring-white bg-[#1a1a1a] text-white placeholder-gray-500"
+            className="w-full px-3 py-2 border border-gray-300 rounded focus:outline-none focus:ring-1 focus:ring-gray-400 bg-white text-gray-900 placeholder-gray-400"
             placeholder="e.g. Landscape, Portrait, Abstract"
           />
         </div>
       </div>
 
       <div>
-        <label className="block text-sm font-medium mb-1 text-gray-300">
+        <label className="block text-sm font-medium mb-1 text-gray-700">
           슬러그 (URL) <span className="text-red-400">*</span>
         </label>
         <input
           type="text"
           value={formData.slug}
           onChange={(e) => setFormData({ ...formData, slug: e.target.value })}
-          className="w-full px-3 py-2 border border-gray-600 rounded focus:outline-none focus:ring-1 focus:ring-white bg-[#1a1a1a] text-white placeholder-gray-500"
+          className="w-full px-3 py-2 border border-gray-300 rounded focus:outline-none focus:ring-1 focus:ring-gray-400 bg-white text-gray-900 placeholder-gray-400"
           required
           placeholder="예: landscape, portrait, abstract"
         />
@@ -129,25 +129,25 @@ export default function CategoryForm({
 
       <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
         <div>
-          <label className="block text-sm font-medium mb-1 text-gray-300">설명</label>
+          <label className="block text-sm font-medium mb-1 text-gray-700">설명</label>
           <textarea
             value={formData.description}
             onChange={(e) =>
               setFormData({ ...formData, description: e.target.value })
             }
-            className="w-full px-3 py-2 border border-gray-600 rounded focus:outline-none focus:ring-1 focus:ring-white resize-none bg-[#1a1a1a] text-white placeholder-gray-500"
+            className="w-full px-3 py-2 border border-gray-300 rounded focus:outline-none focus:ring-1 focus:ring-gray-400 resize-none bg-white text-gray-900 placeholder-gray-400"
             rows={3}
             placeholder="이 카테고리에 대한 간단한 설명"
           />
         </div>
         <div>
-          <label className="block text-sm font-medium mb-1 text-gray-300">설명 (영문)</label>
+          <label className="block text-sm font-medium mb-1 text-gray-700">설명 (영문)</label>
           <textarea
             value={formData.description_en}
             onChange={(e) =>
               setFormData({ ...formData, description_en: e.target.value })
             }
-            className="w-full px-3 py-2 border border-gray-600 rounded focus:outline-none focus:ring-1 focus:ring-white resize-none bg-[#1a1a1a] text-white placeholder-gray-500"
+            className="w-full px-3 py-2 border border-gray-300 rounded focus:outline-none focus:ring-1 focus:ring-gray-400 resize-none bg-white text-gray-900 placeholder-gray-400"
             rows={3}
             placeholder="Brief description of this category"
           />
@@ -155,7 +155,7 @@ export default function CategoryForm({
       </div>
 
       <div>
-        <label className="block text-sm font-medium mb-1 text-gray-300">커버 이미지</label>
+        <label className="block text-sm font-medium mb-1 text-gray-700">커버 이미지</label>
         <ImageUploader
           onUpload={(imageUrl) => setCoverImageUrl(imageUrl)}
           currentImage={coverImageUrl}

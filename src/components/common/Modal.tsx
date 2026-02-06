@@ -36,7 +36,7 @@ export default function Modal({ isOpen, onClose, children, className = '' }: Mod
             leaveFrom="opacity-100 scale-100"
             leaveTo="opacity-0 scale-95"
           >
-            <DialogPanel className={`bg-[var(--surface)] ${className}`}>
+            <DialogPanel className={`bg-white rounded-lg shadow-xl ${className}`}>
               {children}
             </DialogPanel>
           </TransitionChild>

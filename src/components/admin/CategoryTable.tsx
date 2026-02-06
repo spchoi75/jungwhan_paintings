@@ -16,8 +16,8 @@ export default function CategoryTable({
 }: CategoryTableProps) {
   if (categories.length === 0) {
     return (
-      <div className="text-center py-12 bg-[#141414] rounded border border-gray-700">
-        <p className="text-gray-400">등록된 카테고리가 없습니다</p>
+      <div className="text-center py-12 bg-white rounded border border-gray-200">
+        <p className="text-gray-600">등록된 카테고리가 없습니다</p>
         <p className="text-gray-500 text-sm mt-1">
           새 카테고리를 추가해보세요
         </p>
@@ -26,30 +26,30 @@ export default function CategoryTable({
   }
 
   return (
-    <div className="bg-[#141414] rounded border border-gray-700 overflow-hidden">
+    <div className="bg-white rounded border border-gray-200 overflow-hidden">
       <table className="w-full">
-        <thead className="bg-[#1a1a1a] border-b border-gray-700">
+        <thead className="bg-gray-50 border-b border-gray-200">
           <tr>
-            <th className="px-4 py-3 text-left text-sm font-medium text-gray-400">
+            <th className="px-4 py-3 text-left text-sm font-medium text-gray-600">
               커버 이미지
             </th>
-            <th className="px-4 py-3 text-left text-sm font-medium text-gray-400">
+            <th className="px-4 py-3 text-left text-sm font-medium text-gray-600">
               이름
             </th>
-            <th className="px-4 py-3 text-left text-sm font-medium text-gray-400">
+            <th className="px-4 py-3 text-left text-sm font-medium text-gray-600">
               슬러그
             </th>
-            <th className="px-4 py-3 text-left text-sm font-medium text-gray-400">
+            <th className="px-4 py-3 text-left text-sm font-medium text-gray-600">
               설명
             </th>
-            <th className="px-4 py-3 text-right text-sm font-medium text-gray-400">
+            <th className="px-4 py-3 text-right text-sm font-medium text-gray-600">
               관리
             </th>
           </tr>
         </thead>
-        <tbody className="divide-y divide-gray-700">
+        <tbody className="divide-y divide-gray-100">
           {categories.map((category) => (
-            <tr key={category.id} className="hover:bg-gray-800">
+            <tr key={category.id} className="hover:bg-gray-50">
               <td className="px-4 py-3">
                 <div className="w-16 h-12 relative bg-gray-800 rounded overflow-hidden">
                   {category.cover_image_url ? (
@@ -68,20 +68,20 @@ export default function CategoryTable({
                 </div>
               </td>
               <td className="px-4 py-3">
-                <span className="font-medium text-white">{category.name}</span>
+                <span className="font-medium text-gray-900">{category.name}</span>
               </td>
               <td className="px-4 py-3">
-                <span className="text-gray-400 text-sm">{category.slug}</span>
+                <span className="text-gray-600 text-sm">{category.slug}</span>
               </td>
               <td className="px-4 py-3">
-                <span className="text-gray-400 text-sm line-clamp-1">
+                <span className="text-gray-600 text-sm line-clamp-1">
                   {category.description || '-'}
                 </span>
               </td>
               <td className="px-4 py-3 text-right">
                 <button
                   onClick={() => onEdit(category)}
-                  className="text-gray-400 hover:text-white text-sm mr-3"
+                  className="text-gray-600 hover:text-gray-900 text-sm mr-3"
                 >
                   수정
                 </button>

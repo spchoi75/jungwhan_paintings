@@ -52,14 +52,15 @@ export default function ImageUploader({ onUpload, currentImage }: ImageUploaderP
 
       clearInterval(progressInterval);
 
-      // 텍스트를 먼저 읽은 후 JSON 파싱 시도 (body stream 중복 읽기 방지)
-      const responseText = await response.text();
+      // Response를 clone하여 body stream 중복 읽기 문제 방지
+      const responseClone = response.clone();
       
       let data;
       try {
-        data = JSON.parse(responseText);
+        data = await response.json();
       } catch {
-        // JSON이 아닌 응답
+        // JSON 파싱 실패 시 텍스트로 에러 확인
+        const responseText = await responseClone.text();
         if (responseText.includes('Request Entity Too Large') || responseText.includes('too large')) {
           throw new Error('파일이 너무 큽니다. 30MB 이하로 줄여주세요.');
         }
