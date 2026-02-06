@@ -52,28 +52,25 @@ export default function ImageUploader({ onUpload, currentImage }: ImageUploaderP
 
       clearInterval(progressInterval);
 
-      if (!response.ok) {
-        let errorMessage = '업로드 실패';
-        try {
-          const data = await response.json();
-          errorMessage = data.error || errorMessage;
-        } catch {
-          // Response is not JSON
-          const text = await response.text();
-          if (text.includes('Request Entity Too Large') || text.includes('too large')) {
-            errorMessage = '파일이 너무 큽니다. 30MB 이하로 줄여주세요.';
-          }
-        }
-        throw new Error(errorMessage);
-      }
-
-      let result;
+      // 텍스트를 먼저 읽은 후 JSON 파싱 시도 (body stream 중복 읽기 방지)
+      const responseText = await response.text();
+      
+      let data;
       try {
-        result = await response.json();
+        data = JSON.parse(responseText);
       } catch {
+        // JSON이 아닌 응답
+        if (responseText.includes('Request Entity Too Large') || responseText.includes('too large')) {
+          throw new Error('파일이 너무 큽니다. 30MB 이하로 줄여주세요.');
+        }
         throw new Error('서버 응답 오류. 다시 시도해주세요.');
       }
-      const { image_url, thumbnail_url } = result;
+
+      if (!response.ok) {
+        throw new Error(data.error || '업로드 실패');
+      }
+
+      const { image_url, thumbnail_url } = data;
       setProgress(100);
       onUpload(image_url, thumbnail_url);
     } catch (err) {
