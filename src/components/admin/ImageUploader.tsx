@@ -25,11 +25,13 @@ export default function ImageUploader({ onUpload, currentImage }: ImageUploaderP
       return;
     }
 
+    // 30MB limit
     if (file.size > 30 * 1024 * 1024) {
       setError('파일 크기는 30MB 이하여야 합니다');
       return;
     }
 
+    // Show preview immediately
     const reader = new FileReader();
     reader.onload = (e) => setPreview(e.target?.result as string);
     reader.readAsDataURL(file);
@@ -37,44 +39,59 @@ export default function ImageUploader({ onUpload, currentImage }: ImageUploaderP
     setUploading(true);
     setProgress(0);
 
-    const progressInterval = setInterval(() => {
-      setProgress((prev) => Math.min(prev + 10, 90));
-    }, 200);
-
     try {
-      const formData = new FormData();
-      formData.append('file', file);
+      // Step 1: Get signed URLs from API (10%)
+      setProgress(10);
+      const signedUrlResponse = await fetch(
+        `/api/portfolio/upload?filename=${encodeURIComponent(file.name)}&contentType=${encodeURIComponent(file.type)}`
+      );
 
-      const response = await fetch('/api/portfolio/upload', {
-        method: 'POST',
-        body: formData,
+      if (!signedUrlResponse.ok) {
+        const errorData = await signedUrlResponse.json();
+        throw new Error(errorData.error || '업로드 URL 생성 실패');
+      }
+
+      const {
+        originalUploadUrl,
+        thumbnailUploadUrl,
+        imageUrl,
+        thumbnailUrl,
+        contentType,
+      } = await signedUrlResponse.json();
+
+      // Step 2: Upload original directly to Supabase Storage (10% -> 60%)
+      setProgress(20);
+      const originalUploadResponse = await fetch(originalUploadUrl, {
+        method: 'PUT',
+        headers: {
+          'Content-Type': contentType,
+        },
+        body: file,
       });
 
-      clearInterval(progressInterval);
-
-      // Response를 clone하여 body stream 중복 읽기 문제 방지
-      const responseClone = response.clone();
-      
-      let data;
-      try {
-        data = await response.json();
-      } catch {
-        // JSON 파싱 실패 시 텍스트로 에러 확인
-        const responseText = await responseClone.text();
-        if (responseText.includes('Request Entity Too Large') || responseText.includes('too large')) {
-          throw new Error('파일이 너무 큽니다. 30MB 이하로 줄여주세요.');
-        }
-        throw new Error('서버 응답 오류. 다시 시도해주세요.');
+      if (!originalUploadResponse.ok) {
+        throw new Error('원본 이미지 업로드 실패');
       }
 
-      if (!response.ok) {
-        throw new Error(data.error || '업로드 실패');
+      setProgress(60);
+
+      // Step 3: Upload thumbnail (same file for now, could be resized client-side later)
+      const thumbnailUploadResponse = await fetch(thumbnailUploadUrl, {
+        method: 'PUT',
+        headers: {
+          'Content-Type': contentType,
+        },
+        body: file,
+      });
+
+      if (!thumbnailUploadResponse.ok) {
+        throw new Error('썸네일 업로드 실패');
       }
 
-      const { image_url, thumbnail_url } = data;
       setProgress(100);
-      onUpload(image_url, thumbnail_url);
+      onUpload(imageUrl, thumbnailUrl);
     } catch (err) {
+      console.error('Upload error:', err);
       setError(err instanceof Error ? err.message : '업로드 실패');
       setPreview(currentImage || null);
     } finally {
