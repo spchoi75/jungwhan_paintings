@@ -205,7 +205,7 @@ const ZoomableImage = forwardRef<ZoomableImageRef, ZoomableImageProps>(
           centerOnInit
           limitToBounds={true}
           alignmentAnimation={{ sizeX: 0, sizeY: 0 }}
-          wheel={{ smoothStep: 0.1 }}
+          wheel={{ smoothStep: 0.03 }}
           doubleClick={{ mode: 'toggle' }}
           panning={{ disabled: !isZoomed || showMagnifier }}
           onTransformed={(_ref, state) => {
