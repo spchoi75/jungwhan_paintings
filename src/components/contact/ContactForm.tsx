@@ -46,13 +46,13 @@ export default function ContactForm() {
   };
 
   return (
-    <div className="mt-12 pt-8 border-t border-gray-700">
-      <h2 className="text-xl font-light text-white mb-6">{t.contactForm.title}</h2>
+    <div className="mt-12 pt-8 border-t border-[var(--border)]">
+      <h2 className="text-xl font-light text-[var(--foreground)] mb-6">{t.contactForm.title}</h2>
 
       <form onSubmit={handleSubmit} className="space-y-6">
         <div className="grid md:grid-cols-2 gap-6">
           <div>
-            <label htmlFor="name" className="block text-sm text-gray-400 mb-2">
+            <label htmlFor="name" className="block text-sm text-[var(--text-secondary)] mb-2">
               {t.contactForm.name}
             </label>
             <input
@@ -63,11 +63,11 @@ export default function ContactForm() {
               onChange={handleChange}
               required
               placeholder={t.contactForm.namePlaceholder}
-              className="w-full px-4 py-3 bg-gray-900 border border-gray-700 text-white placeholder-gray-500 focus:border-white focus:outline-none transition-colors"
+              className="w-full px-4 py-3 bg-gray-900 border border-[var(--border)] text-[var(--foreground)] placeholder-gray-500 focus:border-white focus:outline-none transition-colors"
             />
           </div>
           <div>
-            <label htmlFor="email" className="block text-sm text-gray-400 mb-2">
+            <label htmlFor="email" className="block text-sm text-[var(--text-secondary)] mb-2">
               {t.contactForm.email}
             </label>
             <input
@@ -78,13 +78,13 @@ export default function ContactForm() {
               onChange={handleChange}
               required
               placeholder={t.contactForm.emailPlaceholder}
-              className="w-full px-4 py-3 bg-gray-900 border border-gray-700 text-white placeholder-gray-500 focus:border-white focus:outline-none transition-colors"
+              className="w-full px-4 py-3 bg-gray-900 border border-[var(--border)] text-[var(--foreground)] placeholder-gray-500 focus:border-white focus:outline-none transition-colors"
             />
           </div>
         </div>
 
         <div>
-          <label htmlFor="subject" className="block text-sm text-gray-400 mb-2">
+          <label htmlFor="subject" className="block text-sm text-[var(--text-secondary)] mb-2">
             {t.contactForm.subject}
           </label>
           <input
@@ -95,12 +95,12 @@ export default function ContactForm() {
             onChange={handleChange}
             required
             placeholder={t.contactForm.subjectPlaceholder}
-            className="w-full px-4 py-3 bg-gray-900 border border-gray-700 text-white placeholder-gray-500 focus:border-white focus:outline-none transition-colors"
+            className="w-full px-4 py-3 bg-gray-900 border border-[var(--border)] text-[var(--foreground)] placeholder-gray-500 focus:border-white focus:outline-none transition-colors"
           />
         </div>
 
         <div>
-          <label htmlFor="message" className="block text-sm text-gray-400 mb-2">
+          <label htmlFor="message" className="block text-sm text-[var(--text-secondary)] mb-2">
             {t.contactForm.message}
           </label>
           <textarea
@@ -111,7 +111,7 @@ export default function ContactForm() {
             required
             rows={6}
             placeholder={t.contactForm.messagePlaceholder}
-            className="w-full px-4 py-3 bg-gray-900 border border-gray-700 text-white placeholder-gray-500 focus:border-white focus:outline-none transition-colors resize-none"
+            className="w-full px-4 py-3 bg-gray-900 border border-[var(--border)] text-[var(--foreground)] placeholder-gray-500 focus:border-white focus:outline-none transition-colors resize-none"
           />
         </div>
 
@@ -125,7 +125,7 @@ export default function ContactForm() {
         <button
           type="submit"
           disabled={status === 'sending'}
-          className="px-8 py-3 border border-white text-white text-sm tracking-wider hover:bg-white hover:text-black transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+          className="px-8 py-3 border border-white text-[var(--foreground)] text-sm tracking-wider hover:bg-white hover:text-black transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
         >
           {status === 'sending' ? t.contactForm.sending : t.contactForm.submit}
         </button>

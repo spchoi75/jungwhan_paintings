@@ -88,7 +88,7 @@ export default function ContactContent({ contactInfo }: ContactContentProps) {
 
   return (
     <>
-      <h1 className="text-3xl font-light tracking-wide mb-12 text-white">
+      <h1 className="text-3xl font-light tracking-wide mb-12 text-[var(--foreground)]">
         {t.contact.title}
       </h1>
 
@@ -96,20 +96,20 @@ export default function ContactContent({ contactInfo }: ContactContentProps) {
         {/* 1. Artist Name */}
         {artistName && (
           <div>
-            <h2 className="text-sm text-gray-400 uppercase tracking-wider mb-2">
+            <h2 className="text-sm text-[var(--text-secondary)] uppercase tracking-wider mb-2">
               {t.contact.artist}
             </h2>
-            <p className="text-lg text-white">{artistName}</p>
+            <p className="text-lg text-[var(--foreground)]">{artistName}</p>
           </div>
         )}
 
         {/* 2. Introduction */}
         {bioParagraphs && bioParagraphs.length > 0 && (
           <div>
-            <h2 className="text-sm text-gray-400 uppercase tracking-wider mb-2">
+            <h2 className="text-sm text-[var(--text-secondary)] uppercase tracking-wider mb-2">
               {t.contact.introduction}
             </h2>
-            <div className="space-y-2 text-gray-300">
+            <div className="space-y-2 text-[var(--text-secondary)]">
               {bioParagraphs.map((para, index) => (
                 <p key={index}>{para}</p>
               ))}
@@ -119,25 +119,25 @@ export default function ContactContent({ contactInfo }: ContactContentProps) {
 
         {/* 3. Email */}
         <div>
-          <h2 className="text-sm text-gray-400 uppercase tracking-wider mb-2">
+          <h2 className="text-sm text-[var(--text-secondary)] uppercase tracking-wider mb-2">
             {t.contact.email}
           </h2>
           {contactInfo?.contact_email ? (
             <a
               href={`mailto:${contactInfo.contact_email}`}
-              className="text-lg text-white hover:text-gray-300 transition-colors"
+              className="text-lg text-[var(--foreground)] hover:text-[var(--text-secondary)] transition-colors"
             >
               {contactInfo.contact_email}
             </a>
           ) : (
-            <p className="text-gray-500">{t.contact.noContact}</p>
+            <p className="text-[var(--text-secondary)]">{t.contact.noContact}</p>
           )}
         </div>
 
         {/* 4. SNS Links */}
         {contactInfo?.social_links && contactInfo.social_links.length > 0 && (
           <div>
-            <h2 className="text-sm text-gray-400 uppercase tracking-wider mb-3">
+            <h2 className="text-sm text-[var(--text-secondary)] uppercase tracking-wider mb-3">
               {t.contact.socialLinks}
             </h2>
             <div className="flex flex-wrap gap-4">
@@ -147,7 +147,7 @@ export default function ContactContent({ contactInfo }: ContactContentProps) {
                   href={link.url}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="flex items-center gap-2 text-white hover:text-gray-300 transition-colors"
+                  className="flex items-center gap-2 text-[var(--foreground)] hover:text-[var(--text-secondary)] transition-colors"
                 >
                   {SOCIAL_ICONS[link.platform]}
                   <span>{getSocialLabel(link)}</span>
@@ -160,10 +160,10 @@ export default function ContactContent({ contactInfo }: ContactContentProps) {
         {/* 5. Studio Address */}
         {studioAddress && (
           <div>
-            <h2 className="text-sm text-gray-400 uppercase tracking-wider mb-2">
+            <h2 className="text-sm text-[var(--text-secondary)] uppercase tracking-wider mb-2">
               {t.contact.studioAddress}
             </h2>
-            <p className="text-lg text-white flex items-start gap-2">
+            <p className="text-lg text-[var(--foreground)] flex items-start gap-2">
               <svg className="w-5 h-5 mt-0.5 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" />
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 11a3 3 0 11-6 0 3 3 0 016 0z" />
@@ -174,8 +174,8 @@ export default function ContactContent({ contactInfo }: ContactContentProps) {
         )}
 
         {/* Inquiry notice */}
-        <div className="pt-8 border-t border-gray-700">
-          <p className="text-gray-400 text-sm leading-relaxed">
+        <div className="pt-8 border-t border-[var(--border)]">
+          <p className="text-[var(--text-secondary)] text-sm leading-relaxed">
             {t.contact.inquiryNotice}
           </p>
         </div>

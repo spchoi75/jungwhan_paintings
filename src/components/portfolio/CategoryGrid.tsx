@@ -66,7 +66,7 @@ export default function CategoryGrid({ categories }: CategoryGridProps) {
   if (categories.length === 0) {
     return (
       <div className="text-center py-16">
-        <p className="text-gray-400">No categories yet</p>
+        <p className="text-[var(--text-secondary)]">No categories yet</p>
       </div>
     );
   }

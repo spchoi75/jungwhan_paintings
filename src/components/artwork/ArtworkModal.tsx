@@ -175,7 +175,7 @@ export default function ArtworkModal({
       {/* Copyright popup */}
       {showCopyrightPopup && (
         <div className="fixed inset-0 z-[60] flex items-center justify-center bg-black/70 backdrop-blur-sm animate-fade-in">
-          <div className="bg-[#1a1a1a] border border-gray-700 rounded-lg p-6 max-w-md mx-4 shadow-2xl">
+          <div className="bg-[var(--surface)] border border-[var(--border)] rounded-lg p-6 max-w-md mx-4 shadow-2xl">
             <div className="flex items-center gap-3 mb-4">
               <div className="w-10 h-10 rounded-full bg-yellow-500/20 flex items-center justify-center">
                 <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" className="text-yellow-500">
@@ -183,11 +183,11 @@ export default function ArtworkModal({
                   <path d="M14.83 14.83a4 4 0 1 1 0-5.66" />
                 </svg>
               </div>
-              <h3 className="text-white text-lg font-medium">
+              <h3 className="text-[var(--foreground)] text-lg font-medium">
                 {locale === 'en' ? 'Copyright Notice' : '저작권 안내'}
               </h3>
             </div>
-            <div className="text-gray-300 text-sm space-y-3">
+            <div className="text-[var(--text-secondary)] text-sm space-y-3">
               <p>
                 {locale === 'en'
                   ? 'All artworks displayed on this website are protected by copyright law. Unauthorized copying, reproduction, distribution, or commercial use is strictly prohibited.'
@@ -201,7 +201,7 @@ export default function ArtworkModal({
               {contactEmail && (
                 <a
                   href={`mailto:${contactEmail}`}
-                  className="inline-flex items-center gap-2 text-white hover:text-gray-300 transition-colors"
+                  className="inline-flex items-center gap-2 text-[var(--foreground)] hover:text-[var(--text-secondary)] transition-colors"
                 >
                   <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
                     <rect width="20" height="16" x="2" y="4" rx="2" />
@@ -224,7 +224,7 @@ export default function ArtworkModal({
       {/* Close button */}
       <button
         onClick={onClose}
-        className="absolute top-4 right-4 z-20 w-10 h-10 flex items-center justify-center text-white/70 hover:text-white transition-colors"
+        className="absolute top-4 right-4 z-20 w-10 h-10 flex items-center justify-center text-[var(--foreground)]/70 hover:text-[var(--foreground)] transition-colors"
         aria-label={t.aria.closeModal}
       >
         <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
@@ -237,7 +237,7 @@ export default function ArtworkModal({
       {hasPrev && onPrev && (
         <button
           onClick={() => { setSlideDirection('right'); onPrev(); }}
-          className="absolute left-4 top-1/2 -translate-y-1/2 z-20 w-14 h-14 landscape:w-10 landscape:h-10 flex items-center justify-center rounded-full bg-white/10 text-white/70 hover:bg-white/30 hover:text-white hover:scale-110 transition-all duration-300 backdrop-blur-sm"
+          className="absolute left-4 top-1/2 -translate-y-1/2 z-20 w-14 h-14 landscape:w-10 landscape:h-10 flex items-center justify-center rounded-full bg-white/10 text-[var(--foreground)]/70 hover:bg-white/30 hover:text-[var(--foreground)] hover:scale-110 transition-all duration-300 backdrop-blur-sm"
           aria-label={t.aria.prevArtwork}
         >
           <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
@@ -249,7 +249,7 @@ export default function ArtworkModal({
       {hasNext && onNext && (
         <button
           onClick={() => { setSlideDirection('left'); onNext(); }}
-          className="absolute right-4 top-1/2 -translate-y-1/2 z-20 w-14 h-14 landscape:w-10 landscape:h-10 flex items-center justify-center rounded-full bg-white/10 text-white/70 hover:bg-white/30 hover:text-white hover:scale-110 transition-all duration-300 backdrop-blur-sm"
+          className="absolute right-4 top-1/2 -translate-y-1/2 z-20 w-14 h-14 landscape:w-10 landscape:h-10 flex items-center justify-center rounded-full bg-white/10 text-[var(--foreground)]/70 hover:bg-white/30 hover:text-[var(--foreground)] hover:scale-110 transition-all duration-300 backdrop-blur-sm"
           aria-label={t.aria.nextArtwork}
         >
           <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
@@ -279,22 +279,22 @@ export default function ArtworkModal({
         {(artwork.show_watermark ?? true) && (
           <div className="absolute inset-0 pointer-events-none grid grid-cols-2 grid-rows-2">
             <div className="flex items-center justify-center">
-              <span className="text-white/10 text-3xl md:text-5xl font-bold select-none rotate-[-30deg]">
+              <span className="text-[var(--foreground)]/10 text-3xl md:text-5xl font-bold select-none rotate-[-30deg]">
                 COPYRIGHT
               </span>
             </div>
             <div className="flex items-center justify-center">
-              <span className="text-white/10 text-3xl md:text-5xl font-bold select-none rotate-[-30deg]">
+              <span className="text-[var(--foreground)]/10 text-3xl md:text-5xl font-bold select-none rotate-[-30deg]">
                 COPYRIGHT
               </span>
             </div>
             <div className="flex items-center justify-center">
-              <span className="text-white/10 text-3xl md:text-5xl font-bold select-none rotate-[-30deg]">
+              <span className="text-[var(--foreground)]/10 text-3xl md:text-5xl font-bold select-none rotate-[-30deg]">
                 COPYRIGHT
               </span>
             </div>
             <div className="flex items-center justify-center">
-              <span className="text-white/10 text-3xl md:text-5xl font-bold select-none rotate-[-30deg]">
+              <span className="text-[var(--foreground)]/10 text-3xl md:text-5xl font-bold select-none rotate-[-30deg]">
                 COPYRIGHT
               </span>
             </div>
@@ -311,19 +311,19 @@ export default function ArtworkModal({
         }`}
       >
         <div className="max-w-2xl mx-auto text-center">
-          <h2 className="text-white text-xl font-medium">{getLocalizedValue(locale, artwork.title, artwork.title_en)}</h2>
-          <p className="text-white/60 text-sm mt-2">
+          <h2 className="text-[var(--foreground)] text-xl font-medium">{getLocalizedValue(locale, artwork.title, artwork.title_en)}</h2>
+          <p className="text-[var(--foreground)]/60 text-sm mt-2">
             {artwork.year}
             {formatSize() && ` · ${formatSize()}`}
             {getMedium() && ` · ${getMedium()}`}
           </p>
           {getCollection() && (
-            <p className="text-white/50 text-sm mt-1">
+            <p className="text-[var(--foreground)]/50 text-sm mt-1">
               {t.artwork.collection}: {getCollection()}
             </p>
           )}
           {getLocalizedValue(locale, artwork.description, artwork.description_en) && (
-            <p className="text-white/80 text-sm mt-4 leading-relaxed whitespace-pre-line">
+            <p className="text-[var(--foreground)]/80 text-sm mt-4 leading-relaxed whitespace-pre-line">
               {getLocalizedValue(locale, artwork.description, artwork.description_en)}
             </p>
           )}

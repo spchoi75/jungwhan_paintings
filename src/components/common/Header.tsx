@@ -12,12 +12,12 @@ export default function Header() {
 
   return (
     <>
-      <header className="fixed top-0 left-0 right-0 z-40 bg-[#0a0a0a]/90 backdrop-blur-sm">
+      <header className="fixed top-0 left-0 right-0 z-40 bg-[var(--background)]/90 backdrop-blur-sm">
         <div className="max-w-7xl mx-auto px-6 py-4 flex items-center justify-between">
           {/* Hamburger Menu Button - Left */}
           <button
             onClick={open}
-            className="p-2 text-gray-400 hover:text-white transition-colors"
+            className="p-2 text-[var(--text-secondary)] hover:text-[var(--foreground)] transition-colors"
             aria-label={t.aria.openMenu}
           >
             <svg
@@ -39,7 +39,7 @@ export default function Header() {
           <div className="flex items-center gap-6">
             <Link
               href="/"
-              className="text-2xl tracking-wider font-medium text-white"
+              className="text-2xl tracking-wider font-medium text-[var(--foreground)]"
               style={{ fontFamily: 'var(--font-noto-serif), serif' }}
             >
               {t.common.logo}

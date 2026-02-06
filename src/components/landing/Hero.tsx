@@ -38,13 +38,13 @@ export default function Hero({ featuredArtwork }: HeroProps) {
         <div className="max-w-7xl mx-auto flex items-center justify-end gap-6">
           <Link
             href="/portfolio"
-            className="text-white/70 hover:text-white text-sm transition-colors"
+            className="text-[var(--foreground)]/70 hover:text-[var(--foreground)] text-sm transition-colors"
           >
             Portfolio
           </Link>
           <Link
             href="/about"
-            className="text-white/70 hover:text-white text-sm transition-colors"
+            className="text-[var(--foreground)]/70 hover:text-[var(--foreground)] text-sm transition-colors"
           >
             About
           </Link>
@@ -52,7 +52,7 @@ export default function Hero({ featuredArtwork }: HeroProps) {
       </nav>
 
       {/* Content */}
-      <div className="relative z-10 h-full flex flex-col items-center justify-center text-white">
+      <div className="relative z-10 h-full flex flex-col items-center justify-center text-[var(--foreground)]">
         <h1 className="font-[family-name:var(--font-cormorant)] text-5xl md:text-7xl font-light tracking-wide">
           Jungwhan
         </h1>
@@ -61,7 +61,7 @@ export default function Hero({ featuredArtwork }: HeroProps) {
       {/* Scroll indicator */}
       <button
         onClick={scrollToWorks}
-        className="absolute bottom-8 left-1/2 -translate-x-1/2 z-10 text-white/70 hover:text-white transition-colors"
+        className="absolute bottom-8 left-1/2 -translate-x-1/2 z-10 text-[var(--foreground)]/70 hover:text-[var(--foreground)] transition-colors"
         aria-label="아래로 스크롤"
       >
         <svg

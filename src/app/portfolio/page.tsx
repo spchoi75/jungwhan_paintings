@@ -23,10 +23,10 @@ export default async function PortfolioPage() {
   const categories = await getCategories();
 
   return (
-    <main className="min-h-screen bg-[#0a0a0a]">
+    <main className="min-h-screen bg-[var(--background)]">
       <Header />
       <div className="pt-24 pb-16 px-6">
-        <h1 className="text-3xl font-light tracking-wide text-center mb-12 text-white">
+        <h1 className="text-3xl font-light tracking-wide text-center mb-12 text-[var(--foreground)]">
           Portfolio
         </h1>
         <CategoryGrid categories={categories} />

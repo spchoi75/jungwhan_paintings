@@ -31,8 +31,8 @@ export default function ArtworkCard({ artwork, onClick, priority = false }: Artw
       />
       <div className="absolute inset-0 bg-black/0 transition-colors duration-300 group-hover:bg-black/40" />
       <div className="absolute inset-x-0 bottom-0 p-4 translate-y-full opacity-0 transition-all duration-300 group-hover:translate-y-0 group-hover:opacity-100">
-        <p className="text-white text-sm font-medium">{title}</p>
-        <p className="text-white/70 text-xs mt-1">{artwork.year}</p>
+        <p className="text-[var(--foreground)] text-sm font-medium">{title}</p>
+        <p className="text-[var(--foreground)]/70 text-xs mt-1">{artwork.year}</p>
       </div>
     </button>
   );

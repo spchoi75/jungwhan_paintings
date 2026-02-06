@@ -81,34 +81,34 @@ export default function Footer() {
     : t.footer.defaultBio;
 
   return (
-    <footer className="bg-[#0a0a0a] border-t border-gray-800">
+    <footer className="bg-[var(--background)] border-t border-gray-800">
       <div className="max-w-6xl mx-auto px-6 py-12">
         {/* Main footer content */}
         <div className="grid grid-cols-1 md:grid-cols-2 gap-8 mb-8">
           {/* Artist info */}
           <div>
             <h3
-              className="text-xl text-white mb-4"
+              className="text-xl text-[var(--foreground)] mb-4"
               style={{ fontFamily: 'var(--font-noto-serif), serif' }}
             >
               {artistName}
             </h3>
-            <p className="text-gray-400 text-sm leading-relaxed">
+            <p className="text-[var(--text-secondary)] text-sm leading-relaxed">
               {footerBio}
             </p>
           </div>
 
           {/* Contact & Social */}
           <div>
-            <h4 className="text-white text-sm font-medium mb-4 tracking-wide">
+            <h4 className="text-[var(--foreground)] text-sm font-medium mb-4 tracking-wide">
               {t.footer.contact}
             </h4>
-            <ul className="space-y-2 text-gray-400 text-sm">
+            <ul className="space-y-2 text-[var(--text-secondary)] text-sm">
               {aboutInfo?.contact_email && (
                 <li>
                   <a
                     href={`mailto:${aboutInfo.contact_email}`}
-                    className="hover:text-white transition-colors"
+                    className="hover:text-[var(--foreground)] transition-colors"
                   >
                     {aboutInfo.contact_email}
                   </a>
@@ -118,7 +118,7 @@ export default function Footer() {
                 <li>
                   <a
                     href={`tel:${aboutInfo.contact_phone.replace(/-/g, '')}`}
-                    className="hover:text-white transition-colors"
+                    className="hover:text-[var(--foreground)] transition-colors"
                   >
                     {aboutInfo.contact_phone}
                   </a>
@@ -152,7 +152,7 @@ export default function Footer() {
                         href={link.url}
                         target="_blank"
                         rel="noopener noreferrer"
-                        className="text-gray-400 hover:text-white transition-colors"
+                        className="text-[var(--text-secondary)] hover:text-[var(--foreground)] transition-colors"
                         title={link.label || getSocialLabel(link.platform)}
                       >
                         {SOCIAL_ICONS[link.platform]}
@@ -168,7 +168,7 @@ export default function Footer() {
         {/* Copyright notice */}
         <div className="pt-8 border-t border-gray-800">
           <div className="text-center space-y-3">
-            <p className="text-gray-500 text-xs">
+            <p className="text-[var(--text-secondary)] text-xs">
               &copy; {currentYear} {artistName}. All rights reserved.
             </p>
             <p className="text-gray-600 text-xs leading-relaxed max-w-2xl mx-auto">
@@ -177,7 +177,7 @@ export default function Footer() {
             <p className="pt-2">
               <Link
                 href="/sitemap.xml"
-                className="text-gray-600 text-xs hover:text-gray-400 transition-colors"
+                className="text-gray-600 text-xs hover:text-[var(--text-secondary)] transition-colors"
               >
                 Sitemap
               </Link>

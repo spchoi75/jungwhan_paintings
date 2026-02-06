@@ -51,7 +51,7 @@ export default async function CategoryPage({ params }: PageProps) {
   const artworks = await getArtworksByCategory(category.id);
 
   return (
-    <main className="min-h-screen bg-[#0a0a0a]">
+    <main className="min-h-screen bg-[var(--background)]">
       <Header />
       <div className="pt-24 pb-16 px-6">
         <CategoryContent category={category} artworks={artworks} />

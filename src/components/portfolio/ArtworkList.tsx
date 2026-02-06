@@ -35,7 +35,7 @@ export default function ArtworkList({ artworks }: ArtworkListProps) {
   if (artworks.length === 0) {
     return (
       <div className="text-center py-16">
-        <p className="text-gray-400">No artworks in this category</p>
+        <p className="text-[var(--text-secondary)]">No artworks in this category</p>
       </div>
     );
   }
@@ -48,7 +48,7 @@ export default function ArtworkList({ artworks }: ArtworkListProps) {
           <button
             key={artwork.id}
             onClick={() => setSelectedIndex(index)}
-            className="group block aspect-square relative overflow-hidden bg-gray-800 text-left"
+            className="group block aspect-square relative overflow-hidden bg-[var(--border)] text-left"
           >
             {/* Image */}
             <Image
@@ -65,10 +65,10 @@ export default function ArtworkList({ artworks }: ArtworkListProps) {
 
             {/* Artwork info (visible on hover) */}
             <div className="absolute inset-0 flex flex-col items-center justify-center p-4 opacity-0 group-hover:opacity-100 transition-opacity duration-300">
-              <span className="text-white text-center text-sm font-light tracking-wider">
+              <span className="text-[var(--foreground)] text-center text-sm font-light tracking-wider">
                 {getLocalizedValue(locale, artwork.title, artwork.title_en)}
               </span>
-              <span className="text-white/70 text-xs mt-1">
+              <span className="text-[var(--foreground)]/70 text-xs mt-1">
                 {artwork.year}
               </span>
             </div>

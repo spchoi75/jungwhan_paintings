@@ -23,7 +23,7 @@ export default async function NewsPage() {
   const news = await getNews();
 
   return (
-    <main className="min-h-screen bg-[#0a0a0a]">
+    <main className="min-h-screen bg-[var(--background)]">
       <Header />
 
       <div className="max-w-6xl mx-auto px-6 pt-24 pb-16">

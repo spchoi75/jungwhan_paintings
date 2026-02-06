@@ -1,6 +1,5 @@
 'use client';
 
-import Image from 'next/image';
 import Link from 'next/link';
 import { News } from '@/types/artwork';
 import { useLocale } from '@/i18n';
@@ -16,7 +15,7 @@ export default function NewsContent({ news }: NewsContentProps) {
   if (news.length === 0) {
     return (
       <div className="text-center py-20">
-        <p className="text-gray-500">{t.news.noNews}</p>
+        <p className="text-[var(--text-secondary)]">{t.news.noNews}</p>
       </div>
     );
   }
@@ -35,7 +34,7 @@ export default function NewsContent({ news }: NewsContentProps) {
 
   return (
     <div>
-      <h1 className="text-3xl font-light tracking-wide mb-10 text-white">
+      <h1 className="text-3xl font-light tracking-wide mb-10 text-[var(--foreground)]">
         {t.news.title}
       </h1>
 
@@ -44,26 +43,25 @@ export default function NewsContent({ news }: NewsContentProps) {
         <Link href={`/news/${featuredNews.id}`} className="group">
           <article className="h-full">
             {featuredNews.thumbnail_url && (
-              <div className="aspect-[4/3] relative bg-gray-800 mb-4 overflow-hidden">
-                <Image
+              <div className="aspect-[4/3] relative bg-[var(--border)] mb-4 overflow-hidden">
+                <img
                   src={featuredNews.thumbnail_url}
                   alt={getLocalizedValue(locale, featuredNews.title, featuredNews.title_en) || ''}
-                  fill
-                  className="object-cover transition-transform duration-300 group-hover:scale-105"
+                  className="w-full h-full object-cover transition-transform duration-300 group-hover:scale-105"
                 />
               </div>
             )}
             <div className="space-y-2">
-              <span className="text-xs text-gray-500 uppercase tracking-wider">
+              <span className="text-xs text-[var(--text-secondary)] uppercase tracking-wider">
                 {t.news.types[featuredNews.type]}
               </span>
-              <h2 className="text-xl font-light text-white group-hover:text-gray-300 transition-colors">
+              <h2 className="text-xl font-light text-[var(--foreground)] group-hover:text-[var(--text-secondary)] transition-colors">
                 {getLocalizedValue(locale, featuredNews.title, featuredNews.title_en)}
               </h2>
-              <p className="text-sm text-gray-500">
+              <p className="text-sm text-[var(--text-secondary)]">
                 {formatDate(featuredNews.published_at)}
               </p>
-              <p className="text-gray-400 line-clamp-3">
+              <p className="text-[var(--text-secondary)] line-clamp-3">
                 {getLocalizedValue(locale, featuredNews.content, featuredNews.content_en)}
               </p>
             </div>
@@ -76,23 +74,22 @@ export default function NewsContent({ news }: NewsContentProps) {
             <Link key={item.id} href={`/news/${item.id}`} className="group block">
               <article className="flex gap-4">
                 {item.thumbnail_url && (
-                  <div className="w-24 h-24 flex-shrink-0 relative bg-gray-800 overflow-hidden">
-                    <Image
+                  <div className="w-24 h-24 flex-shrink-0 relative bg-[var(--border)] overflow-hidden">
+                    <img
                       src={item.thumbnail_url}
                       alt={getLocalizedValue(locale, item.title, item.title_en) || ''}
-                      fill
-                      className="object-cover transition-transform duration-300 group-hover:scale-105"
+                      className="w-full h-full object-cover transition-transform duration-300 group-hover:scale-105"
                     />
                   </div>
                 )}
                 <div className="flex-1 min-w-0">
-                  <span className="text-xs text-gray-500 uppercase tracking-wider">
+                  <span className="text-xs text-[var(--text-secondary)] uppercase tracking-wider">
                     {t.news.types[item.type]}
                   </span>
-                  <h3 className="text-white font-light group-hover:text-gray-300 transition-colors line-clamp-2">
+                  <h3 className="text-[var(--foreground)] font-light group-hover:text-[var(--text-secondary)] transition-colors line-clamp-2">
                     {getLocalizedValue(locale, item.title, item.title_en)}
                   </h3>
-                  <p className="text-sm text-gray-500 mt-1">
+                  <p className="text-sm text-[var(--text-secondary)] mt-1">
                     {formatDate(item.published_at)}
                   </p>
                 </div>
@@ -101,7 +98,7 @@ export default function NewsContent({ news }: NewsContentProps) {
           ))}
 
           {restNews.length === 0 && (
-            <p className="text-gray-500 text-center py-8">
+            <p className="text-[var(--text-secondary)] text-center py-8">
               {t.news.noNews}
             </p>
           )}

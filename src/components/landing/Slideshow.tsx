@@ -42,7 +42,7 @@ export default function Slideshow({ artworks }: SlideshowProps) {
   if (artworks.length === 0) {
     return (
       <div className="h-screen flex items-center justify-center pt-16">
-        <p className="text-gray-400 text-lg">No artworks to display</p>
+        <p className="text-[var(--text-secondary)] text-lg">No artworks to display</p>
       </div>
     );
   }
@@ -76,7 +76,7 @@ export default function Slideshow({ artworks }: SlideshowProps) {
           <>
             <button
               onClick={goToPrev}
-              className="absolute left-4 top-1/2 -translate-y-1/2 p-3 text-gray-500 hover:text-white transition-colors"
+              className="absolute left-4 top-1/2 -translate-y-1/2 p-3 text-[var(--text-secondary)] hover:text-[var(--foreground)] transition-colors"
               aria-label={t.aria.prevArtwork}
             >
               <svg
@@ -96,7 +96,7 @@ export default function Slideshow({ artworks }: SlideshowProps) {
             </button>
             <button
               onClick={goToNext}
-              className="absolute right-4 top-1/2 -translate-y-1/2 p-3 text-gray-500 hover:text-white transition-colors"
+              className="absolute right-4 top-1/2 -translate-y-1/2 p-3 text-[var(--text-secondary)] hover:text-[var(--foreground)] transition-colors"
               aria-label={t.aria.nextArtwork}
             >
               <svg
@@ -120,10 +120,10 @@ export default function Slideshow({ artworks }: SlideshowProps) {
 
       {/* Artwork Info */}
       <div className="py-6 px-8 text-center">
-        <h2 className="text-lg font-light tracking-wide text-white">
+        <h2 className="text-lg font-light tracking-wide text-[var(--foreground)]">
           {title}
         </h2>
-        <p className="text-sm text-gray-400 mt-1">
+        <p className="text-sm text-[var(--text-secondary)] mt-1">
           {currentArtwork.year}
         </p>
       </div>

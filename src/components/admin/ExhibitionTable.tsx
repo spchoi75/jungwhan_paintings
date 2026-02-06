@@ -23,6 +23,7 @@ export default function ExhibitionTable({
 
   const soloExhibitions = exhibitions.filter((e) => e.type === 'solo');
   const groupExhibitions = exhibitions.filter((e) => e.type === 'group');
+  const popupExhibitions = exhibitions.filter((e) => e.type === 'popup');
 
   const renderTable = (items: Exhibition[], title: string) => (
     <div className="mb-8">
@@ -93,6 +94,7 @@ export default function ExhibitionTable({
     <div>
       {soloExhibitions.length > 0 && renderTable(soloExhibitions, '개인전')}
       {groupExhibitions.length > 0 && renderTable(groupExhibitions, '그룹전')}
+      {popupExhibitions.length > 0 && renderTable(popupExhibitions, '팝업전')}
     </div>
   );
 }

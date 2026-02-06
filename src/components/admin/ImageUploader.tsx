@@ -25,8 +25,8 @@ export default function ImageUploader({ onUpload, currentImage }: ImageUploaderP
       return;
     }
 
-    if (file.size > 10 * 1024 * 1024) {
-      setError('파일 크기는 10MB 이하여야 합니다');
+    if (file.size > 30 * 1024 * 1024) {
+      setError('파일 크기는 30MB 이하여야 합니다');
       return;
     }
 
@@ -53,11 +53,27 @@ export default function ImageUploader({ onUpload, currentImage }: ImageUploaderP
       clearInterval(progressInterval);
 
       if (!response.ok) {
-        const data = await response.json();
-        throw new Error(data.error || '업로드 실패');
+        let errorMessage = '업로드 실패';
+        try {
+          const data = await response.json();
+          errorMessage = data.error || errorMessage;
+        } catch {
+          // Response is not JSON
+          const text = await response.text();
+          if (text.includes('Request Entity Too Large') || text.includes('too large')) {
+            errorMessage = '파일이 너무 큽니다. 30MB 이하로 줄여주세요.';
+          }
+        }
+        throw new Error(errorMessage);
       }
 
-      const { image_url, thumbnail_url } = await response.json();
+      let result;
+      try {
+        result = await response.json();
+      } catch {
+        throw new Error('서버 응답 오류. 다시 시도해주세요.');
+      }
+      const { image_url, thumbnail_url } = result;
       setProgress(100);
       onUpload(image_url, thumbnail_url);
     } catch (err) {
@@ -167,7 +183,7 @@ export default function ImageUploader({ onUpload, currentImage }: ImageUploaderP
             이미지를 드래그하거나 클릭하여 업로드
           </p>
           <p className="text-[var(--text-secondary)] text-xs">
-            PNG, JPG, WebP (최대 10MB)
+            PNG, JPG, JPEG, WebP (최대 30MB)
           </p>
         </div>
       )}
@@ -175,7 +191,7 @@ export default function ImageUploader({ onUpload, currentImage }: ImageUploaderP
       <input
         ref={inputRef}
         type="file"
-        accept="image/jpeg,image/png,image/webp"
+        accept="image/jpeg,image/png,image/webp,.jpg,.jpeg"
         onChange={handleChange}
         className="hidden"
       />

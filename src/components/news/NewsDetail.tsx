@@ -1,10 +1,9 @@
 'use client';
 
-import Image from 'next/image';
-import Link from 'next/link';
 import { News } from '@/types/artwork';
 import { useLocale } from '@/i18n';
 import { getLocalizedValue } from '@/lib/i18n-utils';
+import Link from 'next/link';
 
 interface NewsDetailProps {
   news: News;
@@ -30,7 +29,7 @@ export default function NewsDetail({ news }: NewsDetailProps) {
       {/* Back Link */}
       <Link
         href="/news"
-        className="inline-flex items-center text-gray-400 hover:text-white transition-colors mb-8"
+        className="inline-flex items-center text-[var(--text-secondary)] hover:text-[var(--foreground)] transition-colors mb-8"
       >
         <svg
           className="w-4 h-4 mr-2"
@@ -50,47 +49,45 @@ export default function NewsDetail({ news }: NewsDetailProps) {
 
       {/* Header */}
       <header className="mb-8">
-        <span className="text-xs text-gray-500 uppercase tracking-wider">
+        <span className="text-xs text-[var(--text-secondary)] uppercase tracking-wider">
           {t.news.types[news.type]}
         </span>
-        <h1 className="text-3xl font-light text-white mt-2 mb-4">
+        <h1 className="text-3xl font-light text-[var(--foreground)] mt-2 mb-4">
           {title}
         </h1>
-        <p className="text-gray-500">
+        <p className="text-[var(--text-secondary)]">
           {formatDate(news.published_at)}
         </p>
       </header>
 
-      {/* Thumbnail */}
+      {/* Thumbnail - 외부 이미지용 img 태그 사용 */}
       {news.thumbnail_url && (
-        <div className="aspect-video relative bg-gray-800 mb-8 overflow-hidden">
-          <Image
+        <div className="aspect-video relative bg-[var(--border)] mb-8 overflow-hidden">
+          <img
             src={news.thumbnail_url}
             alt={title || ''}
-            fill
-            className="object-cover"
-            priority
+            className="w-full h-full object-cover"
           />
         </div>
       )}
 
       {/* Content */}
-      <div className="prose prose-invert prose-gray max-w-none">
+      <div className="max-w-none">
         {content?.split('\n').map((paragraph, index) => (
-          <p key={index} className="text-gray-300 leading-relaxed mb-4">
+          <p key={index} className="text-[var(--foreground)] leading-relaxed mb-4">
             {paragraph}
           </p>
         ))}
       </div>
 
       {/* Actions */}
-      <div className="flex gap-4 mt-10 pt-8 border-t border-gray-800">
+      <div className="flex gap-4 mt-10 pt-8 border-t border-[var(--border)]">
         {news.link_url && (
           <a
             href={news.link_url}
             target="_blank"
             rel="noopener noreferrer"
-            className="inline-flex items-center px-5 py-2.5 border border-white text-white text-sm tracking-wider hover:bg-white hover:text-black transition-colors"
+            className="inline-flex items-center px-5 py-2.5 border border-[var(--foreground)] text-[var(--foreground)] text-sm tracking-wider hover:bg-[var(--foreground)] hover:text-[var(--background)] transition-colors"
           >
             {t.news.externalLink}
             <svg
@@ -113,7 +110,7 @@ export default function NewsDetail({ news }: NewsDetailProps) {
             href={news.pdf_url}
             target="_blank"
             rel="noopener noreferrer"
-            className="inline-flex items-center px-5 py-2.5 border border-gray-600 text-gray-300 text-sm tracking-wider hover:border-white hover:text-white transition-colors"
+            className="inline-flex items-center px-5 py-2.5 border border-[var(--border)] text-[var(--text-secondary)] text-sm tracking-wider hover:border-[var(--foreground)] hover:text-[var(--foreground)] transition-colors"
           >
             {t.news.downloadPdf}
             <svg
