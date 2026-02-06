@@ -1,9 +1,10 @@
 'use client';
 
 import { useState, useEffect } from 'react';
-import { Artwork, ArtworkFormData, Category } from '@/types/artwork';
+import { Artwork, ArtworkFormData, Category, Tag } from '@/types/artwork';
 import Button from '@/components/common/Button';
 import ImageUploader from './ImageUploader';
+import TagInput from './TagInput';
 
 interface ArtworkFormProps {
   artwork?: Artwork;
@@ -31,6 +32,7 @@ export default function ArtworkForm({ artwork, categories, onSubmit, onCancel }:
   const [loading, setLoading] = useState(false);
   const [errors, setErrors] = useState<Record<string, string>>({});
   const [submitError, setSubmitError] = useState<string | null>(null);
+  const [selectedTags, setSelectedTags] = useState<Tag[]>([]);
 
   useEffect(() => {
     setTitle(artwork?.title || '');
@@ -50,6 +52,17 @@ export default function ArtworkForm({ artwork, categories, onSubmit, onCancel }:
     setThumbnailUrl(artwork?.thumbnail_url || '');
     setErrors({});
     setSubmitError(null);
+    setDominantColor(artwork?.dominant_color || null);
+    
+    // 기존 작품의 태그 로드
+    if (artwork?.id) {
+      fetch(`/api/portfolio/${artwork.id}/tags`)
+        .then(res => res.ok ? res.json() : [])
+        .then(tags => setSelectedTags(tags))
+        .catch(() => setSelectedTags([]));
+    } else {
+      setSelectedTags([]);
+    }
   }, [artwork]);
 
   const validate = () => {
@@ -96,7 +109,29 @@ export default function ArtworkForm({ artwork, categories, onSubmit, onCancel }:
         show_watermark: showWatermark,
         image_url: imageUrl,
         thumbnail_url: thumbnailUrl,
+        dominant_color: dominantColor,
       });
+      
+      // 기존 작품인 경우 태그 업데이트
+      if (artwork?.id && selectedTags.length > 0) {
+        // 기존 태그 모두 삭제 후 새로 추가
+        const currentTags = await fetch(`/api/portfolio/${artwork.id}/tags`).then(r => r.json()).catch(() => []);
+        if (currentTags.length > 0) {
+          await fetch(`/api/portfolio/${artwork.id}/tags`, {
+            method: 'DELETE',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ tag_ids: currentTags.map((t: Tag) => t.id) }),
+          });
+        }
+        // 새 태그 추가
+        if (selectedTags.length > 0) {
+          await fetch(`/api/portfolio/${artwork.id}/tags`, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ tag_ids: selectedTags.map(t => t.id) }),
+          });
+        }
+      }
     } catch (err) {
       setSubmitError(err instanceof Error ? err.message : '저장에 실패했습니다');
     } finally {
@@ -104,10 +139,29 @@ export default function ArtworkForm({ artwork, categories, onSubmit, onCancel }:
     }
   };
 
-  const handleImageUpload = (newImageUrl: string, newThumbnailUrl: string) => {
+  const [dominantColor, setDominantColor] = useState<string | null>(artwork?.dominant_color || null);
+
+  const handleImageUpload = async (newImageUrl: string, newThumbnailUrl: string) => {
     setImageUrl(newImageUrl);
     setThumbnailUrl(newThumbnailUrl);
     setErrors((prev) => ({ ...prev, image: '' }));
+    
+    // 색상 자동 분석
+    try {
+      const res = await fetch('/api/portfolio/analyze-color', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ image_url: newImageUrl }),
+      });
+      if (res.ok) {
+        const data = await res.json();
+        if (data.dominant_color) {
+          setDominantColor(data.dominant_color);
+        }
+      }
+    } catch (err) {
+      console.error('Color analysis failed:', err);
+    }
   };
 
   return (
@@ -173,6 +227,13 @@ export default function ArtworkForm({ artwork, categories, onSubmit, onCancel }:
           ))}
         </select>
       </div>
+
+      {/* 태그 입력 */}
+      <TagInput
+        artworkId={artwork?.id}
+        selectedTags={selectedTags}
+        onTagsChange={setSelectedTags}
+      />
 
       <div className="grid grid-cols-4 gap-4">
         <div>

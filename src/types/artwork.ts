@@ -11,6 +11,26 @@ export interface Category {
   updated_at: string;
 }
 
+// Tag system for mindmap connections
+export interface Tag {
+  id: string;
+  name: string;  // 관리자만 보는 언어적 태그
+  created_at: string;
+}
+
+export interface ArtworkTag {
+  artwork_id: string;
+  tag_id: string;
+  created_at: string;
+}
+
+// Connection info for mindmap view
+export interface ArtworkConnection {
+  connected_id: string;
+  shared_tag_count: number;
+  shared_tags: string[];
+}
+
 // CV 관련 타입
 export interface ResidencyItem {
   year: string;
@@ -66,6 +86,10 @@ export interface Artwork {
   order: number;
   category_id: string | null;
   category?: Category;
+  // New fields for views
+  dominant_color: string | null;  // HSL format for color wheel
+  tags?: Tag[];  // Populated via join
+  connections?: ArtworkConnection[];  // Populated for mindmap view
   created_at: string;
   updated_at: string;
 }
@@ -86,6 +110,7 @@ export interface ArtworkFormData {
   is_featured: boolean;
   show_watermark: boolean;
   category_id?: string;
+  dominant_color?: string | null;
 }
 
 export interface CategoryFormData {
