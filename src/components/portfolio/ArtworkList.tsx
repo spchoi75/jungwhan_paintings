@@ -56,21 +56,16 @@ export default function ArtworkList({ artworks }: ArtworkListProps) {
               alt={getLocalizedValue(locale, artwork.title, artwork.title_en)}
               fill
               loading="lazy"
-              className="object-contain transition-transform duration-500 group-hover:scale-110"
+              className="object-contain transition-transform duration-500 group-hover:scale-105"
               sizes="(max-width: 640px) 50vw, (max-width: 768px) 33vw, (max-width: 1024px) 25vw, 25vw"
             />
 
-            {/* Hover overlay */}
-            <div className="absolute inset-0 bg-black/0 group-hover:bg-black/40 transition-colors duration-300" />
-
-            {/* Artwork info (visible on hover) */}
-            <div className="absolute inset-0 flex flex-col items-center justify-center p-4 opacity-0 group-hover:opacity-100 transition-opacity duration-300">
-              <span className="text-[var(--foreground)] text-center text-sm font-light tracking-wider">
-                {getLocalizedValue(locale, artwork.title, artwork.title_en)}
-              </span>
-              <span className="text-[var(--foreground)]/70 text-xs mt-1">
-                {artwork.year}
-              </span>
+            {/* 하단 회색 영역에 제목+연도 한 줄 표시 */}
+            <div className="absolute bottom-0 left-0 right-0 bg-[var(--border)]/90 px-3 py-2">
+              <p className="text-[var(--foreground)] text-sm truncate">
+                <span className="font-medium">{getLocalizedValue(locale, artwork.title, artwork.title_en)}</span>
+                <span className="text-[var(--text-secondary)] ml-2">{artwork.year}</span>
+              </p>
             </div>
           </button>
         ))}

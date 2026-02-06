@@ -18,21 +18,24 @@ export default function ArtworkCard({ artwork, onClick, priority = false }: Artw
   return (
     <button
       onClick={onClick}
-      className="group relative aspect-[4/5] w-full overflow-hidden bg-[var(--border)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--accent)] focus-visible:ring-offset-2"
+      className="group w-full text-left focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--accent)] focus-visible:ring-offset-2"
       aria-label={`${t.aria.viewArtwork}: ${title}`}
     >
-      <Image
-        src={artwork.thumbnail_url}
-        alt={title}
-        fill
-        sizes="(max-width: 640px) 50vw, (max-width: 1024px) 33vw, 25vw"
-        className="object-cover transition-transform duration-500 group-hover:scale-105"
-        priority={priority}
-      />
-      <div className="absolute inset-0 bg-black/0 transition-colors duration-300 group-hover:bg-black/40" />
-      <div className="absolute inset-x-0 bottom-0 p-4 translate-y-full opacity-0 transition-all duration-300 group-hover:translate-y-0 group-hover:opacity-100">
-        <p className="text-[var(--foreground)] text-sm font-medium">{title}</p>
-        <p className="text-[var(--foreground)]/70 text-xs mt-1">{artwork.year}</p>
+      {/* 이미지 영역 */}
+      <div className="relative aspect-[4/5] w-full overflow-hidden bg-[var(--border)]">
+        <Image
+          src={artwork.thumbnail_url}
+          alt={title}
+          fill
+          sizes="(max-width: 640px) 50vw, (max-width: 1024px) 33vw, 25vw"
+          className="object-cover transition-transform duration-500 group-hover:scale-105"
+          priority={priority}
+        />
+      </div>
+      {/* 하단 정보 영역 - 항상 표시 */}
+      <div className="py-2 bg-[var(--surface)]">
+        <p className="text-[var(--foreground)] text-sm font-medium truncate">{title}</p>
+        <p className="text-[var(--text-secondary)] text-xs mt-0.5">{artwork.year}</p>
       </div>
     </button>
   );

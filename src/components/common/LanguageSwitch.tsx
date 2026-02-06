@@ -11,19 +11,19 @@ export default function LanguageSwitch() {
         onClick={() => setLocale('ko')}
         className={`px-2 py-1 transition-colors ${
           locale === 'ko'
-            ? 'text-white font-medium'
-            : 'text-gray-400 hover:text-white'
+            ? 'text-[var(--foreground)] font-medium'
+            : 'text-[var(--text-secondary)] hover:text-[var(--foreground)]'
         }`}
       >
         KR
       </button>
-      <span className="text-gray-600">/</span>
+      <span className="text-[var(--text-secondary)]">/</span>
       <button
         onClick={() => setLocale('en')}
         className={`px-2 py-1 transition-colors ${
           locale === 'en'
-            ? 'text-white font-medium'
-            : 'text-gray-400 hover:text-white'
+            ? 'text-[var(--foreground)] font-medium'
+            : 'text-[var(--text-secondary)] hover:text-[var(--foreground)]'
         }`}
       >
         EN

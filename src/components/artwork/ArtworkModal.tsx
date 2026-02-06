@@ -2,7 +2,8 @@
 
 import { useEffect, useCallback, useState, useRef } from 'react';
 import { Artwork } from '@/types/artwork';
-import ZoomableImage from './ZoomableImage';
+import ZoomableImage, { ZoomableImageRef } from './ZoomableImage';
+import LanguageSwitch from '@/components/common/LanguageSwitch';
 import { useLocale } from '@/i18n';
 import { getLocalizedValue } from '@/lib/i18n-utils';
 
@@ -29,6 +30,7 @@ export default function ArtworkModal({
   const [isZoomed, setIsZoomed] = useState(false);
   const [slideDirection, setSlideDirection] = useState<'left' | 'right' | null>(null);
   const swipeRef = useRef<{ startX: number; startY: number; startTime: number } | null>(null);
+  const zoomRef = useRef<ZoomableImageRef>(null);
 
   const handleKeyDown = useCallback(
     (e: KeyboardEvent) => {
@@ -67,14 +69,10 @@ export default function ArtworkModal({
     };
   }, [handleKeyDown]);
 
-  // 브라우저 기본 우클릭 메뉴 차단 및 저작권 팝업 표시
-  // 모바일에서는 contextmenu가 ~1초에 발동되므로 팝업 표시하지 않음
-  // 모바일 저작권 팝업은 ZoomableImage의 3초 onLongPress 콜백으로 처리
   useEffect(() => {
     const handleContextMenuEvent = (e: MouseEvent) => {
       e.preventDefault();
       e.stopPropagation();
-      // 포인터 디바이스(마우스)에서만 저작권 팝업 표시
       const isPointerFine = window.matchMedia('(pointer: fine)').matches;
       if (isPointerFine) {
         setShowCopyrightPopup(true);
@@ -147,14 +145,11 @@ export default function ArtworkModal({
   }, []);
 
   const formatSize = () => {
-    // variable_size가 true이면 가변크기 표시
     if (artwork.variable_size) {
       return locale === 'en' ? 'Variable dimensions' : '가변크기';
     }
     if (!artwork.width || !artwork.height) return null;
-    // 세로(height) x 가로(width) 순서
     if (locale === 'en') {
-      // cm to inch 변환 (1cm = 0.393701 inch)
       const heightInch = (artwork.height * 0.393701).toFixed(1);
       const widthInch = (artwork.width * 0.393701).toFixed(1);
       return `${artwork.height} × ${artwork.width} cm (${heightInch} × ${widthInch} in)`;
@@ -171,7 +166,7 @@ export default function ArtworkModal({
   };
 
   return (
-    <div className="fixed inset-0 z-50 bg-black animate-fade-in" onContextMenu={handleContextMenu}>
+    <div className="fixed inset-0 z-50 bg-[var(--background)] animate-fade-in flex flex-col" onContextMenu={handleContextMenu}>
       {/* Copyright popup */}
       {showCopyrightPopup && (
         <div className="fixed inset-0 z-[60] flex items-center justify-center bg-black/70 backdrop-blur-sm animate-fade-in">
@@ -221,112 +216,142 @@ export default function ArtworkModal({
         </div>
       )}
 
-      {/* Close button */}
-      <button
-        onClick={onClose}
-        className="absolute top-4 right-4 z-20 w-10 h-10 flex items-center justify-center text-[var(--foreground)]/70 hover:text-[var(--foreground)] transition-colors"
-        aria-label={t.aria.closeModal}
-      >
-        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-          <line x1="18" y1="6" x2="6" y2="18" />
-          <line x1="6" y1="6" x2="18" y2="18" />
-        </svg>
-      </button>
-
-      {/* Navigation buttons */}
-      {hasPrev && onPrev && (
+      {/* Top bar: Language switch + Close button */}
+      <div className="absolute top-4 right-4 z-20 flex items-center gap-2">
+        <LanguageSwitch />
         <button
-          onClick={() => { setSlideDirection('right'); onPrev(); }}
-          className="absolute left-4 top-1/2 -translate-y-1/2 z-20 w-14 h-14 landscape:w-10 landscape:h-10 flex items-center justify-center rounded-full bg-white/10 text-[var(--foreground)]/70 hover:bg-white/30 hover:text-[var(--foreground)] hover:scale-110 transition-all duration-300 backdrop-blur-sm"
-          aria-label={t.aria.prevArtwork}
+          onClick={onClose}
+          className="w-10 h-10 flex items-center justify-center text-[var(--foreground)]/70 hover:text-[var(--foreground)] transition-colors"
+          aria-label={t.aria.closeModal}
         >
-          <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-            <polyline points="15 18 9 12 15 6" />
+          <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+            <line x1="18" y1="6" x2="6" y2="18" />
+            <line x1="6" y1="6" x2="18" y2="18" />
           </svg>
         </button>
-      )}
-
-      {hasNext && onNext && (
-        <button
-          onClick={() => { setSlideDirection('left'); onNext(); }}
-          className="absolute right-4 top-1/2 -translate-y-1/2 z-20 w-14 h-14 landscape:w-10 landscape:h-10 flex items-center justify-center rounded-full bg-white/10 text-[var(--foreground)]/70 hover:bg-white/30 hover:text-[var(--foreground)] hover:scale-110 transition-all duration-300 backdrop-blur-sm"
-          aria-label={t.aria.nextArtwork}
-        >
-          <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-            <polyline points="9 18 15 12 9 6" />
-          </svg>
-        </button>
-      )}
-
-      {/* Image container */}
-      <div
-        key={artwork.id}
-        className={`absolute inset-0 top-0 bottom-24 landscape:bottom-16 ${
-          slideDirection === 'left' ? 'animate-slide-in-right' :
-          slideDirection === 'right' ? 'animate-slide-in-left' : ''
-        }`}
-        onTouchStart={handleSwipeStart}
-        onTouchEnd={handleSwipeEnd}
-        onAnimationEnd={() => setSlideDirection(null)}
-      >
-        <ZoomableImage
-          src={artwork.image_url}
-          alt={getLocalizedValue(locale, artwork.title, artwork.title_en)}
-          onScaleChange={(scale) => setIsZoomed(scale > 1.05)}
-          onLongPress={() => setShowCopyrightPopup(true)}
-        />
-        {/* Copyright watermark overlay - 4 quadrants */}
-        {(artwork.show_watermark ?? true) && (
-          <div className="absolute inset-0 pointer-events-none grid grid-cols-2 grid-rows-2">
-            <div className="flex items-center justify-center">
-              <span className="text-[var(--foreground)]/10 text-3xl md:text-5xl font-bold select-none rotate-[-30deg]">
-                COPYRIGHT
-              </span>
-            </div>
-            <div className="flex items-center justify-center">
-              <span className="text-[var(--foreground)]/10 text-3xl md:text-5xl font-bold select-none rotate-[-30deg]">
-                COPYRIGHT
-              </span>
-            </div>
-            <div className="flex items-center justify-center">
-              <span className="text-[var(--foreground)]/10 text-3xl md:text-5xl font-bold select-none rotate-[-30deg]">
-                COPYRIGHT
-              </span>
-            </div>
-            <div className="flex items-center justify-center">
-              <span className="text-[var(--foreground)]/10 text-3xl md:text-5xl font-bold select-none rotate-[-30deg]">
-                COPYRIGHT
-              </span>
-            </div>
-          </div>
-        )}
       </div>
 
-      {/* Artwork info */}
+      {/* Main content: Left arrow + Image + Right arrow */}
+      <div className="flex-1 flex">
+        {/* 왼쪽 화살표 영역 (고정 너비) */}
+        <div className="w-16 shrink-0 flex items-center justify-center">
+          {hasPrev && onPrev && (
+            <button
+              onClick={() => { setSlideDirection('right'); onPrev(); }}
+              className="w-12 h-12 flex items-center justify-center rounded-full bg-[var(--border)] text-[var(--text-secondary)] hover:bg-[var(--accent)] hover:text-[var(--background)] transition-all duration-300"
+              aria-label={t.aria.prevArtwork}
+            >
+              <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                <polyline points="15 18 9 12 15 6" />
+              </svg>
+            </button>
+          )}
+        </div>
+
+        {/* 이미지 영역 (가운데, flex-1) */}
+        <div
+          key={artwork.id}
+          className={`flex-1 relative overflow-hidden ${
+            slideDirection === 'left' ? 'animate-slide-in-right' :
+            slideDirection === 'right' ? 'animate-slide-in-left' : ''
+          }`}
+          style={{ clipPath: 'inset(0)', contain: 'paint' }}
+          onTouchStart={handleSwipeStart}
+          onTouchEnd={handleSwipeEnd}
+          onAnimationEnd={() => setSlideDirection(null)}
+        >
+          <ZoomableImage
+            ref={zoomRef}
+            src={artwork.image_url}
+            alt={getLocalizedValue(locale, artwork.title, artwork.title_en)}
+            onScaleChange={(scale) => setIsZoomed(scale > 1.05)}
+            onLongPress={() => setShowCopyrightPopup(true)}
+          />
+          {/* Copyright watermark overlay */}
+          {(artwork.show_watermark ?? true) && (
+            <div className="absolute inset-0 pointer-events-none grid grid-cols-2 grid-rows-2">
+              {[...Array(4)].map((_, i) => (
+                <div key={i} className="flex items-center justify-center">
+                  <span className="text-[var(--foreground)]/10 text-3xl md:text-5xl font-bold select-none rotate-[-30deg]">
+                    COPYRIGHT
+                  </span>
+                </div>
+              ))}
+            </div>
+          )}
+        </div>
+
+        {/* 오른쪽 화살표 영역 (고정 너비) */}
+        <div className="w-16 shrink-0 flex items-center justify-center">
+          {hasNext && onNext && (
+            <button
+              onClick={() => { setSlideDirection('left'); onNext(); }}
+              className="w-12 h-12 flex items-center justify-center rounded-full bg-[var(--border)] text-[var(--text-secondary)] hover:bg-[var(--accent)] hover:text-[var(--background)] transition-all duration-300"
+              aria-label={t.aria.nextArtwork}
+            >
+              <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                <polyline points="9 18 15 12 9 6" />
+              </svg>
+            </button>
+          )}
+        </div>
+      </div>
+
+      {/* Bottom bar: Zoom controls (정중앙) + Artwork info (버튼 우측) */}
       <div
         key={`info-${artwork.id}`}
-        className={`absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black/80 to-transparent pt-12 pb-6 px-6 max-h-[40%] overflow-y-auto landscape:pt-4 landscape:pb-3 landscape:px-4 landscape:max-h-[30%] ${
+        className={`shrink-0 grid grid-cols-[1fr_auto_1fr] items-center px-4 py-3 border-t border-[var(--border)] bg-[var(--surface)] ${
           slideDirection === 'left' ? 'animate-slide-in-right' :
           slideDirection === 'right' ? 'animate-slide-in-left' : ''
         }`}
       >
-        <div className="max-w-2xl mx-auto text-center">
-          <h2 className="text-[var(--foreground)] text-xl font-medium">{getLocalizedValue(locale, artwork.title, artwork.title_en)}</h2>
-          <p className="text-[var(--foreground)]/60 text-sm mt-2">
-            {artwork.year}
-            {formatSize() && ` · ${formatSize()}`}
-            {getMedium() && ` · ${getMedium()}`}
+        {/* 왼쪽 빈 공간 */}
+        <div />
+
+        {/* Zoom controls - 정중앙 */}
+        <div className="flex items-center gap-1">
+          <button
+            onClick={() => zoomRef.current?.zoomOut()}
+            className="w-8 h-8 flex items-center justify-center text-[var(--text-secondary)] hover:text-[var(--foreground)] hover:bg-[var(--border)] rounded transition-colors"
+            aria-label="축소"
+          >
+            <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+              <line x1="5" y1="12" x2="19" y2="12" />
+            </svg>
+          </button>
+          <button
+            onClick={() => zoomRef.current?.zoomIn()}
+            className="w-8 h-8 flex items-center justify-center text-[var(--text-secondary)] hover:text-[var(--foreground)] hover:bg-[var(--border)] rounded transition-colors"
+            aria-label="확대"
+          >
+            <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+              <line x1="12" y1="5" x2="12" y2="19" />
+              <line x1="5" y1="12" x2="19" y2="12" />
+            </svg>
+          </button>
+          <button
+            onClick={() => zoomRef.current?.resetTransform()}
+            className="w-8 h-8 flex items-center justify-center text-[var(--text-secondary)] hover:text-[var(--foreground)] hover:bg-[var(--border)] rounded transition-colors"
+            aria-label="원래 크기"
+          >
+            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+              <path d="M3 12a9 9 0 1 0 9-9 9.75 9.75 0 0 0-6.74 2.74L3 8" />
+              <path d="M3 3v5h5" />
+            </svg>
+          </button>
+        </div>
+
+        {/* Artwork info - 우측, 좌측정렬 */}
+        <div className="pl-6 text-left">
+          <p className="text-[var(--foreground)] font-medium">
+            {getLocalizedValue(locale, artwork.title, artwork.title_en)}
+            <span className="text-[var(--text-secondary)] font-normal ml-2">{artwork.year}</span>
           </p>
-          {getCollection() && (
-            <p className="text-[var(--foreground)]/50 text-sm mt-1">
-              {t.artwork.collection}: {getCollection()}
-            </p>
-          )}
-          {getLocalizedValue(locale, artwork.description, artwork.description_en) && (
-            <p className="text-[var(--foreground)]/80 text-sm mt-4 leading-relaxed whitespace-pre-line">
-              {getLocalizedValue(locale, artwork.description, artwork.description_en)}
-            </p>
-          )}
+          <p className="text-[var(--text-secondary)] text-sm">
+            {formatSize()}
+            {getMedium() && (formatSize() ? ` · ${getMedium()}` : getMedium())}
+            {getCollection() && ` · ${t.artwork.collection}: ${getCollection()}`}
+          </p>
         </div>
       </div>
     </div>
