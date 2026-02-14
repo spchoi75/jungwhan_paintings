@@ -9,7 +9,7 @@ interface MindmapNode {
   title?: string;
   title_en?: string | null;
   year?: number;
-  thumbnail_url?: string;
+  image_url?: string;
   width?: number | null;
   height?: number | null;
   connection_count?: number;
@@ -29,7 +29,7 @@ export async function GET() {
     // 1. 모든 작품 조회
     const { data: artworks, error: artworksError } = await supabase
       .from('portfolio')
-      .select('id, title, title_en, year, thumbnail_url, width, height')
+      .select('id, title, title_en, year, image_url, thumbnail_url, width, height')
       .order('year', { ascending: true });
 
     if (artworksError) throw artworksError;
@@ -85,7 +85,7 @@ export async function GET() {
         title: artwork.title,
         title_en: artwork.title_en,
         year: artwork.year,
-        thumbnail_url: artwork.thumbnail_url,
+        image_url: artwork.image_url,
         width: artwork.width,
         height: artwork.height,
         connection_count: artworkConnectionCount.get(artwork.id) || 0,

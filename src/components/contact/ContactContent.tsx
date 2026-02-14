@@ -14,6 +14,8 @@ interface ContactInfo {
   social_links: SocialLink[];
   studio_address: string | null;
   studio_address_en: string | null;
+  contact_note: string | null;
+  contact_note_en: string | null;
 }
 
 interface ContactContentProps {
@@ -174,11 +176,13 @@ export default function ContactContent({ contactInfo }: ContactContentProps) {
         )}
 
         {/* Inquiry notice */}
-        <div className="pt-8 border-t border-[var(--border)]">
-          <p className="text-[var(--text-secondary)] text-sm leading-relaxed">
-            {t.contact.inquiryNotice}
-          </p>
-        </div>
+        {(contactInfo?.contact_note || contactInfo?.contact_note_en) && (
+          <div className="pt-8 border-t border-[var(--border)]">
+            <p className="text-[var(--text-secondary)] text-sm leading-relaxed">
+              {getLocalizedValue(locale, contactInfo.contact_note, contactInfo.contact_note_en) || t.contact.inquiryNotice}
+            </p>
+          </div>
+        )}
 
         {/* Contact Form */}
         <ContactForm />

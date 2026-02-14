@@ -73,6 +73,7 @@ export async function PUT(
     if (body.show_watermark !== undefined) updateData.show_watermark = body.show_watermark;
     if (body.description !== undefined) updateData.description = body.description || null;
     if (body.description_en !== undefined) updateData.description_en = body.description_en || null;
+    if (body.dominant_color !== undefined) updateData.dominant_color = body.dominant_color || null;
 
     const { data, error } = await supabaseAdmin
       .from('portfolio')

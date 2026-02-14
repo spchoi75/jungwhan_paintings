@@ -103,6 +103,8 @@ export async function PUT(request: NextRequest) {
     social_links: body.social_links || [],
     profile_image_url: body.profile_image_url || null,
     cv_file_url: body.cv_file_url || null,
+    contact_note: body.contact_note || null,
+    contact_note_en: body.contact_note_en || null,
   };
 
   let result;

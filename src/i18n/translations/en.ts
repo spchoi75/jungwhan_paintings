@@ -155,6 +155,12 @@ export const en: Translations = {
     years: 'Years',
   },
 
+  // 연도별 뷰
+  years: {
+    artworkCount: '{count} artworks',
+    noArtworks: 'No artworks registered for this year.',
+  },
+
   // 그래프 뷰
   graph: {
     // 통계

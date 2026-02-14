@@ -15,7 +15,9 @@ async function getContactInfo() {
       contact_email,
       social_links,
       studio_address,
-      studio_address_en
+      studio_address_en,
+      contact_note,
+      contact_note_en
     `)
     .single();
 

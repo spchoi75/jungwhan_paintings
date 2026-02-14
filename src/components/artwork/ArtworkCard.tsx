@@ -22,18 +22,18 @@ export default function ArtworkCard({ artwork, onClick, priority = false }: Artw
       aria-label={`${t.aria.viewArtwork}: ${title}`}
     >
       {/* 이미지 영역 */}
-      <div className="relative aspect-[4/5] w-full overflow-hidden bg-[var(--border)]">
+      <div className="relative aspect-[4/5] w-full overflow-hidden bg-[var(--background)]">
         <Image
-          src={artwork.thumbnail_url}
+          src={artwork.image_url}
           alt={title}
           fill
           sizes="(max-width: 640px) 50vw, (max-width: 1024px) 33vw, 25vw"
-          className="object-cover transition-transform duration-500 group-hover:scale-105"
+          className="object-contain transition-transform duration-500 group-hover:scale-105"
           priority={priority}
         />
       </div>
       {/* 하단 정보 영역 - 항상 표시 */}
-      <div className="py-2 bg-[var(--surface)]">
+      <div className="py-2 bg-[var(--background)]">
         <p className="text-[var(--foreground)] text-sm font-medium truncate">{title}</p>
         <p className="text-[var(--text-secondary)] text-xs mt-0.5">{artwork.year}</p>
       </div>

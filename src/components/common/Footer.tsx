@@ -93,8 +93,8 @@ export default function Footer() {
             >
               {artistName}
             </h3>
-            <p className="text-[var(--text-secondary)] text-sm leading-relaxed">
-              {footerBio}
+            <p className="text-[var(--text-secondary)] text-sm leading-relaxed whitespace-pre-line">
+              {footerBio.split(/(?<=[.?!。])\s*/).join('\n')}
             </p>
           </div>
 
@@ -171,16 +171,8 @@ export default function Footer() {
             <p className="text-[var(--text-secondary)] text-xs">
               &copy; {currentYear} {artistName}. All rights reserved.
             </p>
-            <p className="text-gray-600 text-xs leading-relaxed max-w-2xl mx-auto">
+            <p className="text-gray-600 text-xs leading-relaxed max-w-2xl mx-auto whitespace-pre-line">
               {formatTranslation(t.footer.notice, { name: artistName })}
-            </p>
-            <p className="pt-2">
-              <Link
-                href="/sitemap.xml"
-                className="text-gray-600 text-xs hover:text-[var(--text-secondary)] transition-colors"
-              >
-                Sitemap
-              </Link>
             </p>
           </div>
         </div>

@@ -4,6 +4,7 @@ import { useState } from 'react';
 import { Artwork } from '@/types/artwork';
 import ArtworkGrid from '@/components/artwork/ArtworkGrid';
 import ArtworkModal from '@/components/artwork/ArtworkModal';
+import { useLocale } from '@/i18n';
 
 interface YearViewProps {
   artworksByYear: Record<number, Artwork[]>;
@@ -11,6 +12,7 @@ interface YearViewProps {
 }
 
 export default function YearView({ artworksByYear, years }: YearViewProps) {
+  const { t } = useLocale();
   const [selectedYear, setSelectedYear] = useState<number>(years[0] || new Date().getFullYear());
   const [selectedArtwork, setSelectedArtwork] = useState<Artwork | null>(null);
   const [modalOpen, setModalOpen] = useState(false);
@@ -59,7 +61,7 @@ export default function YearView({ artworksByYear, years }: YearViewProps) {
 
       {/* 작품 수 표시 */}
       <p className="text-center text-sm text-[var(--foreground)]/60 mb-6">
-        {artworks.length}개 작품
+        {t.years.artworkCount.replace('{count}', String(artworks.length))}
       </p>
 
       {/* 작품 그리드 */}

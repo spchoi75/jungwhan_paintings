@@ -162,6 +162,8 @@ export interface AboutInfo {
   phone_visible: boolean;
   studio_address: string | null;
   studio_address_en: string | null;
+  contact_note: string | null;
+  contact_note_en: string | null;
   social_links: SocialLink[];
   profile_image_url: string | null;
   cv_file_url: string | null;
@@ -196,6 +198,8 @@ export interface AboutFormData {
   phone_visible?: boolean;
   studio_address?: string;
   studio_address_en?: string;
+  contact_note?: string;
+  contact_note_en?: string;
   social_links?: SocialLink[];
   profile_image_url?: string;
   cv_file_url?: string;

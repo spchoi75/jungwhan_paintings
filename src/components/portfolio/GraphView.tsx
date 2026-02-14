@@ -38,7 +38,7 @@ interface GraphNode {
   title?: string;
   title_en?: string | null;
   year?: number;
-  thumbnail_url?: string;
+  image_url?: string;
   width?: number | null;
   height?: number | null;
   connection_count?: number;
@@ -253,10 +253,10 @@ export default function GraphView() {
     const cache = new Map<string, HTMLImageElement>();
     
     nodes.forEach(node => {
-      if (node.type === 'artwork' && node.thumbnail_url) {
+      if (node.type === 'artwork' && node.image_url) {
         const img = new window.Image();
         img.crossOrigin = 'anonymous';
-        img.src = node.thumbnail_url;
+        img.src = node.image_url;
         img.onload = () => {
           cache.set(node.id, img);
           setImageCache(new Map(cache));
@@ -642,49 +642,75 @@ export default function GraphView() {
           )}
           
           {/* 태그 호버 시 - 연결된 작품 썸네일을 가장자리에 표시 */}
+          {/* 태그 호버 시 - 연결된 작품들 이미지 표시 (핀터레스트 스타일) */}
           {connectedArtworks.length > 0 && (
-            <div className="absolute top-2 left-2 right-2 flex flex-wrap gap-1 pointer-events-none z-10">
-              {connectedArtworks.map((artwork, index) => (
-                <div
-                  key={artwork.id}
-                  className="bg-white p-0.5 shadow-md"
-                  style={{
-                    animation: `fadeIn 150ms ease-out ${index * 30}ms both`,
-                  }}
-                >
-                  {artwork.thumbnail_url && (
-                    // eslint-disable-next-line @next/next/no-img-element
-                    <img
-                      src={artwork.thumbnail_url}
-                      alt={artwork.title || ''}
-                      className="w-12 h-12 object-cover"
-                    />
-                  )}
-                </div>
-              ))}
+            <div 
+              className="absolute top-2 left-2 right-2 pointer-events-none z-10"
+              style={{
+                columnCount: Math.min(connectedArtworks.length, 8),
+                columnGap: '2px',
+              }}
+            >
+              {connectedArtworks.map((artwork, index) => {
+                const aspectRatio = (artwork.width && artwork.height) ? artwork.width / artwork.height : 1;
+                return (
+                  <div
+                    key={artwork.id}
+                    className="mb-0.5"
+                    style={{
+                      animation: `fadeIn 150ms ease-out ${index * 30}ms both`,
+                      breakInside: 'avoid',
+                    }}
+                  >
+                    {artwork.image_url && (
+                      <div 
+                        className="relative w-full"
+                        style={{ paddingBottom: `${(1 / aspectRatio) * 100}%` }}
+                      >
+                        {/* eslint-disable-next-line @next/next/no-img-element */}
+                        <img
+                          src={artwork.image_url}
+                          alt={artwork.title || ''}
+                          className="absolute inset-0 w-full h-full object-contain"
+                        />
+                      </div>
+                    )}
+                  </div>
+                );
+              })}
             </div>
           )}
           
-          {/* 작품 호버 시 - 마우스 근처에 해당 작품 썸네일 표시 */}
-          {hoveredArtwork && mousePos && hoveredArtwork.thumbnail_url && (
-            <div
-              className="absolute pointer-events-none z-20 bg-white p-1 shadow-lg"
-              style={{
-                left: Math.min(mousePos.x + 15, GRAPH_WIDTH - 110),
-                top: Math.min(mousePos.y + 15, GRAPH_HEIGHT - 110),
-              }}
-            >
-              {/* eslint-disable-next-line @next/next/no-img-element */}
-              <img
-                src={hoveredArtwork.thumbnail_url}
-                alt={hoveredArtwork.title || ''}
-                className="w-24 h-24 object-cover"
-              />
-              <div className="text-xs text-center mt-1 text-gray-700 max-w-24 truncate">
-                {hoveredArtwork.title}
+          {/* 작품 호버 시 - 마우스 근처에 해당 작품 이미지 표시 */}
+          {hoveredArtwork && mousePos && hoveredArtwork.image_url && (() => {
+            const aspectRatio = (hoveredArtwork.width && hoveredArtwork.height) ? hoveredArtwork.width / hoveredArtwork.height : 1;
+            const itemWidth = 100;
+            return (
+              <div
+                className="absolute pointer-events-none z-20 bg-[var(--background)] p-1 shadow-lg"
+                style={{
+                  left: Math.min(mousePos.x + 15, GRAPH_WIDTH - itemWidth - 20),
+                  top: Math.min(mousePos.y + 15, GRAPH_HEIGHT - itemWidth / aspectRatio - 40),
+                  width: itemWidth,
+                }}
+              >
+                <div 
+                  className="relative w-full"
+                  style={{ paddingBottom: `${(1 / aspectRatio) * 100}%` }}
+                >
+                  {/* eslint-disable-next-line @next/next/no-img-element */}
+                  <img
+                    src={hoveredArtwork.image_url}
+                    alt={hoveredArtwork.title || ''}
+                    className="absolute inset-0 w-full h-full object-contain"
+                  />
+                </div>
+                <div className="text-xs text-center mt-1 text-[var(--foreground)]/70 truncate">
+                  {hoveredArtwork.title}
+                </div>
               </div>
-            </div>
-          )}
+            );
+          })()}
         </div>
 
         {/* 물리 설정 패널 - 항상 표시 */}

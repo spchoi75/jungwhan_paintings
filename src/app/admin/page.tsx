@@ -433,6 +433,7 @@ export default function AdminPage() {
             >
               작품 관리
             </button>
+            {/* 카테고리 관리 탭 숨김 (DB 스키마 유지, UI만 숨김)
             <button
               onClick={() => setActiveTab('categories')}
               className={`px-6 py-4 text-sm font-medium border-b-2 transition-colors ${
@@ -443,6 +444,7 @@ export default function AdminPage() {
             >
               카테고리 관리
             </button>
+            */}
             <button
               onClick={() => setActiveTab('exhibitions')}
               className={`px-6 py-4 text-sm font-medium border-b-2 transition-colors ${

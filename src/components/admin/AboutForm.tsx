@@ -54,6 +54,8 @@ export default function AboutForm({ aboutInfo, onSubmit }: AboutFormProps) {
   const [phoneVisible, setPhoneVisible] = useState(false);
   const [studioAddress, setStudioAddress] = useState('');
   const [studioAddressEn, setStudioAddressEn] = useState('');
+  const [contactNote, setContactNote] = useState('');
+  const [contactNoteEn, setContactNoteEn] = useState('');
   const [socialLinks, setSocialLinks] = useState<SocialLink[]>([]);
   const [footerBio, setFooterBio] = useState('');
   const [footerBioEn, setFooterBioEn] = useState('');
@@ -96,6 +98,8 @@ export default function AboutForm({ aboutInfo, onSubmit }: AboutFormProps) {
       setPhoneVisible(aboutInfo.phone_visible || false);
       setStudioAddress(aboutInfo.studio_address || '');
       setStudioAddressEn(aboutInfo.studio_address_en || '');
+      setContactNote((aboutInfo as AboutInfo & { contact_note?: string }).contact_note || '');
+      setContactNoteEn((aboutInfo as AboutInfo & { contact_note_en?: string }).contact_note_en || '');
       setSocialLinks(aboutInfo.social_links || []);
       setFooterBio(aboutInfo.footer_bio || '');
       setFooterBioEn(aboutInfo.footer_bio_en || '');
@@ -233,6 +237,8 @@ export default function AboutForm({ aboutInfo, onSubmit }: AboutFormProps) {
         phone_visible: phoneVisible,
         studio_address: studioAddress || undefined,
         studio_address_en: studioAddressEn || undefined,
+        contact_note: contactNote || undefined,
+        contact_note_en: contactNoteEn || undefined,
         social_links: socialLinks.filter((s) => s.url.trim()),
         profile_image_url: profileImageUrl || undefined,
       });
@@ -350,7 +356,7 @@ export default function AboutForm({ aboutInfo, onSubmit }: AboutFormProps) {
       <div>
         <label className="block text-sm font-medium mb-2 text-gray-700">Education</label>
         {education.map((item, index) => (
-          <div key={index} className="mb-3 p-3 border border-gray-200 rounded bg-[#141414]">
+          <div key={index} className="mb-3 p-3 border border-gray-200 rounded bg-gray-50">
             <div className="flex gap-2 mb-2">
               <input
                 type="text"
@@ -491,7 +497,7 @@ export default function AboutForm({ aboutInfo, onSubmit }: AboutFormProps) {
       <div>
         <label className="block text-sm font-medium mb-2 text-gray-700">Residency</label>
         {residencies.map((item, index) => (
-          <div key={index} className="mb-3 p-3 border border-gray-200 rounded bg-[#141414]">
+          <div key={index} className="mb-3 p-3 border border-gray-200 rounded bg-gray-50">
             <div className="flex gap-2 mb-2">
               <input
                 type="text"
@@ -558,7 +564,7 @@ export default function AboutForm({ aboutInfo, onSubmit }: AboutFormProps) {
       <div>
         <label className="block text-sm font-medium mb-2 text-gray-700">Fellowships</label>
         {fellowships.map((item, index) => (
-          <div key={index} className="mb-3 p-3 border border-gray-200 rounded bg-[#141414]">
+          <div key={index} className="mb-3 p-3 border border-gray-200 rounded bg-gray-50">
             <div className="flex gap-2 mb-2">
               <input
                 type="text"
@@ -608,7 +614,7 @@ export default function AboutForm({ aboutInfo, onSubmit }: AboutFormProps) {
       <div>
         <label className="block text-sm font-medium mb-2 text-gray-700">Awards</label>
         {awards.map((item, index) => (
-          <div key={index} className="mb-3 p-3 border border-gray-200 rounded bg-[#141414]">
+          <div key={index} className="mb-3 p-3 border border-gray-200 rounded bg-gray-50">
             <div className="flex gap-2 mb-2">
               <input
                 type="text"
@@ -658,7 +664,7 @@ export default function AboutForm({ aboutInfo, onSubmit }: AboutFormProps) {
       <div>
         <label className="block text-sm font-medium mb-2 text-gray-700">Publications</label>
         {publications.map((item, index) => (
-          <div key={index} className="mb-3 p-3 border border-gray-200 rounded bg-[#141414]">
+          <div key={index} className="mb-3 p-3 border border-gray-200 rounded bg-gray-50">
             <div className="flex gap-2 mb-2">
               <input
                 type="text"
@@ -760,6 +766,30 @@ export default function AboutForm({ aboutInfo, onSubmit }: AboutFormProps) {
             onChange={(e) => setStudioAddressEn(e.target.value)}
             className="w-full px-3 py-2 border border-gray-300 rounded focus:outline-none focus:ring-1 focus:ring-gray-400 bg-white text-gray-900 placeholder-gray-400"
             placeholder="Gangnam-gu, Seoul, Korea"
+          />
+        </div>
+      </div>
+
+      {/* 연락처 비고 */}
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+        <div>
+          <label className="block text-sm font-medium mb-1 text-gray-700">연락처 비고 (Contact 페이지에 표시)</label>
+          <textarea
+            value={contactNote}
+            onChange={(e) => setContactNote(e.target.value)}
+            className="w-full px-3 py-2 border border-gray-300 rounded focus:outline-none focus:ring-1 focus:ring-gray-400 bg-white text-gray-900 placeholder-gray-400"
+            placeholder="작품, 전시, 협업에 관한 문의는 이메일로 연락 바랍니다."
+            rows={2}
+          />
+        </div>
+        <div>
+          <label className="block text-sm font-medium mb-1 text-gray-700">연락처 비고 (영문)</label>
+          <textarea
+            value={contactNoteEn}
+            onChange={(e) => setContactNoteEn(e.target.value)}
+            className="w-full px-3 py-2 border border-gray-300 rounded focus:outline-none focus:ring-1 focus:ring-gray-400 bg-white text-gray-900 placeholder-gray-400"
+            placeholder="For inquiries about artworks, exhibitions, or collaborations..."
+            rows={2}
           />
         </div>
       </div>
