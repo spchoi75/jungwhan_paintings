@@ -133,13 +133,14 @@ export default function SidePanel() {
                 </button>
               </div>
 
-              {/* Navigation links - clicking these does NOT close the panel */}
+              {/* Navigation links - clicking closes the panel */}
               <nav className="px-4 sm:px-6">
                 <ul className="space-y-1">
                   {navItems.map((item) => (
                     <li key={item.href}>
                       <Link
                         href={item.href}
+                        onClick={close}
                         className={`block py-3 text-lg tracking-wide transition-colors ${
                           pathname === item.href ||
                           (item.href !== '/' && pathname.startsWith(item.href))

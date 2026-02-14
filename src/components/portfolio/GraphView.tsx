@@ -83,7 +83,7 @@ interface PhysicsSettings {
 const DEFAULT_PHYSICS: PhysicsSettings = {
   chargeStrength: 100,      // 양수로 표시 (내부에서 음수로 변환)
   centerStrength: 0.3,      // 중심으로 당기는 힘
-  linkDistance: 50,
+  linkDistance: 20,         // 가장 짧게
   linkStrength: 0.5,
   collisionRadius: 1.5,
 };
@@ -177,50 +177,16 @@ export default function GraphView() {
   const [hoveredNode, setHoveredNode] = useState<GraphNode | null>(null);
   const [selectedArtwork, setSelectedArtwork] = useState<Artwork | null>(null);
   const [modalOpen, setModalOpen] = useState(false);
-  const [dimensions, setDimensions] = useState({ width: 0, height: 500 });
-  const [showSettings, setShowSettings] = useState(false);
+  // 고정 크기 (4:3 비율)
+  const FIXED_WIDTH = 900;
+  const FIXED_HEIGHT = 675; // 900 * 3/4
   const [physics, setPhysics] = useState<PhysicsSettings>(DEFAULT_PHYSICS);
   const [isMounted, setIsMounted] = useState(false);
+  const [hasInitialCentered, setHasInitialCentered] = useState(false);
 
-  // 컨테이너 크기 감지 (ResizeObserver 사용)
+  // 마운트 상태만 관리
   useEffect(() => {
     setIsMounted(true);
-    
-    const updateDimensions = () => {
-      if (containerRef.current) {
-        const rect = containerRef.current.getBoundingClientRect();
-        const width = rect.width || containerRef.current.clientWidth || window.innerWidth - 48;
-        const height = Math.max(500, window.innerHeight * 0.65);
-        
-        if (width > 100) {
-          setDimensions({ width, height });
-        }
-      }
-    };
-
-    // ResizeObserver로 컨테이너 크기 변화 감지
-    const resizeObserver = new ResizeObserver(() => {
-      updateDimensions();
-    });
-
-    if (containerRef.current) {
-      resizeObserver.observe(containerRef.current);
-    }
-
-    // 초기화 및 리사이즈 이벤트
-    updateDimensions();
-    window.addEventListener('resize', updateDimensions);
-    
-    // 레이아웃 완료 대기
-    const timer1 = setTimeout(updateDimensions, 50);
-    const timer2 = setTimeout(updateDimensions, 200);
-
-    return () => {
-      window.removeEventListener('resize', updateDimensions);
-      resizeObserver.disconnect();
-      clearTimeout(timer1);
-      clearTimeout(timer2);
-    };
   }, []);
 
   // 데이터 로딩
@@ -278,6 +244,7 @@ export default function GraphView() {
   // viewMode 변경 시 graphInitialized 리셋 + 3D 렌더링 지연
   useEffect(() => {
     setGraphInitialized(false);
+    setHasInitialCentered(false);
     
     if (viewMode === '3d') {
       setRender3D(false);
@@ -311,9 +278,15 @@ export default function GraphView() {
         fg.d3ReheatSimulation?.();
         setGraphInitialized(true);
         
-        // 시뮬레이션 안정화 후 화면에 맞춤
+        // 시뮬레이션 안정화 후 화면 중앙에 맞춤
         setTimeout(() => {
-          fg.zoomToFit?.(400, 50); // 400ms 애니메이션, 50px 패딩
+          // graphRef.current를 직접 참조 (클로저 stale 방지)
+          // eslint-disable-next-line @typescript-eslint/no-explicit-any
+          const currentFg = graphRef.current as any;
+          if (currentFg?.zoomToFit) {
+            currentFg.zoomToFit(400, 80);
+            console.log('zoomToFit called');
+          }
         }, 1000);
       } catch (err) {
         console.log('Force init error:', err);
@@ -393,9 +366,14 @@ export default function GraphView() {
     setPhysics(DEFAULT_PHYSICS);
   };
 
-  if (loading || !isMounted || dimensions.width === 0) {
+  if (loading || !isMounted) {
     return <GraphLoading text={t.graph.loading} />;
   }
+
+  // 그래프 영역 크기 (고정, 4:3 비율)
+  const PANEL_WIDTH = 200;
+  const GRAPH_WIDTH = FIXED_WIDTH;
+  const GRAPH_HEIGHT = FIXED_HEIGHT;
 
   if (error) {
     return (
@@ -420,60 +398,22 @@ export default function GraphView() {
         <div className="text-sm text-[var(--foreground)]/60">
           {t.graph.artworks} {stats.artworks} · {t.graph.tags} {stats.tags} · {t.graph.connections} {stats.edges}
         </div>
-
-        <div className="flex items-center gap-2">
-          {/* 설정 토글 */}
-          <button
-            onClick={() => setShowSettings(!showSettings)}
-            className={`px-3 py-1.5 text-sm rounded-md transition-colors border ${
-              showSettings
-                ? 'bg-[var(--foreground)] text-[var(--background)] border-[var(--foreground)]'
-                : 'border-[var(--foreground)]/20 text-[var(--foreground)]/60 hover:text-[var(--foreground)]'
-            }`}
-          >
-            ⚙️ {t.graph.physics}
-          </button>
-
-          {/* 2D/3D 토글 - 3D 임시 비활성화 (Three.js 버전 충돌 이슈) */}
-          {/* <div className="flex items-center gap-1 border border-[var(--foreground)]/20 rounded-lg p-1">
-            <button
-              onClick={() => setViewMode('2d')}
-              className={`px-3 py-1.5 text-sm rounded-md transition-colors ${
-                viewMode === '2d'
-                  ? 'bg-[var(--foreground)] text-[var(--background)]'
-                  : 'text-[var(--foreground)]/60 hover:text-[var(--foreground)]'
-              }`}
-            >
-              2D
-            </button>
-            <button
-              onClick={() => setViewMode('3d')}
-              className={`px-3 py-1.5 text-sm rounded-md transition-colors ${
-                viewMode === '3d'
-                  ? 'bg-[var(--foreground)] text-[var(--background)]'
-                  : 'text-[var(--foreground)]/60 hover:text-[var(--foreground)]'
-              }`}
-            >
-              3D
-            </button>
-          </div> */}
-        </div>
       </div>
 
       <div className="flex gap-4">
-        {/* 그래프 컨테이너 */}
+        {/* 그래프 컨테이너 - 고정 영역 */}
         <div
           ref={containerRef}
-          className="flex-1 rounded-lg border border-[var(--foreground)]/10 overflow-hidden bg-slate-950"
-          style={{ height: dimensions.height }}
+          className="rounded-lg border border-[var(--foreground)]/10 overflow-hidden bg-slate-950"
+          style={{ width: GRAPH_WIDTH, height: GRAPH_HEIGHT }}
         >
           {viewMode === '2d' && (
             <ForceGraph2D
               key="graph-2d"
               ref={graphRef}
               graphData={graphData}
-              width={showSettings ? dimensions.width - 220 : dimensions.width}
-              height={dimensions.height}
+              width={GRAPH_WIDTH}
+              height={GRAPH_HEIGHT}
               backgroundColor="#0f172a"
               nodeLabel={getNodeLabel}
               nodeColor={getNodeColor}
@@ -490,6 +430,18 @@ export default function GraphView() {
               enableZoomInteraction={true}
               enablePanInteraction={true}
               enableNodeDrag={true}
+              onEngineStop={() => {
+                // 최초 시뮬레이션 멈추면 화면에 맞춤 (한 번만)
+                if (!hasInitialCentered) {
+                  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+                  const currentFg = graphRef.current as any;
+                  if (currentFg?.zoomToFit) {
+                    currentFg.zoomToFit(400, 80);
+                    console.log('onEngineStop: zoomToFit called');
+                  }
+                  setHasInitialCentered(true);
+                }
+              }}
             />
           )}
           {viewMode === '3d' && render3D && (
@@ -497,8 +449,8 @@ export default function GraphView() {
               key="graph-3d"
               ref={graphRef}
               graphData={graphData}
-              width={showSettings ? dimensions.width - 220 : dimensions.width}
-              height={dimensions.height}
+              width={GRAPH_WIDTH}
+              height={GRAPH_HEIGHT}
               backgroundColor={COLORS.background3D}
               nodeLabel={getNodeLabel}
               nodeColor={getNodeColor}
@@ -524,18 +476,17 @@ export default function GraphView() {
           )}
         </div>
 
-        {/* 물리 설정 패널 */}
-        {showSettings && (
-          <div className="w-52 shrink-0 p-4 rounded-lg border border-[var(--foreground)]/10 bg-[var(--background)] space-y-4">
-            <div className="flex items-center justify-between">
-              <h3 className="text-sm font-medium">{t.graph.physicsSettings}</h3>
-              <button
-                onClick={resetPhysics}
-                className="text-xs text-[var(--foreground)]/50 hover:text-[var(--foreground)]"
-              >
-                {t.graph.reset}
-              </button>
-            </div>
+        {/* 물리 설정 패널 - 항상 표시 */}
+        <div className="shrink-0 p-4 rounded-lg border border-[var(--foreground)]/10 bg-[var(--background)] space-y-4" style={{ width: PANEL_WIDTH }}>
+          <div className="flex items-center justify-between">
+            <h3 className="text-sm font-medium">{t.graph.physicsSettings}</h3>
+            <button
+              onClick={resetPhysics}
+              className="text-xs text-[var(--foreground)]/50 hover:text-[var(--foreground)]"
+            >
+              {t.graph.reset}
+            </button>
+          </div>
 
             <Slider
               label={t.graph.repulsion}
@@ -593,16 +544,15 @@ export default function GraphView() {
               normal={t.graph.normal}
             />
 
-            <div className="pt-2 border-t border-[var(--foreground)]/10">
-              <p className="text-xs text-[var(--foreground)]/40 leading-relaxed">
-                {t.graph.physicsHelp.repulsion}<br/>
-                {t.graph.physicsHelp.center}<br/>
-                {t.graph.physicsHelp.distance}<br/>
-                {t.graph.physicsHelp.strength}
-              </p>
-            </div>
+          <div className="pt-2 border-t border-[var(--foreground)]/10">
+            <p className="text-xs text-[var(--foreground)]/40 leading-relaxed">
+              {t.graph.physicsHelp.repulsion}<br/>
+              {t.graph.physicsHelp.center}<br/>
+              {t.graph.physicsHelp.distance}<br/>
+              {t.graph.physicsHelp.strength}
+            </p>
           </div>
-        )}
+        </div>
       </div>
 
       {/* 범례 + 조작 안내 */}
