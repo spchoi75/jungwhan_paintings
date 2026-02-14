@@ -107,8 +107,8 @@ export interface ArtworkFormData {
   collection?: string;
   collection_en?: string;
   variable_size?: boolean;
-  is_featured: boolean;
-  show_watermark: boolean;
+  is_featured?: boolean;
+  show_watermark?: boolean;
   category_id?: string;
   dominant_color?: string | null;
 }

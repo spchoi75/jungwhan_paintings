@@ -78,6 +78,7 @@ interface PhysicsSettings {
   linkDistance: number;      // 링크 거리
   linkStrength: number;      // 링크 강도
   collisionRadius: number;   // 충돌 반경 배율
+  nodeSize: number;          // 노드 크기 배율
 }
 
 const DEFAULT_PHYSICS: PhysicsSettings = {
@@ -86,14 +87,19 @@ const DEFAULT_PHYSICS: PhysicsSettings = {
   linkDistance: 20,         // 가장 짧게
   linkStrength: 0.5,
   collisionRadius: 1.5,
+  nodeSize: 1.0,            // 기본 크기
 };
 
 // ===== 색상 설정 =====
 const COLORS = {
-  artwork: '#2563eb',
-  tag: '#a855f7',
-  link: 'rgba(100, 100, 100, 0.4)',
-  background3D: '#0a0a0a',
+  artwork: 'rgb(128, 128, 0)',      // olive
+  artworkDimmed: 'rgba(128, 128, 0, 0.65)',
+  tag: 'rgb(178, 34, 34)',          // firebrick
+  tagDimmed: 'rgba(178, 34, 34, 0.65)',
+  link: 'rgba(100, 100, 100, 0.3)',
+  linkHighlight: 'rgba(100, 100, 100, 0.45)',
+  linkDimmed: 'rgba(100, 100, 100, 0.2)',
+  background: 'rgb(245, 245, 245)', // whitesmoke
 };
 
 // ===== 슬라이더 컴포넌트 =====
@@ -175,6 +181,10 @@ export default function GraphView() {
   const [viewMode, setViewMode] = useState<ViewMode>('2d');
   const [render3D, setRender3D] = useState(false);
   const [hoveredNode, setHoveredNode] = useState<GraphNode | null>(null);
+  const [highlightNodes, setHighlightNodes] = useState<Set<string>>(new Set());
+  const [highlightLinks, setHighlightLinks] = useState<Set<string>>(new Set());
+  const [imageCache, setImageCache] = useState<Map<string, HTMLImageElement>>(new Map());
+  const [mousePos, setMousePos] = useState<{ x: number; y: number } | null>(null);
   const [selectedArtwork, setSelectedArtwork] = useState<Artwork | null>(null);
   const [modalOpen, setModalOpen] = useState(false);
   // 고정 크기 (4:3 비율)
@@ -237,6 +247,23 @@ export default function GraphView() {
 
     fetchData();
   }, []);
+
+  // 썸네일 이미지 프리로드
+  useEffect(() => {
+    const cache = new Map<string, HTMLImageElement>();
+    
+    nodes.forEach(node => {
+      if (node.type === 'artwork' && node.thumbnail_url) {
+        const img = new window.Image();
+        img.crossOrigin = 'anonymous';
+        img.src = node.thumbnail_url;
+        img.onload = () => {
+          cache.set(node.id, img);
+          setImageCache(new Map(cache));
+        };
+      }
+    });
+  }, [nodes]);
 
   // 그래프 초기화 - forceX, forceY 추가 및 화면 맞춤
   const [graphInitialized, setGraphInitialized] = useState(false);
@@ -346,6 +373,115 @@ export default function GraphView() {
     }
   }, []);
 
+  // 노드 커스텀 렌더링 (기본 노드 + 태그 이름)
+  const nodeCanvasObject = useCallback((node: GraphNode, ctx: CanvasRenderingContext2D) => {
+    const nodeSize = Math.sqrt(node.val || 10) * 2 * physics.nodeSize;
+    const x = node.x || 0;
+    const y = node.y || 0;
+    
+    // 노드 색상 계산
+    let nodeColor: string;
+    if (highlightNodes.size > 0 && !highlightNodes.has(node.id)) {
+      nodeColor = node.type === 'artwork' ? COLORS.artworkDimmed : COLORS.tagDimmed;
+    } else {
+      nodeColor = node.type === 'artwork' ? COLORS.artwork : COLORS.tag;
+    }
+    
+    // 기본 노드 원 그리기
+    ctx.beginPath();
+    ctx.arc(x, y, nodeSize, 0, 2 * Math.PI);
+    ctx.fillStyle = nodeColor;
+    ctx.fill();
+    
+    // 작품 호버 시 → 연결된 태그 이름 표시
+    if (highlightNodes.size > 0 && highlightNodes.has(node.id) && hoveredNode && hoveredNode.id !== node.id) {
+      if (hoveredNode.type === 'artwork' && node.type === 'tag') {
+        const tagName = node.name || '';
+        const fontSize = 11;
+        ctx.font = `${fontSize}px Sans-Serif`;
+        ctx.textAlign = 'left';
+        ctx.textBaseline = 'middle';
+        
+        const textWidth = ctx.measureText(tagName).width;
+        const textX = x + nodeSize + 6;
+        const textY = y;
+        
+        // 배경
+        ctx.fillStyle = 'rgba(255, 255, 255, 0.95)';
+        ctx.fillRect(textX - 3, textY - fontSize/2 - 2, textWidth + 6, fontSize + 4);
+        
+        // 텍스트
+        ctx.fillStyle = COLORS.tag;
+        ctx.fillText(tagName, textX, textY);
+      }
+    }
+  }, [highlightNodes, hoveredNode, physics.nodeSize]);
+  
+  // 연결된 작품들 가져오기 (태그 호버 시)
+  const connectedArtworks = useMemo(() => {
+    if (!hoveredNode || hoveredNode.type !== 'tag') return [];
+    
+    return nodes.filter(n => 
+      n.type === 'artwork' && highlightNodes.has(n.id) && n.id !== hoveredNode.id
+    );
+  }, [hoveredNode, nodes, highlightNodes]);
+  
+  // 현재 호버된 작품 정보 (작품 호버 시)
+  const hoveredArtwork = useMemo(() => {
+    if (!hoveredNode || hoveredNode.type !== 'artwork') return null;
+    return hoveredNode;
+  }, [hoveredNode]);
+
+  // 노드 호버 시 연결된 노드/링크 하이라이트
+  const handleNodeHover = useCallback((node: GraphNode | null) => {
+    setHoveredNode(node);
+    
+    if (node) {
+      const connectedNodes = new Set<string>();
+      const connectedLinks = new Set<string>();
+      
+      connectedNodes.add(node.id);
+      
+      links.forEach(link => {
+        const sourceId = typeof link.source === 'object' ? (link.source as GraphNode).id : link.source;
+        const targetId = typeof link.target === 'object' ? (link.target as GraphNode).id : link.target;
+        
+        if (sourceId === node.id) {
+          connectedNodes.add(targetId);
+          connectedLinks.add(`${sourceId}-${targetId}`);
+        } else if (targetId === node.id) {
+          connectedNodes.add(sourceId);
+          connectedLinks.add(`${sourceId}-${targetId}`);
+        }
+      });
+      
+      setHighlightNodes(connectedNodes);
+      setHighlightLinks(connectedLinks);
+    } else {
+      setHighlightNodes(new Set());
+      setHighlightLinks(new Set());
+      setMousePos(null);
+    }
+  }, [links]);
+  
+  // 마우스 위치 추적 (컨테이너 기준)
+  const handleMouseMove = useCallback((e: React.MouseEvent<HTMLDivElement>) => {
+    const rect = e.currentTarget.getBoundingClientRect();
+    setMousePos({
+      x: e.clientX - rect.left,
+      y: e.clientY - rect.top,
+    });
+  }, []);
+
+  const getNodeColor = useCallback((node: GraphNode) => {
+    // 호버 중이고 연결 안 된 노드면 살짝만 흐리게
+    if (highlightNodes.size > 0 && !highlightNodes.has(node.id)) {
+      return node.type === 'artwork' ? COLORS.artworkDimmed : COLORS.tagDimmed;
+    }
+    return node.type === 'artwork' ? COLORS.artwork : COLORS.tag;
+  }, [highlightNodes]);
+
+  // 노드 라벨 (3D용)
   const getNodeLabel = useCallback((node: GraphNode) => {
     if (node.type === 'artwork') {
       const title = (locale === 'en' && node.title_en) ? node.title_en : (node.title || 'Untitled');
@@ -354,9 +490,33 @@ export default function GraphView() {
     return `🏷️ ${node.name} (${node.artwork_count})`;
   }, [locale]);
 
-  const getNodeColor = useCallback((node: GraphNode) => {
-    return node.color || (node.type === 'artwork' ? COLORS.artwork : COLORS.tag);
-  }, []);
+  const getLinkColor = useCallback((link: { source: GraphNode | string; target: GraphNode | string }) => {
+    if (highlightLinks.size === 0) return COLORS.link;
+    
+    const sourceId = typeof link.source === 'object' ? link.source.id : link.source;
+    const targetId = typeof link.target === 'object' ? link.target.id : link.target;
+    const linkId = `${sourceId}-${targetId}`;
+    const linkIdReverse = `${targetId}-${sourceId}`;
+    
+    if (highlightLinks.has(linkId) || highlightLinks.has(linkIdReverse)) {
+      return COLORS.linkHighlight;
+    }
+    return COLORS.linkDimmed;
+  }, [highlightLinks]);
+
+  const getLinkWidth = useCallback((link: { source: GraphNode | string; target: GraphNode | string }) => {
+    if (highlightLinks.size === 0) return 1.5;
+    
+    const sourceId = typeof link.source === 'object' ? link.source.id : link.source;
+    const targetId = typeof link.target === 'object' ? link.target.id : link.target;
+    const linkId = `${sourceId}-${targetId}`;
+    const linkIdReverse = `${targetId}-${sourceId}`;
+    
+    if (highlightLinks.has(linkId) || highlightLinks.has(linkIdReverse)) {
+      return 1.8;  // 살짝만 굵게
+    }
+    return 1.2;    // 기본보다 살짝만 얇게
+  }, [highlightLinks]);
 
   const updatePhysics = (key: keyof PhysicsSettings, value: number) => {
     setPhysics(prev => ({ ...prev, [key]: value }));
@@ -404,8 +564,10 @@ export default function GraphView() {
         {/* 그래프 컨테이너 - 고정 영역 */}
         <div
           ref={containerRef}
-          className="rounded-lg border border-[var(--foreground)]/10 overflow-hidden bg-slate-950"
-          style={{ width: GRAPH_WIDTH, height: GRAPH_HEIGHT }}
+          className="rounded-lg border border-[var(--foreground)]/10 overflow-hidden relative"
+          style={{ width: GRAPH_WIDTH, height: GRAPH_HEIGHT, backgroundColor: COLORS.background }}
+          onMouseMove={handleMouseMove}
+          onMouseLeave={() => setMousePos(null)}
         >
           {viewMode === '2d' && (
             <ForceGraph2D
@@ -414,15 +576,19 @@ export default function GraphView() {
               graphData={graphData}
               width={GRAPH_WIDTH}
               height={GRAPH_HEIGHT}
-              backgroundColor="#0f172a"
-              nodeLabel={getNodeLabel}
-              nodeColor={getNodeColor}
-              nodeVal="val"
-              nodeRelSize={1}
-              linkColor={() => COLORS.link}
-              linkWidth={1.5}
+              backgroundColor={COLORS.background}
+              nodeCanvasObject={nodeCanvasObject}
+              nodePointerAreaPaint={(node: GraphNode, color: string, ctx: CanvasRenderingContext2D) => {
+                const nodeSize = Math.sqrt(node.val || 10) * 2 * physics.nodeSize;
+                ctx.beginPath();
+                ctx.arc(node.x || 0, node.y || 0, nodeSize, 0, 2 * Math.PI);
+                ctx.fillStyle = color;
+                ctx.fill();
+              }}
+              linkColor={getLinkColor}
+              linkWidth={getLinkWidth}
               onNodeClick={handleNodeClick}
-              onNodeHover={(node: GraphNode | null) => setHoveredNode(node)}
+              onNodeHover={handleNodeHover}
               cooldownTicks={200}
               d3AlphaDecay={0.02}
               d3VelocityDecay={0.3}
@@ -451,7 +617,7 @@ export default function GraphView() {
               graphData={graphData}
               width={GRAPH_WIDTH}
               height={GRAPH_HEIGHT}
-              backgroundColor={COLORS.background3D}
+              backgroundColor={COLORS.background}
               nodeLabel={getNodeLabel}
               nodeColor={getNodeColor}
               nodeVal="val"
@@ -473,6 +639,51 @@ export default function GraphView() {
           )}
           {viewMode === '3d' && !render3D && (
             <GraphLoading text={t.graph.loading} />
+          )}
+          
+          {/* 태그 호버 시 - 연결된 작품 썸네일을 가장자리에 표시 */}
+          {connectedArtworks.length > 0 && (
+            <div className="absolute top-2 left-2 right-2 flex flex-wrap gap-1 pointer-events-none z-10">
+              {connectedArtworks.map((artwork, index) => (
+                <div
+                  key={artwork.id}
+                  className="bg-white p-0.5 shadow-md"
+                  style={{
+                    animation: `fadeIn 150ms ease-out ${index * 30}ms both`,
+                  }}
+                >
+                  {artwork.thumbnail_url && (
+                    // eslint-disable-next-line @next/next/no-img-element
+                    <img
+                      src={artwork.thumbnail_url}
+                      alt={artwork.title || ''}
+                      className="w-12 h-12 object-cover"
+                    />
+                  )}
+                </div>
+              ))}
+            </div>
+          )}
+          
+          {/* 작품 호버 시 - 마우스 근처에 해당 작품 썸네일 표시 */}
+          {hoveredArtwork && mousePos && hoveredArtwork.thumbnail_url && (
+            <div
+              className="absolute pointer-events-none z-20 bg-white p-1 shadow-lg"
+              style={{
+                left: Math.min(mousePos.x + 15, GRAPH_WIDTH - 110),
+                top: Math.min(mousePos.y + 15, GRAPH_HEIGHT - 110),
+              }}
+            >
+              {/* eslint-disable-next-line @next/next/no-img-element */}
+              <img
+                src={hoveredArtwork.thumbnail_url}
+                alt={hoveredArtwork.title || ''}
+                className="w-24 h-24 object-cover"
+              />
+              <div className="text-xs text-center mt-1 text-gray-700 max-w-24 truncate">
+                {hoveredArtwork.title}
+              </div>
+            </div>
           )}
         </div>
 
@@ -544,6 +755,20 @@ export default function GraphView() {
               normal={t.graph.normal}
             />
 
+            <Slider
+              label="점 크기"
+              value={physics.nodeSize}
+              onChange={(v) => updatePhysics('nodeSize', v)}
+              min={0.5}
+              max={2}
+              step={0.1}
+              leftLabel="작게"
+              rightLabel="크게"
+              slightly={t.graph.slightly}
+              quite={t.graph.quite}
+              normal={t.graph.normal}
+            />
+
           <div className="pt-2 border-t border-[var(--foreground)]/10">
             <p className="text-xs text-[var(--foreground)]/40 leading-relaxed">
               {t.graph.physicsHelp.repulsion}<br/>
@@ -572,35 +797,6 @@ export default function GraphView() {
         </div>
       </div>
 
-      {/* 호버 툴팁 */}
-      {hoveredNode && (
-        <div className="absolute top-16 left-4 bg-[var(--background)] border border-[var(--foreground)]/20 rounded-lg p-3 shadow-lg max-w-xs z-10">
-          <div className="flex items-center gap-2 mb-1">
-            <span>{hoveredNode.type === 'artwork' ? '🎨' : '🏷️'}</span>
-            <span className="font-medium">
-              {hoveredNode.type === 'artwork' 
-                ? ((locale === 'en' && hoveredNode.title_en) ? hoveredNode.title_en : hoveredNode.title)
-                : hoveredNode.name}
-            </span>
-          </div>
-          <div className="text-sm text-[var(--foreground)]/60">
-            {hoveredNode.type === 'artwork' ? (
-              <>
-                {hoveredNode.year && <span>{hoveredNode.year}{t.graph.year}</span>}
-                {hoveredNode.linkCount !== undefined && (
-                  <span> · {hoveredNode.linkCount} {t.graph.linkedCount}</span>
-                )}
-              </>
-            ) : (
-              <span>{hoveredNode.artwork_count}{t.graph.artworksLinked}</span>
-            )}
-          </div>
-          <p className="text-xs text-[var(--foreground)]/40 mt-1">
-            {hoveredNode.type === 'artwork' ? t.graph.clickToView : ''}
-          </p>
-        </div>
-      )}
-
       {/* 작품 모달 */}
       {modalOpen && selectedArtwork && (
         <ArtworkModal
@@ -608,6 +804,14 @@ export default function GraphView() {
           onClose={() => setModalOpen(false)}
         />
       )}
+      
+      {/* fadeIn 애니메이션 */}
+      <style jsx>{`
+        @keyframes fadeIn {
+          from { opacity: 0; transform: scale(0.9); }
+          to { opacity: 1; transform: scale(1); }
+        }
+      `}</style>
     </div>
   );
 }

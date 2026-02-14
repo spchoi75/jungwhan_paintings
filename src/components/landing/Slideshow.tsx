@@ -15,6 +15,7 @@ export default function Slideshow({ artworks }: SlideshowProps) {
   const [currentIndex, setCurrentIndex] = useState(0);
   const scrollContainerRef = useRef<HTMLDivElement>(null);
   const autoPlayTimer = useRef<NodeJS.Timeout | null>(null);
+  const resetTimer = useRef<NodeJS.Timeout | null>(null);
   const scrollTimeout = useRef<NodeJS.Timeout | null>(null);
   
   // 마우스 드래그 상태
@@ -36,17 +37,22 @@ export default function Slideshow({ artworks }: SlideshowProps) {
 
   const goToNext = useCallback(() => {
     if (artworks.length <= 1) return;
-    const nextIndex = (currentIndex + 1) % artworks.length;
-    setCurrentIndex(nextIndex);
-    scrollToIndex(nextIndex);
-  }, [artworks.length, currentIndex, scrollToIndex]);
+    setCurrentIndex(prev => {
+      const nextIndex = (prev + 1) % artworks.length;
+      // 비동기로 스크롤 (state 업데이트 후)
+      setTimeout(() => scrollToIndex(nextIndex), 0);
+      return nextIndex;
+    });
+  }, [artworks.length, scrollToIndex]);
 
   const goToPrev = useCallback(() => {
     if (artworks.length <= 1) return;
-    const prevIndex = (currentIndex - 1 + artworks.length) % artworks.length;
-    setCurrentIndex(prevIndex);
-    scrollToIndex(prevIndex);
-  }, [artworks.length, currentIndex, scrollToIndex]);
+    setCurrentIndex(prev => {
+      const prevIndex = (prev - 1 + artworks.length) % artworks.length;
+      setTimeout(() => scrollToIndex(prevIndex), 0);
+      return prevIndex;
+    });
+  }, [artworks.length, scrollToIndex]);
 
   // 자동 재생
   const startAutoPlay = useCallback(() => {
@@ -64,12 +70,25 @@ export default function Slideshow({ artworks }: SlideshowProps) {
 
   const resetAutoPlay = useCallback(() => {
     stopAutoPlay();
-    setTimeout(startAutoPlay, 3000);
-  }, [stopAutoPlay, startAutoPlay]);
+    // 기존 reset 타이머 취소
+    if (resetTimer.current) {
+      clearTimeout(resetTimer.current);
+    }
+    // 3초 후 다음 슬라이드로 이동 + 자동재생 재시작
+    resetTimer.current = setTimeout(() => {
+      goToNext();
+      startAutoPlay();
+    }, 3000);
+  }, [stopAutoPlay, startAutoPlay, goToNext]);
 
   useEffect(() => {
     startAutoPlay();
-    return () => stopAutoPlay();
+    return () => {
+      stopAutoPlay();
+      if (resetTimer.current) {
+        clearTimeout(resetTimer.current);
+      }
+    };
   }, [startAutoPlay, stopAutoPlay]);
 
   // 스크롤 이벤트 - 현재 인덱스 업데이트

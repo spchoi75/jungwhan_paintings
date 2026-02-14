@@ -24,7 +24,6 @@ export default function ArtworkForm({ artwork, categories, onSubmit, onCancel }:
   const [collectionEn, setCollectionEn] = useState(artwork?.collection_en || '');
   const [variableSize, setVariableSize] = useState(artwork?.variable_size || false);
   const [categoryId, setCategoryId] = useState(artwork?.category_id || '');
-  const [isFeatured, setIsFeatured] = useState(artwork?.is_featured || false);
   const [showWatermark, setShowWatermark] = useState(artwork?.show_watermark ?? true);
   const [imageUrl, setImageUrl] = useState(artwork?.image_url || '');
   const [thumbnailUrl, setThumbnailUrl] = useState(artwork?.thumbnail_url || '');
@@ -44,7 +43,6 @@ export default function ArtworkForm({ artwork, categories, onSubmit, onCancel }:
     setCollectionEn(artwork?.collection_en || '');
     setVariableSize(artwork?.variable_size || false);
     setCategoryId(artwork?.category_id || '');
-    setIsFeatured(artwork?.is_featured || false);
     setShowWatermark(artwork?.show_watermark ?? true);
     setImageUrl(artwork?.image_url || '');
     setThumbnailUrl(artwork?.thumbnail_url || '');
@@ -93,7 +91,6 @@ export default function ArtworkForm({ artwork, categories, onSubmit, onCancel }:
         collection_en: collectionEn.trim() || undefined,
         variable_size: variableSize,
         category_id: categoryId || undefined,
-        is_featured: isFeatured,
         show_watermark: showWatermark,
         image_url: imageUrl,
         thumbnail_url: thumbnailUrl,
