@@ -177,38 +177,49 @@ export default function GraphView() {
   const [hoveredNode, setHoveredNode] = useState<GraphNode | null>(null);
   const [selectedArtwork, setSelectedArtwork] = useState<Artwork | null>(null);
   const [modalOpen, setModalOpen] = useState(false);
-  const [dimensions, setDimensions] = useState({ width: 800, height: 500 });
+  const [dimensions, setDimensions] = useState({ width: 0, height: 500 });
   const [showSettings, setShowSettings] = useState(false);
   const [physics, setPhysics] = useState<PhysicsSettings>(DEFAULT_PHYSICS);
+  const [isMounted, setIsMounted] = useState(false);
 
-  // 컨테이너 크기 감지
+  // 컨테이너 크기 감지 (ResizeObserver 사용)
   useEffect(() => {
+    setIsMounted(true);
+    
     const updateDimensions = () => {
       if (containerRef.current) {
         const rect = containerRef.current.getBoundingClientRect();
         const width = rect.width || containerRef.current.clientWidth || window.innerWidth - 48;
         const height = Math.max(500, window.innerHeight * 0.65);
         
-        if (width > 100) { // 유효한 크기일 때만 업데이트
+        if (width > 100) {
           setDimensions({ width, height });
         }
       }
     };
 
+    // ResizeObserver로 컨테이너 크기 변화 감지
+    const resizeObserver = new ResizeObserver(() => {
+      updateDimensions();
+    });
+
+    if (containerRef.current) {
+      resizeObserver.observe(containerRef.current);
+    }
+
     // 초기화 및 리사이즈 이벤트
     updateDimensions();
     window.addEventListener('resize', updateDimensions);
     
-    // 여러 타이밍에 재계산 (레이아웃 완료 대기)
-    const timer1 = setTimeout(updateDimensions, 100);
-    const timer2 = setTimeout(updateDimensions, 300);
-    const timer3 = setTimeout(updateDimensions, 500);
+    // 레이아웃 완료 대기
+    const timer1 = setTimeout(updateDimensions, 50);
+    const timer2 = setTimeout(updateDimensions, 200);
 
     return () => {
       window.removeEventListener('resize', updateDimensions);
+      resizeObserver.disconnect();
       clearTimeout(timer1);
       clearTimeout(timer2);
-      clearTimeout(timer3);
     };
   }, []);
 
@@ -382,7 +393,7 @@ export default function GraphView() {
     setPhysics(DEFAULT_PHYSICS);
   };
 
-  if (loading) {
+  if (loading || !isMounted || dimensions.width === 0) {
     return <GraphLoading text={t.graph.loading} />;
   }
 
