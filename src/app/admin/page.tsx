@@ -493,7 +493,9 @@ export default function AdminPage() {
           {activeTab === 'artworks' && (
             <>
               <div className="flex justify-between items-center mb-6">
-                <h2 className="text-lg font-medium text-gray-900">작품 목록</h2>
+                <h2 className="text-lg font-medium text-gray-900">
+                  작품 목록 <span className="text-gray-500 font-normal">({artworks.length}개)</span>
+                </h2>
                 <Button onClick={() => { setEditingArtwork(null); setIsArtworkFormOpen(true); }}>
                   + 새 작품
                 </Button>

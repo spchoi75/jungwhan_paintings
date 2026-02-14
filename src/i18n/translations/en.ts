@@ -9,7 +9,7 @@ export const en: Translations = {
   // 네비게이션
   nav: {
     home: 'Home',
-    portfolio: 'Portfolio',
+    portfolio: 'Works',
     about: 'About',
     exhibitions: 'Exhibitions',
     news: 'News',
@@ -129,7 +129,7 @@ export const en: Translations = {
 
   // Portfolio 페이지
   portfolio: {
-    title: 'Portfolio',
+    title: 'Works',
     backToPortfolio: 'Back to Portfolio',
     noCategories: 'No categories yet',
     noArtworks: 'No artworks in this category',

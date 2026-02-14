@@ -88,6 +88,7 @@ export async function POST(request: NextRequest) {
         is_featured: body.is_featured || false,
         show_watermark: body.show_watermark ?? true,
         order: newOrder,
+        dominant_color: body.dominant_color || null,
       })
       .select()
       .single();

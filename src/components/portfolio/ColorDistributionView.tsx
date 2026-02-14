@@ -41,7 +41,7 @@ export default function ColorDistributionView() {
   const [selectedArtwork, setSelectedArtwork] = useState<Artwork | null>(null);
   const [modalOpen, setModalOpen] = useState(false);
 
-  const ITEM_WIDTH = 80; // 각 이미지 너비
+  const ITEM_WIDTH = 150; // 각 이미지 너비
 
   useEffect(() => {
     const fetchData = async () => {
@@ -92,8 +92,9 @@ export default function ColorDistributionView() {
   }, []);
 
   // 색상 버킷별로 그룹화 + 명도순 정렬
+  // 색상 버킷별로 그룹화 후 펼치기 (CSS columns가 위→아래로 채우므로 자연스럽게 같은 색상끼리 모임)
   const { sortedArtworks, achromaticArtworks } = useMemo(() => {
-    const chromatic: ColorArtwork[] = [];
+    const buckets: Map<number, ColorArtwork[]> = new Map();
     const achromatic: ColorArtwork[] = [];
     
     artworks.forEach(a => {
@@ -102,22 +103,30 @@ export default function ColorDistributionView() {
       if (a.dominant_color.isAchromatic) {
         achromatic.push(a);
       } else {
-        chromatic.push(a);
+        const bucket = getHueBucket(a.dominant_color.h);
+        if (!buckets.has(bucket)) buckets.set(bucket, []);
+        buckets.get(bucket)!.push(a);
       }
     });
     
-    // 색상(H) → 명도(L, 밝은 것 먼저) 정렬
-    chromatic.sort((a, b) => {
-      const bucketA = getHueBucket(a.dominant_color?.h || 0);
-      const bucketB = getHueBucket(b.dominant_color?.h || 0);
-      if (bucketA !== bucketB) return bucketA - bucketB;
-      return (b.dominant_color?.l || 0) - (a.dominant_color?.l || 0);
+    // 각 버킷 내에서 명도순 정렬 (밝은 것 먼저 = CSS columns에서 위에 배치)
+    buckets.forEach(arr => {
+      arr.sort((a, b) => (b.dominant_color?.l || 0) - (a.dominant_color?.l || 0));
     });
     
     // 무채색도 명도순 정렬
     achromatic.sort((a, b) => (b.dominant_color?.l || 0) - (a.dominant_color?.l || 0));
     
-    return { sortedArtworks: chromatic, achromaticArtworks: achromatic };
+    // 버킷 순서대로 펼치기 (빨→주→노→초→파→보→무채색)
+    const sorted: ColorArtwork[] = [];
+    for (let i = 0; i <= 6; i++) {
+      if (buckets.has(i)) {
+        sorted.push(...buckets.get(i)!);
+      }
+    }
+    sorted.push(...achromatic);
+    
+    return { sortedArtworks: sorted, achromaticArtworks: achromatic };
   }, [artworks]);
 
   const fetchArtworkDetail = useCallback(async (artworkId: string) => {
@@ -160,57 +169,40 @@ export default function ColorDistributionView() {
     );
   }
 
-  const allArtworks = [...sortedArtworks, ...achromaticArtworks];
-
   return (
-    <div className="relative">
-      {/* Y축 명도 아이콘 */}
-      <div className="flex gap-2">
-        <div className="flex flex-col justify-between items-center py-2">
-          <span className="text-2xl">☀</span>
-          <span className="text-xs">☀</span>
-        </div>
-
-        {/* 핀터레스트 스타일 Masonry */}
-        <div 
-          className="flex-1"
-          style={{
-            columnCount: Math.floor(900 / ITEM_WIDTH),
-            columnGap: '2px',
-          }}
-        >
-          {allArtworks.map((artwork) => {
-            const aspectRatio = getAspectRatio(artwork);
-            const itemHeight = ITEM_WIDTH / aspectRatio;
-            
-            return (
-              <div
-                key={artwork.id}
-                className="cursor-pointer hover:ring-2 hover:ring-gray-400 transition-all mb-0.5"
-                onClick={() => fetchArtworkDetail(artwork.id)}
-                style={{ 
-                  breakInside: 'avoid',
-                  width: '100%',
-                }}
+    <div className="w-full">
+      {/* 핀터레스트 스타일 Masonry - 색상 버킷순, 각 컬럼 내 명도순 */}
+      <div 
+        style={{
+          columnCount: 10,
+          columnGap: '2px',
+          columnWidth: '80px',
+        }}
+      >
+        {sortedArtworks.map((artwork) => {
+          const aspectRatio = getAspectRatio(artwork);
+          return (
+            <div
+              key={artwork.id}
+              className="cursor-pointer hover:opacity-80 transition-all mb-1"
+              onClick={() => fetchArtworkDetail(artwork.id)}
+              style={{ breakInside: 'avoid' }}
+            >
+              <div 
+                className="relative w-full"
+                style={{ paddingBottom: `${(1 / aspectRatio) * 100}%` }}
               >
-                <div 
-                  className="relative w-full"
-                  style={{ 
-                    paddingBottom: `${(1 / aspectRatio) * 100}%`,
-                  }}
-                >
-                  <Image
-                    src={artwork.image_url}
-                    alt={artwork.title}
-                    fill
-                    className="object-contain"
-                    sizes={`${ITEM_WIDTH}px`}
-                  />
-                </div>
+                {/* eslint-disable-next-line @next/next/no-img-element */}
+                <img
+                  src={artwork.image_url}
+                  alt={artwork.title}
+                  className="absolute inset-0 w-full h-full object-contain"
+                  loading="lazy"
+                />
               </div>
-            );
-          })}
-        </div>
+            </div>
+          );
+        })}
       </div>
 
       {/* 모달 */}

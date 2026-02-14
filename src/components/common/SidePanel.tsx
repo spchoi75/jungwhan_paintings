@@ -57,11 +57,11 @@ export default function SidePanel() {
 
   return (
     <>
-      {/* Always visible handle - vertical grip bar when closed */}
+      {/* Desktop only: vertical grip bar when closed (hidden on mobile - has hamburger menu) */}
       {!isOpen && (
         <button
           onClick={open}
-          className="fixed left-0 top-1/2 -translate-y-1/2 z-50 rounded-r-md px-1.5 py-6 hover:brightness-110 transition-all shadow-md group"
+          className="hidden md:block fixed left-0 top-1/2 -translate-y-1/2 z-50 rounded-r-md px-1.5 py-6 hover:brightness-110 transition-all shadow-md group"
           style={{
             background: 'linear-gradient(to right, #1f1f1f, #2a2a2a)',
           }}

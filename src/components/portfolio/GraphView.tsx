@@ -193,6 +193,7 @@ export default function GraphView() {
   const [physics, setPhysics] = useState<PhysicsSettings>(DEFAULT_PHYSICS);
   const [isMounted, setIsMounted] = useState(false);
   const [hasInitialCentered, setHasInitialCentered] = useState(false);
+  const [showPhysicsPanel, setShowPhysicsPanel] = useState(true); // 모바일에서 토글 가능
 
   // 마운트 상태만 관리
   useEffect(() => {
@@ -256,7 +257,7 @@ export default function GraphView() {
       if (node.type === 'artwork' && node.image_url) {
         const img = new window.Image();
         img.crossOrigin = 'anonymous';
-        img.src = node.image_url;
+        img.src = node.image_url || '';
         img.onload = () => {
           cache.set(node.id, img);
           setImageCache(new Map(cache));
@@ -553,22 +554,19 @@ export default function GraphView() {
 
   return (
     <div className="relative">
-      {/* 헤더 */}
-      <div className="flex items-center justify-between mb-4">
-        <div className="text-sm text-[var(--foreground)]/60">
-          {t.graph.artworks} {stats.artworks} · {t.graph.tags} {stats.tags} · {t.graph.connections} {stats.edges}
-        </div>
-      </div>
+      {/* 헤더 - 작품 숫자 제거 */}
 
-      <div className="flex gap-4">
-        {/* 그래프 컨테이너 - 고정 영역 */}
-        <div
-          ref={containerRef}
-          className="rounded-lg border border-[var(--foreground)]/10 overflow-hidden relative"
-          style={{ width: GRAPH_WIDTH, height: GRAPH_HEIGHT, backgroundColor: COLORS.background }}
-          onMouseMove={handleMouseMove}
-          onMouseLeave={() => setMousePos(null)}
-        >
+      <div className="flex flex-col md:flex-row gap-4">
+        {/* 그래프 + 오버레이 래퍼 */}
+        <div className="relative w-full md:w-auto overflow-x-auto" style={{ minWidth: GRAPH_WIDTH, height: GRAPH_HEIGHT }}>
+          {/* 그래프 컨테이너 - 고정 영역 */}
+          <div
+            ref={containerRef}
+            className="rounded-lg border border-[var(--foreground)]/10 overflow-hidden absolute inset-0"
+            style={{ backgroundColor: COLORS.background }}
+            onMouseMove={handleMouseMove}
+            onMouseLeave={() => setMousePos(null)}
+          >
           {viewMode === '2d' && (
             <ForceGraph2D
               key="graph-2d"
@@ -640,13 +638,16 @@ export default function GraphView() {
           {viewMode === '3d' && !render3D && (
             <GraphLoading text={t.graph.loading} />
           )}
+          </div>
+          {/* 그래프 컨테이너 닫힘 - 아래 오버레이는 overflow-hidden 영향 안 받음 */}
           
           {/* 태그 호버 시 - 연결된 작품 썸네일을 가장자리에 표시 */}
           {/* 태그 호버 시 - 연결된 작품들 이미지 표시 (핀터레스트 스타일) */}
           {connectedArtworks.length > 0 && (
             <div 
-              className="absolute top-2 left-2 right-2 pointer-events-none z-10"
+              className="absolute top-2 left-2 pointer-events-none z-10"
               style={{
+                width: 'calc(100% - 16px)',
                 columnCount: Math.min(connectedArtworks.length, 8),
                 columnGap: '2px',
               }}
@@ -669,7 +670,7 @@ export default function GraphView() {
                       >
                         {/* eslint-disable-next-line @next/next/no-img-element */}
                         <img
-                          src={artwork.image_url}
+                          src={artwork.image_url || ''}
                           alt={artwork.title || ''}
                           className="absolute inset-0 w-full h-full object-contain"
                         />
@@ -700,7 +701,7 @@ export default function GraphView() {
                 >
                   {/* eslint-disable-next-line @next/next/no-img-element */}
                   <img
-                    src={hoveredArtwork.image_url}
+                    src={hoveredArtwork.image_url || ''}
                     alt={hoveredArtwork.title || ''}
                     className="absolute inset-0 w-full h-full object-contain"
                   />
@@ -713,17 +714,28 @@ export default function GraphView() {
           })()}
         </div>
 
-        {/* 물리 설정 패널 - 항상 표시 */}
-        <div className="shrink-0 p-4 rounded-lg border border-[var(--foreground)]/10 bg-[var(--background)] space-y-4" style={{ width: PANEL_WIDTH }}>
-          <div className="flex items-center justify-between">
+        {/* 물리 설정 패널 - 모바일에서 토글 가능 */}
+        <div className="shrink-0 rounded-lg border border-[var(--foreground)]/10 bg-[var(--background)]" style={{ width: PANEL_WIDTH }}>
+          <button
+            onClick={() => setShowPhysicsPanel(!showPhysicsPanel)}
+            className="w-full p-4 flex items-center justify-between md:cursor-default"
+          >
             <h3 className="text-sm font-medium">{t.graph.physicsSettings}</h3>
-            <button
-              onClick={resetPhysics}
-              className="text-xs text-[var(--foreground)]/50 hover:text-[var(--foreground)]"
-            >
-              {t.graph.reset}
-            </button>
-          </div>
+            <div className="flex items-center gap-2">
+              {showPhysicsPanel && (
+                <button
+                  onClick={(e) => { e.stopPropagation(); resetPhysics(); }}
+                  className="text-xs text-[var(--foreground)]/50 hover:text-[var(--foreground)]"
+                >
+                  {t.graph.reset}
+                </button>
+              )}
+              <span className="md:hidden text-[var(--foreground)]/50">{showPhysicsPanel ? '▲' : '▼'}</span>
+            </div>
+          </button>
+          
+          {showPhysicsPanel && (
+          <div className="px-4 pb-4 space-y-4">
 
             <Slider
               label={t.graph.repulsion}
@@ -803,6 +815,8 @@ export default function GraphView() {
               {t.graph.physicsHelp.strength}
             </p>
           </div>
+          </div>
+          )}
         </div>
       </div>
 
