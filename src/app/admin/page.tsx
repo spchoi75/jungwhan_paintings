@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
-import { Artwork, ArtworkFormData, Category, CategoryFormData, AboutInfo, AboutFormData, Exhibition, ExhibitionFormData, News, NewsFormData } from '@/types/artwork';
+import { Artwork, ArtworkFormData, Category, CategoryFormData, AboutInfo, AboutFormData, Exhibition, ExhibitionFormData, News, NewsFormData, Tag } from '@/types/artwork';
 import Button from '@/components/common/Button';
 import Modal from '@/components/common/Modal';
 import ArtworkTable from '@/components/admin/ArtworkTable';
@@ -53,6 +53,9 @@ export default function AdminPage() {
   const [aboutInfo, setAboutInfo] = useState<AboutInfo | null>(null);
   const [aboutLoading, setAboutLoading] = useState(true);
 
+  // Tags state
+  const [allTags, setAllTags] = useState<Tag[]>([]);
+
   // Settings state
   const [currentHint, setCurrentHint] = useState<string>('');
 
@@ -69,6 +72,7 @@ export default function AdminPage() {
     fetchNews();
     fetchAbout();
     fetchSettings();
+    fetchTags();
   }, []);
 
   useEffect(() => {
@@ -168,6 +172,18 @@ export default function AdminPage() {
       }
     } catch {
       // 설정 조회 실패는 무시
+    }
+  };
+
+  const fetchTags = async () => {
+    try {
+      const response = await fetch('/api/tags');
+      if (response.ok) {
+        const data = await response.json();
+        setAllTags(data);
+      }
+    } catch {
+      // 태그 조회 실패는 무시
     }
   };
 
@@ -495,8 +511,11 @@ export default function AdminPage() {
                 <ArtworkTable
                   artworks={artworks}
                   categories={categories}
+                  allTags={allTags}
                   onEdit={(artwork) => { setEditingArtwork(artwork); setIsArtworkFormOpen(true); }}
                   onDelete={setDeletingArtwork}
+                  onTagsChange={() => { fetchArtworks(); fetchTags(); }}
+                  onFeaturedChange={fetchArtworks}
                 />
               )}
             </>

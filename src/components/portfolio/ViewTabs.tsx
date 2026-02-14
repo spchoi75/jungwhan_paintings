@@ -2,15 +2,17 @@
 
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
-
-const tabs = [
-  { href: '/portfolio/mindmap', label: '마인드맵' },
-  { href: '/portfolio/colors', label: '색상' },
-  { href: '/portfolio/years', label: '연도' },
-];
+import { useLocale } from '@/i18n';
 
 export default function ViewTabs() {
   const pathname = usePathname();
+  const { t } = useLocale();
+
+  const tabs = [
+    { href: '/portfolio/graph', label: t.portfolioViews.graph },
+    { href: '/portfolio/colors', label: t.portfolioViews.colors },
+    { href: '/portfolio/years', label: t.portfolioViews.years },
+  ];
   
   // 카테고리 상세 페이지에서는 탭 숨김
   if (pathname.startsWith('/portfolio/') && 

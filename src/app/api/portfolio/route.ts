@@ -11,7 +11,8 @@ async function isAuthenticated(): Promise<boolean> {
 }
 
 export async function GET() {
-  const { data, error } = await supabaseAdmin
+  // 작품 목록 조회
+  const { data: artworks, error } = await supabaseAdmin
     .from('portfolio')
     .select('*')
     .order('order', { ascending: true });
@@ -20,7 +21,32 @@ export async function GET() {
     return NextResponse.json({ error: error.message }, { status: 500 });
   }
 
-  return NextResponse.json(data);
+  // 각 작품의 태그 조회
+  const artworkIds = artworks?.map(a => a.id) || [];
+  
+  if (artworkIds.length > 0) {
+    const { data: artworkTags } = await supabaseAdmin
+      .from('artwork_tags')
+      .select('artwork_id, tags(id, name, created_at)')
+      .in('artwork_id', artworkIds);
+
+    // 태그를 작품에 매핑
+    const tagsByArtwork = new Map<string, { id: string; name: string; created_at: string }[]>();
+    artworkTags?.forEach(at => {
+      if (at.tags) {
+        const tags = tagsByArtwork.get(at.artwork_id) || [];
+        tags.push(at.tags as { id: string; name: string; created_at: string });
+        tagsByArtwork.set(at.artwork_id, tags);
+      }
+    });
+
+    // 작품에 태그 추가
+    artworks?.forEach(artwork => {
+      artwork.tags = tagsByArtwork.get(artwork.id) || [];
+    });
+  }
+
+  return NextResponse.json(artworks);
 }
 
 export async function POST(request: NextRequest) {

@@ -145,6 +145,73 @@ export const ko = {
     korean: 'KR',
     english: 'EN',
   },
+
+  // Portfolio 뷰 탭
+  portfolioViews: {
+    graph: '그래프',
+    colors: '색상',
+    years: '연도',
+  },
+
+  // 그래프 뷰
+  graph: {
+    // 통계
+    artworks: '작품',
+    tags: '태그',
+    connections: '연결',
+    statsFormat: '{artworks}개 · {tags} {tagCount}개 · {connections} {connectionCount}개',
+    
+    // 뷰 모드
+    physics: '물리',
+    view2d: '2D',
+    view3d: '3D',
+    
+    // 범례
+    artwork: '작품',
+    tag: '태그',
+    
+    // 조작 안내
+    help2d: '마우스 휠: 확대/축소 · 드래그: 이동 · 클릭: 상세',
+    help3d: '마우스 드래그: 회전 · 스크롤: 확대/축소 · 클릭: 상세',
+    
+    // 툴팁
+    year: '년',
+    linkedCount: '연결',
+    clickToView: '클릭하여 상세 보기',
+    artworksLinked: '개 작품 연결',
+    
+    // 물리 설정
+    physicsSettings: '물리 설정',
+    reset: '초기화',
+    repulsion: '반발력',
+    centerForce: '중심 인력',
+    linkDistance: '링크 거리',
+    linkStrength: '링크 강도',
+    
+    // 슬라이더 라벨
+    weak: '약함',
+    strong: '강함',
+    short: '짧음',
+    long: '김',
+    
+    // 슬라이더 강도 표시
+    slightly: '약간',
+    quite: '꽤',
+    normal: '보통',
+    
+    // 물리 설명
+    physicsHelp: {
+      repulsion: '반발력 ↑ 노드가 퍼짐',
+      center: '중심 인력 ↑ 한 곳에 모임',
+      distance: '링크 거리 ↑ 연결된 노드가 멀어짐',
+      strength: '링크 강도 ↑ 연결된 노드가 뭉침',
+    },
+    
+    // 상태
+    loading: '그래프 로딩 중...',
+    error: '그래프 데이터를 불러오는데 실패했습니다.',
+    noData: '표시할 데이터가 없습니다.',
+  },
 };
 
 export type Translations = typeof ko;

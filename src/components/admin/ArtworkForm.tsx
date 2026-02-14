@@ -1,10 +1,9 @@
 'use client';
 
 import { useState, useEffect } from 'react';
-import { Artwork, ArtworkFormData, Category, Tag } from '@/types/artwork';
+import { Artwork, ArtworkFormData, Category } from '@/types/artwork';
 import Button from '@/components/common/Button';
 import ImageUploader from './ImageUploader';
-import TagInput from './TagInput';
 
 interface ArtworkFormProps {
   artwork?: Artwork;
@@ -32,7 +31,6 @@ export default function ArtworkForm({ artwork, categories, onSubmit, onCancel }:
   const [loading, setLoading] = useState(false);
   const [errors, setErrors] = useState<Record<string, string>>({});
   const [submitError, setSubmitError] = useState<string | null>(null);
-  const [selectedTags, setSelectedTags] = useState<Tag[]>([]);
 
   useEffect(() => {
     setTitle(artwork?.title || '');
@@ -53,16 +51,6 @@ export default function ArtworkForm({ artwork, categories, onSubmit, onCancel }:
     setErrors({});
     setSubmitError(null);
     setDominantColor(artwork?.dominant_color || null);
-    
-    // 기존 작품의 태그 로드
-    if (artwork?.id) {
-      fetch(`/api/portfolio/${artwork.id}/tags`)
-        .then(res => res.ok ? res.json() : [])
-        .then(tags => setSelectedTags(tags))
-        .catch(() => setSelectedTags([]));
-    } else {
-      setSelectedTags([]);
-    }
   }, [artwork]);
 
   const validate = () => {
@@ -111,27 +99,6 @@ export default function ArtworkForm({ artwork, categories, onSubmit, onCancel }:
         thumbnail_url: thumbnailUrl,
         dominant_color: dominantColor,
       });
-      
-      // 기존 작품인 경우 태그 업데이트
-      if (artwork?.id && selectedTags.length > 0) {
-        // 기존 태그 모두 삭제 후 새로 추가
-        const currentTags = await fetch(`/api/portfolio/${artwork.id}/tags`).then(r => r.json()).catch(() => []);
-        if (currentTags.length > 0) {
-          await fetch(`/api/portfolio/${artwork.id}/tags`, {
-            method: 'DELETE',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ tag_ids: currentTags.map((t: Tag) => t.id) }),
-          });
-        }
-        // 새 태그 추가
-        if (selectedTags.length > 0) {
-          await fetch(`/api/portfolio/${artwork.id}/tags`, {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ tag_ids: selectedTags.map(t => t.id) }),
-          });
-        }
-      }
     } catch (err) {
       setSubmitError(err instanceof Error ? err.message : '저장에 실패했습니다');
     } finally {
@@ -211,29 +178,6 @@ export default function ArtworkForm({ artwork, categories, onSubmit, onCancel }:
           />
         </div>
       </div>
-
-      <div>
-        <label className="block text-sm font-medium mb-1 text-gray-700">카테고리</label>
-        <select
-          value={categoryId}
-          onChange={(e) => setCategoryId(e.target.value)}
-          className="w-full h-10 px-3 border border-gray-300 rounded focus:outline-none focus:ring-1 focus:ring-gray-400 bg-white text-gray-900"
-        >
-          <option value="">선택 안함</option>
-          {categories.map((category) => (
-            <option key={category.id} value={category.id}>
-              {category.name}
-            </option>
-          ))}
-        </select>
-      </div>
-
-      {/* 태그 입력 */}
-      <TagInput
-        artworkId={artwork?.id}
-        selectedTags={selectedTags}
-        onTagsChange={setSelectedTags}
-      />
 
       <div className="grid grid-cols-4 gap-4">
         <div>
@@ -340,15 +284,6 @@ export default function ArtworkForm({ artwork, categories, onSubmit, onCancel }:
       </div>
 
       <div className="space-y-3">
-        <label className="flex items-center gap-2 cursor-pointer">
-          <input
-            type="checkbox"
-            checked={isFeatured}
-            onChange={(e) => setIsFeatured(e.target.checked)}
-            className="w-4 h-4"
-          />
-          <span className="text-sm text-gray-700">대표작으로 설정 (메인 슬라이드쇼에 표시)</span>
-        </label>
         <label className="flex items-center gap-2 cursor-pointer">
           <input
             type="checkbox"

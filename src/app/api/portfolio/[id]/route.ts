@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { cookies } from 'next/headers';
 import { supabaseAdmin } from '@/lib/supabase/server';
+import { supabase } from '@/lib/supabase/client';
 
 const SESSION_COOKIE_NAME = 'admin_session';
 
@@ -8,6 +9,32 @@ async function isAuthenticated(): Promise<boolean> {
   const cookieStore = await cookies();
   const session = cookieStore.get(SESSION_COOKIE_NAME);
   return !!session;
+}
+
+// GET /api/portfolio/[id] - 작품 상세 조회
+export async function GET(
+  request: NextRequest,
+  { params }: { params: Promise<{ id: string }> }
+) {
+  try {
+    const { id } = await params;
+
+    const { data, error } = await supabase
+      .from('portfolio')
+      .select('*')
+      .eq('id', id)
+      .single();
+
+    if (error) {
+      console.error('Artwork fetch error:', error);
+      return NextResponse.json({ error: error.message }, { status: 404 });
+    }
+
+    return NextResponse.json(data);
+  } catch (err) {
+    console.error('Artwork GET error:', err);
+    return NextResponse.json({ error: 'Invalid request' }, { status: 400 });
+  }
 }
 
 export async function PUT(

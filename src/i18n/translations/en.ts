@@ -147,4 +147,71 @@ export const en: Translations = {
     korean: 'KR',
     english: 'EN',
   },
+
+  // Portfolio 뷰 탭
+  portfolioViews: {
+    graph: 'Graph',
+    colors: 'Colors',
+    years: 'Years',
+  },
+
+  // 그래프 뷰
+  graph: {
+    // 통계
+    artworks: 'Artworks',
+    tags: 'Tags',
+    connections: 'Connections',
+    statsFormat: '{artworks} · {tags} {tagCount} · {connections} {connectionCount}',
+    
+    // 뷰 모드
+    physics: 'Physics',
+    view2d: '2D',
+    view3d: '3D',
+    
+    // 범례
+    artwork: 'Artwork',
+    tag: 'Tag',
+    
+    // 조작 안내
+    help2d: 'Scroll: Zoom · Drag: Pan · Click: Detail',
+    help3d: 'Drag: Rotate · Scroll: Zoom · Click: Detail',
+    
+    // 툴팁
+    year: '',
+    linkedCount: 'links',
+    clickToView: 'Click to view details',
+    artworksLinked: ' artworks linked',
+    
+    // 물리 설정
+    physicsSettings: 'Physics Settings',
+    reset: 'Reset',
+    repulsion: 'Repulsion',
+    centerForce: 'Center Force',
+    linkDistance: 'Link Distance',
+    linkStrength: 'Link Strength',
+    
+    // 슬라이더 라벨
+    weak: 'Weak',
+    strong: 'Strong',
+    short: 'Short',
+    long: 'Long',
+    
+    // 슬라이더 강도 표시
+    slightly: 'Slightly',
+    quite: 'Quite',
+    normal: 'Normal',
+    
+    // 물리 설명
+    physicsHelp: {
+      repulsion: 'Repulsion ↑ Nodes spread out',
+      center: 'Center ↑ Nodes cluster',
+      distance: 'Distance ↑ Linked nodes separate',
+      strength: 'Strength ↑ Linked nodes stick',
+    },
+    
+    // 상태
+    loading: 'Loading graph...',
+    error: 'Failed to load graph data.',
+    noData: 'No data to display.',
+  },
 };
