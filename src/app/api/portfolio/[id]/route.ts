@@ -49,45 +49,30 @@ export async function PUT(
     const { id } = await params;
     const body = await request.json();
 
-    // description이 undefined인 경우 기존 값 보존
-    const { data: existing } = await supabaseAdmin
-      .from('portfolio')
-      .select('description, description_en')
-      .eq('id', id)
-      .single();
-
+    // Partial update: 전달된 필드만 업데이트
     const updateData: Record<string, unknown> = {
-      title: body.title,
-      title_en: body.title_en || null,
-      year: body.year,
-      width: body.width || null,
-      height: body.height || null,
-      medium: body.medium || null,
-      medium_en: body.medium_en || null,
-      collection: body.collection || null,
-      collection_en: body.collection_en || null,
-      variable_size: body.variable_size || false,
-      category_id: body.category_id || null,
-      image_url: body.image_url,
-      thumbnail_url: body.thumbnail_url,
-      is_featured: body.is_featured,
-      order: body.order ?? 0,
-      show_watermark: body.show_watermark ?? true,
       updated_at: new Date().toISOString(),
     };
 
-    // description이 명시적으로 전달된 경우에만 업데이트
-    if (body.description !== undefined) {
-      updateData.description = body.description || null;
-    } else if (existing) {
-      updateData.description = existing.description;
-    }
-
-    if (body.description_en !== undefined) {
-      updateData.description_en = body.description_en || null;
-    } else if (existing) {
-      updateData.description_en = existing.description_en;
-    }
+    // 각 필드가 명시적으로 전달된 경우에만 updateData에 추가
+    if (body.title !== undefined) updateData.title = body.title;
+    if (body.title_en !== undefined) updateData.title_en = body.title_en || null;
+    if (body.year !== undefined) updateData.year = body.year;
+    if (body.width !== undefined) updateData.width = body.width || null;
+    if (body.height !== undefined) updateData.height = body.height || null;
+    if (body.medium !== undefined) updateData.medium = body.medium || null;
+    if (body.medium_en !== undefined) updateData.medium_en = body.medium_en || null;
+    if (body.collection !== undefined) updateData.collection = body.collection || null;
+    if (body.collection_en !== undefined) updateData.collection_en = body.collection_en || null;
+    if (body.variable_size !== undefined) updateData.variable_size = body.variable_size;
+    if (body.category_id !== undefined) updateData.category_id = body.category_id || null;
+    if (body.image_url !== undefined) updateData.image_url = body.image_url;
+    if (body.thumbnail_url !== undefined) updateData.thumbnail_url = body.thumbnail_url;
+    if (body.is_featured !== undefined) updateData.is_featured = body.is_featured;
+    if (body.order !== undefined) updateData.order = body.order;
+    if (body.show_watermark !== undefined) updateData.show_watermark = body.show_watermark;
+    if (body.description !== undefined) updateData.description = body.description || null;
+    if (body.description_en !== undefined) updateData.description_en = body.description_en || null;
 
     const { data, error } = await supabaseAdmin
       .from('portfolio')
