@@ -35,7 +35,8 @@ export async function GET() {
     artworkTags?.forEach(at => {
       if (at.tags) {
         const tags = tagsByArtwork.get(at.artwork_id) || [];
-        tags.push(at.tags as { id: string; name: string; created_at: string });
+        const tagData = at.tags as unknown as { id: string; name: string; created_at: string };
+        tags.push(tagData);
         tagsByArtwork.set(at.artwork_id, tags);
       }
     });
