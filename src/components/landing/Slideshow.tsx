@@ -133,7 +133,6 @@ export default function Slideshow({ artworks }: SlideshowProps) {
   const prevIndex = (currentIndex - 1 + artworks.length) % artworks.length;
   const nextIndex = (currentIndex + 1) % artworks.length;
   const title = getLocalizedValue(locale, currentArtwork.title, currentArtwork.title_en);
-  const containerWidth = containerRef.current?.offsetWidth || (typeof window !== 'undefined' ? window.innerWidth : 1000);
 
   return (
     <div className="h-screen pt-16 flex flex-col">
